@@ -1,0 +1,123 @@
+=== RECONNAISSANCE REPORT ===
+Generated: 2026-03-07 12:45:36
+
+=== NETWORK INTERFACES ===
+Interface: Ethernet ([192.168.1.10/24])
+Interface: Ethernet 3 ([fe80::6406:79d1:146c:dd7a/64 192.168.56.1/24])
+Interface: Wi-Fi ([fe80::3abe:a1f9:6d96:2d8d/64 169.254.221.42/16])
+Interface: Local Area Connection* 1 ([fe80::2dc0:9eac:ead5:82eb/64 169.254.83.21/16])
+Interface: Local Area Connection* 10 ([fe80::861:dee6:7d39:1339/64 169.254.175.57/16])
+Interface: Loopback Pseudo-Interface 1 ([::1/128 127.0.0.1/8])
+
+=== SYSTEM INFORMATION ===
+
+Host Name:                 DESKTOP-K4G34NI
+OS Name:                   Microsoft Windows 10 Pro
+OS Version:                10.0.19045 N/A Build 19045
+OS Manufacturer:           Microsoft Corporation
+OS Configuration:          Standalone Workstation
+OS Build Type:             Multiprocessor Free
+Registered Owner:          sallypjake@yahoo.co.uk
+Registered Organization:   N/A
+Product ID:                00330-80141-64907-AA366
+Original Install Date:     05/01/2021, 01:36:50
+System Boot Time:          07/03/2026, 00:19:52
+System Manufacturer:       System manufacturer
+System Model:              System Product Name
+System Type:               x64-based PC
+Processor(s):              1 Processor(s) Installed.
+                           [01]: Intel64 Family 6 Model 94 Stepping 3 GenuineIntel ~4001 Mhz
+BIOS Version:              American Megatrends Inc. 1902, 27/06/2016
+Windows Directory:         C:\WINDOWS
+System Directory:          C:\WINDOWS\system32
+Boot Device:               \Device\HarddiskVolume8
+System Locale:             en-us;English (United States)
+Input Locale:              en-us;English (United States)
+Time Zone:                 (UTC+00:00) Dublin, Edinburgh, Lisbon, London
+Total Physical Memory:     32,683 MB
+Available Physical Memory: 20,548 MB
+Virtual Memory: Max Size:  42,667 MB
+Virtual Memory: Available: 27,380 MB
+Virtual Memory: In Use:    15,287 MB
+Page File Location(s):     D:\pagefile.sys
+                           E:\pagefile.sys
+Domain:                    WORKGROUP
+Logon Server:              \\DESKTOP-K4G34NI
+Hotfix(s):                 55 Hotfix(s) Installed.
+                           [01]: KB5066130
+                           [02]: KB5027122
+                           [03]: KB4577586
+                           [04]: KB4580325
+                           [05]: KB4589212
+                           [06]: KB4593175
+                           [07]: KB4598481
+                           [08]: KB5000736
+                           [09]: KB5011048
+                           [10]: KB5012170
+                           [11]: KB5015684
+                           [12]: KB5072653
+                           [13]: KB5066791
+                           [14]: KB5006753
+                           [15]: KB5007273
+                           [16]: KB5011352
+                           [17]: KB5011651
+                           [18]: KB5014032
+                           [19]: KB5014035
+                           [20]: KB5014671
+                           [21]: KB5015895
+                           [22]: KB5016705
+                           [23]: KB5018506
+                           [24]: KB5020372
+                           [25]: KB5022924
+                           [26]: KB5023794
+                           [27]: KB5025315
+                           [28]: KB5026879
+                           [29]: KB5028318
+                           [30]: KB5028380
+                           [31]: KB5029709
+                           [32]: KB5031539
+                           [33]: KB5032392
+                           [34]: KB5032907
+                           [35]: KB5034224
+                           [36]: KB5036447
+                           [37]: KB5037018
+                           [38]: KB5037240
+                           [39]: KB5037995
+                           [40]: KB5039336
+                           [41]: KB5041579
+                           [42]: KB5043935
+                           [43]: KB5043130
+                           [44]: KB5046823
+                           [45]: KB5050388
+                           [46]: KB5050111
+                           [47]: KB5052916
+                           [48]: KB5054682
+                           [49]: KB5058526
+                           [50]: KB5059504
+                           [51]: KB5063706
+                           [52]: KB5063261
+                           [53]: KB5063979
+                           [54]: KB5066790
+                           [55]: KB5005699
+Network Card(s):           3 NIC(s) Installed.
+                           [01]: Intel(R) Ethernet Connection (2) I219-V
+                                 Connection Name: Ethernet
+                                 DHCP Enabled:    Yes
+                                 DHCP Server:     192.168.1.1
+                                 IP address(es)
+                                 [01]: 192.168.1.10
+                           [02]: ASUS PCE-N15 11n Wireless LAN PCI-E Card
+                                 Connection Name: Wi-Fi
+                                 Status:          Media disconnected
+                           [03]: VirtualBox Host-Only Ethernet Adapter
+                                 Connection Name: Ethernet 3
+                                 DHCP Enabled:    No
+                                 IP address(es)
+                                 [01]: 192.168.56.1
+                                 [02]: fe80::6406:79d1:146c:dd7a
+Hyper-V Requirements:      VM Monitor Mode Extensions: Yes
+                           Virtualization Enabled In Firmware: Yes
+                           Second Level Address Translation: Yes
+                           Data Execution Prevention Available: Yes
+
+

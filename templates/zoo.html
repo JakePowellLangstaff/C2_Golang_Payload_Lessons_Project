@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Malware Zoo Project</title>
+</head>
+
+<body>
+
+<h1>Malware Zoo</h1>
+
+<p>Network Scanner Payload (Go)</p>
+
+<a href="{{ url_for('static', filename='payloads/net_scan.exe') }}" download>
+Download net_scan.exe
+</a>
+
+<nav>
+<a href="/">Home</a>
+<a href="/c2">C2 Server</a>
+<a href="/docs">Documentation</a>
+</nav>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<p>This website hosts educational malware samples written in Go.</p>
+
+</body>
+</html>
