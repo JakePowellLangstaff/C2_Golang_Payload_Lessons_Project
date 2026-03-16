@@ -2,23 +2,22 @@
 <html>
 <head>
     <title>My Flask Site</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
 <h1>My Flask Website</h1>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <nav>
 <a href="/">Home</a>
 <a href="/zoo">Malware Zoo</a>
 <a href="/c2">C2 Server</a>
-<br>
-    <p>
-        This website hosts educational malware samples written in Go.
-    </p>
-
-
 </nav>
+
+<p>
+This website hosts educational malware samples written in Go.
+</p>
+
 </body>
 </html>
