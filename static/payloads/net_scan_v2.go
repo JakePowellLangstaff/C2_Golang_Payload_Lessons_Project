@@ -54,6 +54,24 @@ func main() {
 	output, _ = cmd.Output()
 	content += string(output) + "\n\n"
 
+	// === A-TIER: LOGGED-IN USERS (quser) ===
+	content += "=== 4. LOGGED-IN USERS ===\n"
+	cmd = exec.Command("cmd", "/C", "quser")
+	output, _ = cmd.Output()
+	content += string(output) + "\n\n"
+
+	// === A-TIER: ARP CACHE (arp -a) ===
+	content += "=== 5. ARP CACHE ===\n"
+	cmd = exec.Command("cmd", "/C", "arp -a")
+	output, _ = cmd.Output()
+	content += string(output) + "\n\n"
+
+	// === A-TIER: DISK INFORMATION (wmic logicaldisk) ===
+	content += "=== 6. DISK INFORMATION ===\n"
+	cmd = exec.Command("cmd", "/C", "wmic logicaldisk get size,freespace,caption")
+	output, _ = cmd.Output()
+	content += string(output) + "\n\n"
+
 	// === WRITE TO FILE ===
 	path := `C:\temp\recon_combined.txt`
 	os.WriteFile(path, []byte(content), 0644)
