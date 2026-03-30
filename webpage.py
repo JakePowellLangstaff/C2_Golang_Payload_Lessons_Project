@@ -15,9 +15,22 @@ def zoo():
 def c2():
     return render_template("c2.html")
 
-@app.route("/docs")
-def docs():
-    return render_template("docs.html")
+
+@app.route("/lessons")
+def lessons():
+    return render_template("lessons.html")
+
+@app.route("/recon")
+def recon():
+    return render_template("recon.html")
+
+@app.route("/foundation")
+def foundation():
+    return render_template("foundation.html")
+
+@app.route("/obfuscation")
+def obfuscation():
+    return render_template("obfuscation.html")
 
 # ===============================================
 # START APPLICATION

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lessons — Go Payload Series</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0c10;
+      --bg2:       #111520;
+      --bg3:       #181d2b;
+      --border:    #232a3e;
+      --text:      #c8cfe0;
+      --text-dim:  #5a6480;
+      --text-head: #eef0f8;
+      --amber:     #f0a030;
+      --amber-dim: #7a5018;
+      --red:       #e03a3a;
+      --green:     #2ecc71;
+      --blue:      #4a8fff;
+      --purple:    #8b5cf6;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Syne', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────── */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      height: 56px;
+    }
+    .logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--amber);
+      font-weight: 600;
+      letter-spacing: .04em;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .logo span { color: var(--text-dim); }
+    nav { display: flex; gap: 4px; flex: 1; }
+    nav a {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      transition: color .15s, background .15s;
+      letter-spacing: .03em;
+    }
+    nav a:hover { color: var(--text); background: var(--bg3); }
+    nav a.active { color: var(--amber); background: rgba(240,160,48,.08); }
+
+    /* ── MAIN ────────────────────────────────────────────── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 56px 32px 96px;
+    }
+
+    /* ── PAGE HERO ───────────────────────────────────────── */
+    .page-hero {
+      margin-bottom: 56px;
+      border-left: 3px solid var(--amber);
+      padding-left: 24px;
+    }
+    .page-hero .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--amber);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .page-hero h1 {
+      font-size: 40px;
+      font-weight: 800;
+      color: var(--text-head);
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .page-hero p {
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 13px;
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ── PROGRESS BAR ────────────────────────────────────── */
+    .progress-strip {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 52px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .progress-strip .label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+    .progress-bar-wrap { flex: 1; min-width: 180px; }
+    .progress-bar-bg {
+      background: var(--border);
+      border-radius: 99px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--amber), #ff6b2b);
+      width: 21%;
+      transition: width .6s ease;
+    }
+    .progress-stat {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+    }
+    .progress-stat strong { color: var(--amber); }
+    .badge-legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
+    .badge-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .dot-done   { background: var(--green); }
+    .dot-wip    { background: var(--amber); }
+    .dot-coming { background: var(--border); border: 1px solid var(--text-dim); }
+
+    /* ── PHASE GROUPS ────────────────────────────────────── */
+    .phase-group { margin-bottom: 52px; }
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .phase-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .phase-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-head);
+    }
+    .phase-desc {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-left: auto;
+    }
+
+    /* colour per phase */
+    .phase-foundation .phase-icon { background: rgba(74,143,255,.12); color: var(--blue); border: 1px solid rgba(74,143,255,.25); }
+    .phase-recon      .phase-icon { background: rgba(240,160,48,.12);  color: var(--amber); border: 1px solid rgba(240,160,48,.25); }
+    .phase-c2         .phase-icon { background: rgba(139,92,246,.12);  color: var(--purple); border: 1px solid rgba(139,92,246,.25); }
+    .phase-obfusc     .phase-icon { background: rgba(224,58,58,.12);   color: var(--red); border: 1px solid rgba(224,58,58,.25); }
+
+    /* ── LESSON CARDS ────────────────────────────────────── */
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 12px;
+    }
+    .lesson-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      text-decoration: none;
+      display: block;
+      transition: border-color .15s, transform .15s, background .15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .lesson-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+    }
+    .phase-foundation .lesson-card::before { background: var(--blue); }
+    .phase-recon      .lesson-card::before { background: var(--amber); }
+    .phase-c2         .lesson-card::before { background: var(--purple); }
+    .phase-obfusc     .lesson-card::before { background: var(--red); }
+
+    .lesson-card:hover {
+      border-color: #3a4258;
+      transform: translateY(-2px);
+      background: var(--bg3);
+    }
+    .lesson-card.coming-soon {
+      opacity: .5;
+      pointer-events: none;
+      cursor: default;
+    }
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .lesson-id {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .status-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      letter-spacing: .04em;
+      font-weight: 600;
+    }
+    .status-done   { background: rgba(46,204,113,.12); color: var(--green); border: 1px solid rgba(46,204,113,.25); }
+    .status-wip    { background: rgba(240,160,48,.12);  color: var(--amber); border: 1px solid rgba(240,160,48,.30); }
+    .status-coming { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
+
+    .lesson-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-head);
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+    .lesson-desc {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+    .card-footer {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mitre-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      background: var(--bg3);
+      padding: 2px 7px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+    }
+    .card-dl {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .card-dl.has-dl { color: var(--amber); }
+    .card-arrow {
+      font-size: 11px;
+      color: var(--text-dim);
+      transition: transform .15s;
+    }
+    .lesson-card:hover .card-arrow { transform: translateX(3px); }
+
+    /* ── COMING SOON BANNER ──────────────────────────────── */
+    .coming-soon-banner {
+      background: var(--bg2);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 8px;
+    }
+    .coming-soon-banner p {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+    .coming-soon-banner strong { color: var(--text); }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 32px;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">recon<span>.</span>beacon</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/lessons" class="active">Lessons</a>
+      <a href="/recon">Recon</a>
+      <a href="/c2">C2 Server</a>
+      <a href="/obfuscation">Obfuscation</a>
+      <a href="/docs">Docs</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <div class="page-hero">
+    <div class="eyebrow">// lesson index</div>
+    <h1>All Lessons</h1>
+    <p>Structured walkthrough of a Go implant from first compile to fully-obfuscated C2 beacon. Follows the Pyramid of Pain bottom-up.</p>
+  </div>
+
+  <!-- Progress strip -->
+  <div class="progress-strip">
+    <div class="label">Project progress</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill"></div>
+      </div>
+    </div>
+    <div class="progress-stat"><strong>3</strong> / 14 lessons complete</div>
+    <div class="badge-legend">
+      <div class="badge-legend-item"><span class="dot dot-done"></span>Complete</div>
+      <div class="badge-legend-item"><span class="dot dot-wip"></span>In progress</div>
+      <div class="badge-legend-item"><span class="dot dot-coming"></span>Planned</div>
+    </div>
+  </div>
+
+
+  <!-- ── PHASE: FOUNDATION ─────────────────────────────────── -->
+  <div class="phase-group phase-foundation">
+    <div class="phase-header">
+      <div class="phase-icon">01</div>
+      <div class="phase-title">Foundation</div>
+      <div class="phase-desc">Go toolchain · static binaries · first recon run</div>
+    </div>
+    <div class="lesson-grid">
+
+      <a href="/lessons/1" class="lesson-card">
+        <div class="card-top">
+          <span class="lesson-id">L01</span>
+          <span class="status-badge status-done">Complete</span>
+        </div>
+        <div class="lesson-title">Go environment + compile to .exe</div>
+        <div class="lesson-desc">Toolchain setup, GOOS/GOARCH cross-compilation, static binary advantages for implant development.</div>
+        <div class="card-footer">
+          <span class="mitre-tag">—</span>
+          <span class="card-dl has-dl">↓ net_scan.go</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="/recon" class="lesson-card">
+        <div class="card-top">
+          <span class="lesson-id">L02</span>
+          <span class="status-badge status-done">Complete</span>
+        </div>
+        <div class="lesson-title">First recon — net interfaces and systeminfo</div>
+        <div class="lesson-desc">Native Go API vs exec.Command, writing output to disk, one-shot C2 HTTP POST.</div>
+        <div class="card-footer">
+          <span class="mitre-tag">T1082 · T1016</span>
+          <span class="card-dl has-dl">↓ v1 + word doc</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+
+  <!-- ── PHASE: RECONNAISSANCE ─────────────────────────────── -->
+  <div class="phase-group phase-recon">
+    <div class="phase-header">
+      <div class="phase-icon">02</div>
+      <div class="phase-title">Reconnaissance</div>
+      <div class="phase-desc">Host enumeration · S-tier and A-tier commands · persistence · beacon loop</div>
+    </div>
+    <div class="lesson-grid">
+
+      <a href="/recon#v2" class="lesson-card">
+        <div class="card-top">
+          <span class="lesson-id">L03</span>
+          <span class="status-badge status-done">Complete</span>
+        </div>
+        <div class="lesson-title">Expanded host recon — S-tier commands</div>
+        <div class="lesson-desc">netstat, net localgroup, tasklist /fo csv — network connections, admin accounts, process fingerprinting.</div>
+        <div class="card-footer">
+          <span class="mitre-tag">T1049 · T1069 · T1057</span>
+          <span class="card-dl has-dl">↓ v2 + word doc</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="/recon#v2" class="lesson-card">
+        <div class="card-top">
+          <span class="lesson-id">L04</span>
+          <span class="status-badge status-done">Complete</span>
+        </div>
+        <div class="lesson-title">A-tier commands — users, ARP, disk</div>
+        <div class="lesson-desc">quser for active sessions, arp -a for passive subnet mapping, wmic for staging space assessment.</div>
+        <div class="card-footer">
+          <span class="mitre-tag">T1033 · T1016 · T1082</span>
+          <span class="card-dl has-dl">↓ v2 + word doc</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="/recon#v3" class="lesson-card">
+        <div class="card-top">
+          <span class="lesson-id">L05</span>
+          <span class="status-badge status-done">Complete</span>
+        </div>
+        <div class="lesson-title">Registry persistence + 60s beacon loop</div>
+        <div class="lesson-desc">os.Executable() self-path, reg add HKCU Run key, infinite for{} loop with time.Sleep.</div>
+        <div class="card-footer">
+          <span class="mitre-tag">T1547.001 · T1071.001</span>
+          <span class="card-dl has-dl">↓ v3 + word doc</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+
+  <!-- ── PHASE: C2 SERVER ───────────────────────────────────── -->
+  <div class="phase-group phase-c2">
+    <div class="phase-header">
+      <div class="phase-icon">03</div>
+      <div class="phase-title">C2 Server</div>
+      <div class="phase-desc">Flask listener · HTTP exfil · operator infrastructure</div>
+    </div>
+    <div class="lesson-grid">
+
+      <a href="/c2" class="lesson-card">
+        <div class="card-top">
+          <span class="lesson-id">L06</span>
+          <span class="status-badge status-wip">In progress</span>
+        </div>
+        <div class="lesson-title">Flask C2 server from scratch</div>
+        <div class="lesson-desc">POST /beacon route, request.get_data(), unique timestamped filenames, JSON response.</div>
+        <div class="card-footer">
+          <span class="mitre-tag">T1071.001</span>
+          <span class="card-dl has-dl">↓ c2_server.py</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="/c2" class="lesson-card">
+        <div class="card-top">
+          <span class="lesson-id">L07</span>
+          <span class="status-badge status-wip">In progress</span>
+        </div>
+        <div class="lesson-title">HTTP exfiltration in Go</div>
+        <div class="lesson-desc">http.NewRequest POST, custom X-Host headers, client timeout, Wireshark capture analysis.</div>
+        <div class="card-footer">
+          <span class="mitre-tag">T1041</span>
+          <span class="card-dl">— no download yet</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+
+  <!-- ── PHASE: OBFUSCATION ─────────────────────────────────── -->
+  <div class="phase-group phase-obfusc">
+    <div class="phase-header">
+      <div class="phase-icon">04</div>
+      <div class="phase-title">Obfuscation</div>
+      <div class="phase-desc">String encoding · sleep jitter · binary stripping · defeating signatures</div>
+    </div>
+
+    <div class="coming-soon-banner">
+      <p>⟳ &nbsp;<strong>Obfuscation lessons are in progress.</strong> &nbsp;This phase covers XOR string encoding, beacon jitter, compile-time symbol stripping, and garble — mapping to the upper tiers of the Pyramid of Pain.</p>
+    </div>
+
+    <div class="lesson-grid" style="margin-top: 12px;">
+
+      <div class="lesson-card coming-soon">
+        <div class="card-top">
+          <span class="lesson-id">L08</span>
+          <span class="status-badge status-coming">Planned</span>
+        </div>
+        <div class="lesson-title">XOR string obfuscation</div>
+        <div class="lesson-desc">Encoding the C2 URL, registry paths, and command strings so they don't appear plaintext in the binary.</div>
+        <div class="card-footer">
+          <span class="mitre-tag">T1027.002</span>
+          <span class="card-dl">— coming soon</span>
+        </div>
+      </div>
+
+      <div class="lesson-card coming-soon">
+        <div class="card-top">
+          <span class="lesson-id">L09</span>
+          <span class="status-badge status-coming">Planned</span>
+        </div>
+        <div class="lesson-title">Sleep jitter — defeating beacon detection</div>
+        <div class="lesson-desc">Replacing fixed 60s sleep with ±20% random interval. Network IDS beacon fingerprinting explained.</div>
+        <div class="card-footer">
+          <span class="mitre-tag">T1497</span>
+          <span class="card-dl">— coming soon</span>
+        </div>
+      </div>
+
+      <div class="lesson-card coming-soon">
+        <div class="card-top">
+          <span class="lesson-id">L10</span>
+          <span class="status-badge status-coming">Planned</span>
+        </div>
+        <div class="lesson-title">Compile flags and binary stripping</div>
+        <div class="lesson-desc">-ldflags="-s -w" to strip debug symbols. Comparing binary size and Ghidra analysis before/after.</div>
+        <div class="card-footer">
+          <span class="mitre-tag">T1027</span>
+          <span class="card-dl">— coming soon</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Final Year Cybersecurity Project &nbsp;·&nbsp; Educational use only &nbsp;·&nbsp; Lab environment
+</footer>
+
+</body>
+</html>
