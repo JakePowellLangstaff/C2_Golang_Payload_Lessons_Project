@@ -32,6 +32,10 @@ def foundation():
 def obfuscation():
     return render_template("obfuscation.html")
 
+@app.route("/defender")
+def defender():
+    return render_template("defender.html")
+
 # ===============================================
 # START APPLICATION
 # ===============================================

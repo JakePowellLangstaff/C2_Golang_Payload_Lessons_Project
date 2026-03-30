@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blue Team — Detection Analysis</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0a0c10;--bg2:#111520;--bg3:#181d2b;--bgc:#0d1117;--border:#232a3e;--text:#c8cfe0;--dim:#5a6480;--head:#eef0f8;--amber:#f0a030;--red:#e03a3a;--green:#2ecc71;--blue:#4a8fff;--teal:#2dd4bf;--mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
+    header{border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100}
+    .hi{max-width:1100px;margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:32px;height:56px}
+    .logo{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:600;text-decoration:none}
+    .logo span{color:var(--dim)}
+    nav{display:flex;gap:4px}
+    nav a{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;padding:6px 10px;border-radius:4px;transition:.15s}
+    nav a:hover{color:var(--text);background:var(--bg3)}
+    nav a.on{color:var(--teal);background:rgba(45,212,191,.08)}
+    .wrap{max-width:1100px;margin:0 auto;padding:56px 32px 96px;display:grid;grid-template-columns:210px 1fr;gap:48px;align-items:start}
+    .sidebar{position:sticky;top:80px}
+    .sb-label{font-family:var(--mono);font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+    .sb-nav{display:flex;flex-direction:column;gap:2px}
+    .sb-nav a{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;padding:6px 10px;border-radius:4px;border-left:2px solid transparent;transition:.15s}
+    .sb-nav a:hover{color:var(--text);background:var(--bg2)}
+    .sb-nav a.on{color:var(--teal);border-left-color:var(--teal);background:rgba(45,212,191,.07)}
+    .sb-div{border:none;border-top:1px solid var(--border);margin:12px 0}
+    .dl-btn{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--amber);text-decoration:none;padding:7px 10px;border-radius:5px;border:1px solid rgba(240,160,48,.2);background:rgba(240,160,48,.06);margin-bottom:6px;transition:.15s}
+    .dl-btn:hover{border-color:var(--amber);background:rgba(240,160,48,.12)}
+    .content{min-width:0}
+    .hero{margin-bottom:44px;border-left:3px solid var(--teal);padding-left:22px}
+    .eyebrow{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+    .hero h1{font-size:34px;font-weight:800;color:var(--head);line-height:1.1;margin-bottom:12px}
+    .hero p{color:var(--dim);font-family:var(--mono);font-size:13px;max-width:580px;line-height:1.7}
+    .section{margin-bottom:52px;scroll-margin-top:80px}
+    h2{font-size:20px;font-weight:800;color:var(--head);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+    h3{font-size:15px;font-weight:600;color:var(--head);margin-bottom:10px;margin-top:24px}
+    p{font-size:14px;color:var(--text);line-height:1.8;margin-bottom:12px}
+    p:last-child{margin-bottom:0}
+    a.il{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(74,143,255,.3);transition:.15s}
+    a.il:hover{border-bottom-color:var(--blue)}
+    table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;margin:16px 0}
+    th{background:var(--bg3);color:var(--dim);text-transform:uppercase;font-size:10px;letter-spacing:.06em;padding:9px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;line-height:1.5}
+    tr:last-child td{border-bottom:none}
+    tr:nth-child(odd) td{background:var(--bg2)}
+    .evt{color:#8b5cf6;font-weight:600}
+    .sev-hi{color:var(--red);font-weight:600}
+    .sev-med{color:var(--amber)}
+    .sev-lo{color:var(--dim)}
+    .bypass-yes{color:var(--green)}
+    .bypass-no{color:var(--red)}
+    .bypass-part{color:var(--amber)}
+    .sep{border:none;border-top:1px solid var(--border);margin:48px 0}
+    .callout{border-left:3px solid var(--teal);background:rgba(45,212,191,.04);border-radius:0 6px 6px 0;padding:13px 17px;margin:16px 0;font-size:14px;line-height:1.75}
+    .callout strong{color:var(--teal)}
+    footer{border-top:1px solid var(--border);padding:24px 32px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--dim)}
+    @media(max-width:768px){.wrap{grid-template-columns:1fr}.sidebar{position:static}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="hi">
+    <a href="/" class="logo">recon<span>.</span>beacon</a>
+    <nav>
+      <a href="/">Home</a><a href="/lessons">Lessons</a><a href="/recon">Recon</a>
+      <a href="/c2">C2 Server</a><a href="/obfuscation">Obfuscation</a>
+      <a href="/zoo">Sample Zoo</a><a href="/defender" class="on">Blue Team</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <aside class="sidebar">
+    <div class="sb-label">// on this page</div>
+    <nav class="sb-nav">
+      <a href="#overview" class="on">Overview</a>
+      <a href="#killchain">Kill Chain detection</a>
+      <a href="#host">Host-based</a>
+      <a href="#network">Network-based</a>
+      <a href="#pyramid">Pyramid analysis</a>
+    </nav>
+    <hr class="sb-div">
+    <div class="sb-label">// downloads</div>
+    <a href="{{ url_for('static', filename='downloadables/BlueTeam_Detection_Analysis.docx') }}" download class="dl-btn">&#8595; Detection Analysis.docx</a>
+  </aside>
+
+  <main class="content">
+    <div class="hero">
+      <div class="eyebrow">// blue team analysis</div>
+      <h1>How this payload would be detected</h1>
+      <p>For every technique in this project, this page documents the detection method, the tool that surfaces it, and the signal strength. Understanding both sides is the point of the exercise.</p>
+    </div>
+
+    <section class="section" id="overview">
+      <h2>Why blue team analysis matters here</h2>
+      <p>Building an offensive tool without understanding how it is detected misses half the picture. This page maps every technique in the payload &mdash; from the cmd.exe child process to the registry Run key to the HTTP beacon interval &mdash; to the specific detection method a SOC analyst or EDR system would use to find it.</p>
+      <p>The detection coverage is deliberately layered. Most techniques are visible at multiple levels simultaneously: Sysmon catches the process event, Wireshark shows the network traffic, and Autoruns finds the persistence. A real defender uses all of these together, which is why the payload is noisy even at version 3.</p>
+      <div class="callout">
+        <strong>Lab setup for this analysis:</strong> Sysmon with the SwiftOnSecurity config installed on the target VM. Wireshark running on the operator machine. Autoruns and Process Monitor from the Sysinternals Suite. All detection events described below are reproducible in the lab by following the instructions on the <a href="/" class="il">home page</a>.
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <section class="section" id="killchain">
+      <h2>Kill Chain stage &mdash; detection intercept points</h2>
+      <p>This diagram shows the Cyber Kill Chain stages covered by this project and where a defender can intercept the attack at each stage.</p>
+
+      <svg width="100%" viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" style="margin:20px 0;display:block">
+        <defs>
+          <marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <!-- Attack chain boxes (left column) -->
+        <text x="120" y="24" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480" text-transform="uppercase">ATTACK STAGE</text>
+        <text x="420" y="24" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">DETECTION METHOD</text>
+
+        <!-- Stage rows -->
+        <!-- Recon -->
+        <rect x="20" y="38" width="200" height="48" rx="6" fill="#111520" stroke="#f0a030" stroke-width="1"/>
+        <text x="120" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f0a030" font-weight="600">Reconnaissance</text>
+        <text x="120" y="74" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">Phase 02 (v1, v2, v3)</text>
+        <line x1="222" y1="62" x2="260" y2="62" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
+        <rect x="262" y="38" width="390" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <text x="457" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Sysmon EID 1 &mdash; cmd.exe child process chain</text>
+        <text x="457" y="74" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#e03a3a">High signal &mdash; tasklist/netstat parent anomaly</text>
+
+        <!-- Weaponization -->
+        <rect x="20" y="100" width="200" height="48" rx="6" fill="#111520" stroke="#4a8fff" stroke-width="1"/>
+        <text x="120" y="120" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#4a8fff" font-weight="600">Weaponization</text>
+        <text x="120" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">Go binary compiled to .exe</text>
+        <line x1="222" y1="124" x2="260" y2="124" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
+        <rect x="262" y="100" width="390" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <text x="457" y="120" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">AV hash signature / strings.exe (C2 URL plaintext)</text>
+        <text x="457" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0a030">Medium &mdash; hash changes on recompile</text>
+
+        <!-- Delivery / Exploitation grey -->
+        <rect x="20" y="162" width="200" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text x="120" y="182" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#5a6480">Delivery / Exploitation</text>
+        <text x="120" y="198" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#3a4258">Out of scope &mdash; lab only</text>
+        <line x1="222" y1="186" x2="260" y2="186" stroke="#3a4258" stroke-width="1" stroke-dasharray="4 3"/>
+        <rect x="262" y="162" width="390" height="48" rx="6" fill="#111520" stroke="#3a4258" stroke-width="0.5"/>
+        <text x="457" y="186" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#3a4258">N/A for this project</text>
+
+        <!-- Installation -->
+        <rect x="20" y="224" width="200" height="48" rx="6" fill="#111520" stroke="#e03a3a" stroke-width="1"/>
+        <text x="120" y="244" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#e03a3a" font-weight="600">Installation</text>
+        <text x="120" y="260" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">Registry Run Key (v3)</text>
+        <line x1="222" y1="248" x2="260" y2="248" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
+        <rect x="262" y="224" width="390" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <text x="457" y="244" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Sysmon EID 13 + Autoruns.exe</text>
+        <text x="457" y="260" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#e03a3a">Very high &mdash; HKCU Run write is a top SIEM rule</text>
+
+        <!-- C2 -->
+        <rect x="20" y="286" width="200" height="48" rx="6" fill="#111520" stroke="#8b5cf6" stroke-width="1"/>
+        <text x="120" y="306" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#8b5cf6" font-weight="600">Command &amp; Control</text>
+        <text x="120" y="322" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">HTTP /beacon every 60s</text>
+        <line x1="222" y1="310" x2="260" y2="310" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
+        <rect x="262" y="286" width="390" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <text x="457" y="306" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Zeek beacon detection / Wireshark timing analysis</text>
+        <text x="457" y="322" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#e03a3a">High &mdash; fixed 60s interval is a detectable pattern</text>
+
+        <!-- Data staging -->
+        <rect x="20" y="348" width="200" height="48" rx="6" fill="#111520" stroke="#2dd4bf" stroke-width="1"/>
+        <text x="120" y="368" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#2dd4bf" font-weight="600">Local Data Staging</text>
+        <text x="120" y="384" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">C:\temp\recon_combined.txt</text>
+        <line x1="222" y1="372" x2="260" y2="372" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
+        <rect x="262" y="348" width="390" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <text x="457" y="368" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Sysmon EID 11 / forensic file system analysis</text>
+        <text x="457" y="384" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0a030">Medium &mdash; artefact persists on disk</text>
+      </svg>
+    </section>
+
+    <hr class="sep">
+
+    <section class="section" id="host">
+      <h2>Host-based detection</h2>
+      <p>All events below are generated by Sysmon with the SwiftOnSecurity config, or by Sysinternals tools run manually on the target VM.</p>
+      <table>
+        <thead><tr><th>Event / Tool</th><th>What triggers it</th><th>Severity</th></tr></thead>
+        <tbody>
+          <tr><td class="evt">Sysmon EID 1</td><td>cmd.exe spawned as child of the payload. Parent-child chain: payload.exe &rarr; cmd.exe &rarr; systeminfo.exe (and netstat, tasklist, etc). Anomalous parent process path.</td><td class="sev-hi">High</td></tr>
+          <tr><td class="evt">Sysmon EID 13</td><td>Registry value created at HKCU\Software\Microsoft\Windows\CurrentVersion\Run. Value name "ReconBeacon", data = full path to .exe. This is one of the highest-signal detection rules in enterprise SIEM environments.</td><td class="sev-hi">Very High</td></tr>
+          <tr><td class="evt">Sysmon EID 11</td><td>File created at C:\temp\recon_combined.txt. File creation event fires on every beacon cycle, approximately every 60 seconds.</td><td class="sev-med">Medium</td></tr>
+          <tr><td class="evt">Sysmon EID 3</td><td>Outbound TCP connection from payload.exe to operator IP on port 5000. Connection fires every beacon cycle.</td><td class="sev-hi">High</td></tr>
+          <tr><td>Autoruns.exe</td><td>ReconBeacon Run key entry highlighted in yellow (unknown/unsigned binary). Immediately visible on any forensic examination of startup items.</td><td class="sev-hi">Very High</td></tr>
+          <tr><td>strings.exe</td><td>C2 URL (http://192.168.1.10:5000/beacon), registry path, and all command strings visible in plaintext in unobfuscated binary.</td><td class="sev-hi">High</td></tr>
+          <tr><td>Process Monitor</td><td>Full file, registry, and network event trace for every action the payload takes. Replay-capable forensic analysis of each beacon cycle.</td><td class="sev-med">Forensic</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="sep">
+
+    <section class="section" id="network">
+      <h2>Network-based detection</h2>
+      <table>
+        <thead><tr><th>Detection method</th><th>What it sees</th><th>Severity</th></tr></thead>
+        <tbody>
+          <tr><td>Wireshark / packet capture</td><td>X-Host and X-Filename headers visible in plaintext HTTP POST. Non-standard headers with "X-" prefix are an unusual pattern on port 5000 traffic.</td><td class="sev-hi">High</td></tr>
+          <tr><td>Zeek beacon detection</td><td>Fixed 60-second inter-arrival time on outbound POST requests. Zeek's beacon detection script flags connections with a regularity score above threshold.</td><td class="sev-hi">High</td></tr>
+          <tr><td>Network flow logs (NetFlow / IPFIX)</td><td>Repeated POST to same destination IP:port at regular intervals. Both the destination and the regularity are anomalous on a typical workstation.</td><td class="sev-med">Medium</td></tr>
+          <tr><td>Firewall egress filtering</td><td>Outbound traffic on TCP port 5000. Blocked by default in most enterprise environments. The payload would silently fail and retry on the next beacon cycle.</td><td class="sev-med">Medium</td></tr>
+          <tr><td>IDS rule (Suricata / Snort)</td><td>Can be written against the X-Host and X-Filename header combination, or against the /beacon URI path. Custom rules are straightforward once the pattern is known.</td><td class="sev-med">Medium</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="sep">
+
+    <section class="section" id="pyramid">
+      <h2>Pyramid of Pain &mdash; what the payload bypasses and what it does not</h2>
+      <p>The Pyramid of Pain (David J. Bianco, 2013) describes how difficult it is for an attacker to change each type of indicator once a defender detects and blocks it. Higher tiers cause more pain to the attacker. The table below maps each tier to this project's current payload.</p>
+      <table>
+        <thead><tr><th>Tier</th><th>Example in this project</th><th>Bypassed by current payload?</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="color:#e03a3a;font-weight:600">TTPs</td>
+            <td>Beaconing every 60s, Run key persistence, netstat/tasklist enumeration sequence</td>
+            <td class="bypass-no">No &mdash; core behaviour unchanged by any phase of this project</td>
+          </tr>
+          <tr>
+            <td style="color:#e06020;font-weight:600">Tools</td>
+            <td>The compiled .exe binary</td>
+            <td class="bypass-part">Partial &mdash; binary stripping + garble (Phase 04) hardens against static analysis signatures</td>
+          </tr>
+          <tr>
+            <td style="color:#f0a030;font-weight:600">Network Artifacts</td>
+            <td>X-Host header, /beacon URI, port 5000, HTTP (not HTTPS)</td>
+            <td class="bypass-no">No &mdash; headers are hardcoded, channel is plaintext HTTP</td>
+          </tr>
+          <tr>
+            <td style="color:#f0a030;font-weight:600">Host Artifacts</td>
+            <td>C:\temp\recon_combined.txt, "ReconBeacon" Run key value name</td>
+            <td class="bypass-no">No &mdash; static filenames and key names remain constant</td>
+          </tr>
+          <tr>
+            <td style="color:#4a8fff;font-weight:600">IP Addresses</td>
+            <td>192.168.1.10:5000 hardcoded in binary</td>
+            <td class="bypass-yes">Trivial &mdash; change the IP and recompile; hash changes too</td>
+          </tr>
+          <tr>
+            <td style="color:#5a6480;font-weight:600">Hash Values</td>
+            <td>SHA-256 of the .exe</td>
+            <td class="bypass-yes">Yes &mdash; any recompile produces a completely different hash</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin-top:16px">The practical conclusion is that this payload is easily detected at the Network Artifacts and Host Artifacts tiers &mdash; the tiers that are most useful to a working SOC analyst. Blocking a hash or an IP is trivial to evade. Detecting a registry Run key write or a beacon timing pattern is much harder for the attacker to change without altering core behaviour.</p>
+    </section>
+  </main>
+</div>
+
+<footer>Final Year Cybersecurity Project &nbsp;&middot;&nbsp; Educational use only &nbsp;&middot;&nbsp; Lab environment</footer>
+
+<script>
+  const ss=document.querySelectorAll('.section'),ls=document.querySelectorAll('.sb-nav a');
+  ss.forEach(s=>new IntersectionObserver(e=>{e.forEach(n=>{if(n.isIntersecting){ls.forEach(l=>l.classList.remove('on'));const a=document.querySelector('.sb-nav a[href="#'+n.target.id+'"]');if(a)a.classList.add('on')}})},{rootMargin:'-40% 0px -55% 0px'}).observe(s));
+</script>
+</body>
+</html>

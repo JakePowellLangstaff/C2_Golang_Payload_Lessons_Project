@@ -1,99 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lessons — Go Payload Series</title>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lessons &mdash; Go Payload Series</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    :root {
-      --bg:#0a0c10; --bg2:#111520; --bg3:#181d2b; --border:#232a3e;
-      --text:#c8cfe0; --dim:#5a6480; --head:#eef0f8;
-      --amber:#f0a030; --red:#e03a3a; --green:#2ecc71; --blue:#4a8fff; --purple:#8b5cf6;
-      --mono:'JetBrains Mono',monospace; --sans:'Syne',sans-serif;
-    }
-    body { background:var(--bg); color:var(--text); font-family:var(--sans); font-size:15px; line-height:1.6; min-height:100vh; }
-    header { border-bottom:1px solid var(--border); background:var(--bg); position:sticky; top:0; z-index:100; }
-    .hi { max-width:1100px; margin:0 auto; padding:0 32px; display:flex; align-items:center; gap:32px; height:56px; }
-    .logo { font-family:var(--mono); font-size:13px; color:var(--amber); font-weight:600; text-decoration:none; }
-    .logo span { color:var(--dim); }
-    nav a { font-family:var(--mono); font-size:12px; color:var(--dim); text-decoration:none; padding:6px 10px; border-radius:4px; transition:.15s; }
-    nav a:hover { color:var(--text); background:var(--bg3); }
-    nav a.on { color:var(--amber); background:rgba(240,160,48,.08); }
-    main { max-width:1100px; margin:0 auto; padding:56px 32px 96px; }
-
-    .hero { margin-bottom:48px; border-left:3px solid var(--amber); padding-left:24px; }
-    .eyebrow { font-family:var(--mono); font-size:11px; color:var(--amber); letter-spacing:.1em; text-transform:uppercase; margin-bottom:8px; }
-    .hero h1 { font-size:38px; font-weight:800; color:var(--head); line-height:1.1; margin-bottom:12px; }
-    .hero p { color:var(--dim); font-family:var(--mono); font-size:13px; max-width:540px; line-height:1.7; }
-
-    .prog-bar { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:18px 24px; margin-bottom:48px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
-    .prog-label { font-family:var(--mono); font-size:11px; color:var(--dim); text-transform:uppercase; letter-spacing:.08em; }
-    .bar-wrap { flex:1; min-width:160px; }
-    .bar-bg { background:var(--border); border-radius:99px; height:5px; overflow:hidden; }
-    .bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--amber),#ff6b2b); width:50%; }
-    .prog-stat { font-family:var(--mono); font-size:12px; color:var(--text); }
-    .prog-stat strong { color:var(--amber); }
-    .legend { display:flex; gap:14px; margin-left:auto; flex-wrap:wrap; }
-    .leg { display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:11px; color:var(--dim); }
-    .dot { width:7px; height:7px; border-radius:50%; }
-    .d-green { background:var(--green); }
-    .d-amber { background:var(--amber); }
-    .d-dim   { background:transparent; border:1px solid var(--dim); }
-
-    .phase { margin-bottom:48px; }
-    .phase-hd { display:flex; align-items:center; gap:12px; margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid var(--border); }
-    .ph-num { width:30px; height:30px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:11px; font-weight:600; flex-shrink:0; }
-    .ph-title { font-size:17px; font-weight:800; color:var(--head); }
-    .ph-sub { font-family:var(--mono); font-size:11px; color:var(--dim); margin-left:auto; }
-    .p-found .ph-num { background:rgba(74,143,255,.1); color:var(--blue); border:1px solid rgba(74,143,255,.2); }
-    .p-recon  .ph-num { background:rgba(240,160,48,.1); color:var(--amber); border:1px solid rgba(240,160,48,.2); }
-    .p-c2     .ph-num { background:rgba(139,92,246,.1); color:var(--purple); border:1px solid rgba(139,92,246,.2); }
-    .p-obf    .ph-num { background:rgba(224,58,58,.1); color:var(--red); border:1px solid rgba(224,58,58,.2); }
-
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px; }
-    .card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:18px 20px; text-decoration:none; display:block; transition:.15s; position:relative; overflow:hidden; }
-    .card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
-    .p-found .card::before { background:var(--blue); }
-    .p-recon  .card::before { background:var(--amber); }
-    .p-c2     .card::before { background:var(--purple); }
-    .p-obf    .card::before { background:var(--red); }
-    .card:hover { border-color:#3a4258; transform:translateY(-2px); background:var(--bg3); }
-    .card.locked { opacity:.4; pointer-events:none; }
-    .ct { display:flex; align-items:center; justify-content:space-between; margin-bottom:9px; }
-    .lid { font-family:var(--mono); font-size:10px; color:var(--dim); letter-spacing:.06em; }
-    .badge { font-family:var(--mono); font-size:10px; padding:2px 8px; border-radius:99px; font-weight:600; }
-    .b-done { background:rgba(46,204,113,.1); color:var(--green); border:1px solid rgba(46,204,113,.2); }
-    .b-wip  { background:rgba(240,160,48,.1); color:var(--amber); border:1px solid rgba(240,160,48,.2); }
-    .b-soon { background:transparent; color:var(--dim); border:1px solid var(--border); }
-    .ctitle { font-size:14px; font-weight:600; color:var(--head); line-height:1.35; margin-bottom:7px; }
-    .cdesc { font-family:var(--mono); font-size:11px; color:var(--dim); line-height:1.6; }
-    .cf { margin-top:13px; padding-top:11px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-    .mtag { font-family:var(--mono); font-size:10px; color:var(--dim); background:var(--bg3); padding:2px 7px; border-radius:3px; border:1px solid var(--border); }
-    .cdl { font-family:var(--mono); font-size:10px; color:var(--dim); }
-    .cdl.on { color:var(--amber); }
-    .arr { font-size:11px; color:var(--dim); transition:.15s; }
-    .card:hover .arr { transform:translateX(3px); }
-    .wip-note { background:var(--bg2); border:1px dashed var(--border); border-radius:8px; padding:18px 22px; margin-bottom:10px; font-family:var(--mono); font-size:12px; color:var(--dim); line-height:1.6; }
-    .wip-note strong { color:var(--text); }
-    footer { border-top:1px solid var(--border); padding:24px 32px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--dim); }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0a0c10;--bg2:#111520;--bg3:#181d2b;--border:#232a3e;--text:#c8cfe0;--dim:#5a6480;--head:#eef0f8;--amber:#f0a030;--red:#e03a3a;--green:#2ecc71;--blue:#4a8fff;--purple:#8b5cf6;--mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
+    header{border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100}
+    .hi{max-width:1100px;margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:32px;height:56px}
+    .logo{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:600;text-decoration:none}
+    .logo span{color:var(--dim)}
+    nav{display:flex;gap:4px}
+    nav a{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;padding:6px 10px;border-radius:4px;transition:.15s}
+    nav a:hover{color:var(--text);background:var(--bg3)}
+    nav a.on{color:var(--amber);background:rgba(240,160,48,.08)}
+    main{max-width:1100px;margin:0 auto;padding:56px 32px 96px}
+    .page-grid{display:grid;grid-template-columns:1fr 280px;gap:48px;align-items:start}
+    .hero{margin-bottom:48px;border-left:3px solid var(--amber);padding-left:24px}
+    .eyebrow{font-family:var(--mono);font-size:11px;color:var(--amber);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+    .hero h1{font-size:38px;font-weight:800;color:var(--head);line-height:1.1;margin-bottom:12px}
+    .hero p{color:var(--dim);font-family:var(--mono);font-size:13px;max-width:540px;line-height:1.7}
+    .prog-bar{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:18px 24px;margin-bottom:48px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .prog-label{font-family:var(--mono);font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+    .bar-wrap{flex:1;min-width:160px}
+    .bar-bg{background:var(--border);border-radius:99px;height:5px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--amber),#ff6b2b);width:67%}
+    .prog-stat{font-family:var(--mono);font-size:12px;color:var(--text)}
+    .prog-stat strong{color:var(--amber)}
+    .legend{display:flex;gap:14px;margin-left:auto;flex-wrap:wrap}
+    .leg{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11px;color:var(--dim)}
+    .dot{width:7px;height:7px;border-radius:50%}
+    .d-green{background:var(--green)}.d-amber{background:var(--amber)}.d-dim{background:transparent;border:1px solid var(--dim)}
+    .phase{margin-bottom:48px}
+    .phase-hd{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+    .ph-num{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:600;flex-shrink:0}
+    .ph-title{font-size:17px;font-weight:800;color:var(--head)}
+    .ph-sub{font-family:var(--mono);font-size:11px;color:var(--dim);margin-left:auto}
+    .p-found .ph-num{background:rgba(74,143,255,.1);color:var(--blue);border:1px solid rgba(74,143,255,.2)}
+    .p-recon  .ph-num{background:rgba(240,160,48,.1);color:var(--amber);border:1px solid rgba(240,160,48,.2)}
+    .p-c2     .ph-num{background:rgba(139,92,246,.1);color:var(--purple);border:1px solid rgba(139,92,246,.2)}
+    .p-obf    .ph-num{background:rgba(224,58,58,.1);color:var(--red);border:1px solid rgba(224,58,58,.2)}
+    .p-defend .ph-num{background:rgba(45,212,191,.1);color:#2dd4bf;border:1px solid rgba(45,212,191,.2)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+    .card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:18px 20px;text-decoration:none;display:block;transition:.15s;position:relative;overflow:hidden}
+    .card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+    .p-found .card::before{background:var(--blue)}
+    .p-recon  .card::before{background:var(--amber)}
+    .p-c2     .card::before{background:var(--purple)}
+    .p-obf    .card::before{background:var(--red)}
+    .p-defend .card::before{background:#2dd4bf}
+    .card:hover{border-color:#3a4258;transform:translateY(-2px);background:var(--bg3)}
+    .card.locked{opacity:.4;pointer-events:none}
+    .ct{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+    .lid{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.06em}
+    .badge{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600}
+    .b-done{background:rgba(46,204,113,.1);color:var(--green);border:1px solid rgba(46,204,113,.2)}
+    .b-wip{background:rgba(240,160,48,.1);color:var(--amber);border:1px solid rgba(240,160,48,.2)}
+    .b-soon{background:transparent;color:var(--dim);border:1px solid var(--border)}
+    .ctitle{font-size:14px;font-weight:600;color:var(--head);line-height:1.35;margin-bottom:7px}
+    .cdesc{font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.6}
+    .cf{margin-top:13px;padding-top:11px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .mtag{font-family:var(--mono);font-size:10px;color:var(--dim);background:var(--bg3);padding:2px 7px;border-radius:3px;border:1px solid var(--border)}
+    .cdl{font-family:var(--mono);font-size:10px;color:var(--dim)}
+    .cdl.on{color:var(--amber)}
+    .arr{font-size:11px;color:var(--dim);transition:.15s}
+    .card:hover .arr{transform:translateX(3px)}
+    .wip-note{background:var(--bg2);border:1px dashed var(--border);border-radius:8px;padding:18px 22px;margin-bottom:10px;font-family:var(--mono);font-size:12px;color:var(--dim);line-height:1.6}
+    .wip-note strong{color:var(--text)}
+    /* MITRE Search */
+    .mitre-search{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px;position:sticky;top:80px}
+    .ms-title{font-family:var(--mono);font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+    .ms-input-wrap{position:relative}
+    .ms-input{width:100%;background:var(--bgc,#0d1117);border:1px solid var(--border);border-radius:5px;padding:8px 12px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;transition:.15s}
+    .ms-input:focus{border-color:var(--blue)}
+    .ms-result{margin-top:12px;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;display:none}
+    .ms-result.show{display:block}
+    .mr-id{font-family:var(--mono);font-size:11px;color:var(--blue);font-weight:600;margin-bottom:4px}
+    .mr-name{font-size:13px;font-weight:600;color:var(--head);margin-bottom:6px}
+    .mr-desc{font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.5;margin-bottom:10px}
+    .mr-link{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--amber);text-decoration:none;border-bottom:1px solid rgba(240,160,48,.3);transition:.15s}
+    .mr-link:hover{border-bottom-color:var(--amber)}
+    .ms-notfound{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:10px;display:none}
+    .ms-notfound.show{display:block}
+    footer{border-top:1px solid var(--border);padding:24px 32px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--dim)}
   </style>
 </head>
 <body>
 <header>
   <div class="hi">
     <a href="/" class="logo">recon<span>.</span>beacon</a>
-    <nav style="display:flex;gap:4px;">
+    <nav>
       <a href="/">Home</a>
       <a href="/lessons" class="on">Lessons</a>
       <a href="/recon">Recon</a>
       <a href="/c2">C2 Server</a>
       <a href="/obfuscation">Obfuscation</a>
       <a href="/zoo">Sample Zoo</a>
-      =
+      <a href="/defender">Blue Team</a>
     </nav>
   </div>
 </header>
@@ -102,13 +109,13 @@
   <div class="hero">
     <div class="eyebrow">// lesson index</div>
     <h1>All Lessons</h1>
-    <p>Builds a Go implant from nothing — environment setup through obfuscated C2 beaconing. Every lesson produces a working, compilable file.</p>
+    <p>Builds a Go implant from nothing &mdash; environment setup through obfuscated C2 beaconing. Every lesson produces a working, compilable file.</p>
   </div>
 
   <div class="prog-bar">
     <div class="prog-label">Progress</div>
     <div class="bar-wrap"><div class="bar-bg"><div class="bar-fill"></div></div></div>
-    <div class="prog-stat"><strong>5</strong> / 9 lessons complete</div>
+    <div class="prog-stat"><strong>6</strong> / 9 lessons complete</div>
     <div class="legend">
       <div class="leg"><span class="dot d-green"></span>Complete</div>
       <div class="leg"><span class="dot d-amber"></span>In progress</div>
@@ -116,108 +123,193 @@
     </div>
   </div>
 
-  <!-- Foundation -->
-  <div class="phase p-found">
-    <div class="phase-hd">
-      <div class="ph-num">01</div>
-      <div class="ph-title">Foundation</div>
-      <div class="ph-sub">Go toolchain · cross-compilation · static binaries</div>
-    </div>
-    <div class="grid">
-      <a href="/foundation" class="card">
-        <div class="ct"><span class="lid">L01</span><span class="badge b-done">Complete</span></div>
-        <div class="ctitle">Setting up Go and compiling to .exe</div>
-        <div class="cdesc">Install the Go toolchain, understand why static binaries matter for this kind of tooling, and cross-compile a Windows .exe from Linux or macOS.</div>
-        <div class="cf"><span class="mtag">—</span><span class="cdl on">↓ hello.go</span><span class="arr">→</span></div>
-      </a>
-    </div>
-  </div>
+  <div class="page-grid">
+    <div>
 
-  <!-- Recon -->
-  <div class="phase p-recon">
-    <div class="phase-hd">
-      <div class="ph-num">02</div>
-      <div class="ph-title">Reconnaissance</div>
-      <div class="ph-sub">Host enumeration · persistence · beacon loop</div>
-    </div>
-    <div class="grid">
-      <a href="/recon#v1" class="card">
-        <div class="ct"><span class="lid">L02</span><span class="badge b-done">Complete</span></div>
-        <div class="ctitle">First recon — network interfaces and system info</div>
-        <div class="cdesc">Introduces the net package (no child process) vs shelling out to cmd.exe. Writes a report to disk, sends it to C2 in a single HTTP POST.</div>
-        <div class="cf"><span class="mtag">T1082 · T1016</span><span class="cdl on">↓ v1 + word doc</span><span class="arr">→</span></div>
-      </a>
-      <a href="/recon#v2" class="card">
-        <div class="ct"><span class="lid">L03</span><span class="badge b-done">Complete</span></div>
-        <div class="ctitle">Expanded recon — connections, processes, accounts</div>
-        <div class="cdesc">Adds netstat, tasklist, net localgroup, quser, arp, and wmic. Each command explained with what an attacker learns from it and what detection looks like.</div>
-        <div class="cf"><span class="mtag">T1049 · T1069 · T1057</span><span class="cdl on">↓ v2 + word doc</span><span class="arr">→</span></div>
-      </a>
-      <a href="/recon#v3" class="card">
-        <div class="ct"><span class="lid">L04</span><span class="badge b-done">Complete</span></div>
-        <div class="ctitle">Registry persistence and the beacon loop</div>
-        <div class="cdesc">Writes a Run key on first execution so the payload survives reboots. Wraps all collection into an infinite loop with a 60-second sleep.</div>
-        <div class="cf"><span class="mtag">T1547.001 · T1071.001</span><span class="cdl on">↓ v3 + word doc</span><span class="arr">→</span></div>
-      </a>
-    </div>
-  </div>
+      <!-- Foundation -->
+      <div class="phase p-found">
+        <div class="phase-hd">
+          <div class="ph-num">01</div>
+          <div class="ph-title">Foundation</div>
+          <div class="ph-sub">Go toolchain &middot; VS Code &middot; static binaries</div>
+        </div>
+        <div class="grid">
+          <a href="/foundation" class="card">
+            <div class="ct"><span class="lid">L01</span><span class="badge b-done">Complete</span></div>
+            <div class="ctitle">Setting up Go and compiling to .exe</div>
+            <div class="cdesc">Install Go on Windows, set up VS Code, understand why static binaries need no dependencies on the target, and cross-compile a .exe.</div>
+            <div class="cf"><span class="mtag">&mdash;</span><span class="cdl on">&#8595; hello.go</span><span class="arr">&rarr;</span></div>
+          </a>
+        </div>
+      </div>
 
-  <!-- C2 -->
-  <div class="phase p-c2">
-    <div class="phase-hd">
-      <div class="ph-num">03</div>
-      <div class="ph-title">C2 Server</div>
-      <div class="ph-sub">Flask listener · HTTP exfil · live beacon log</div>
-    </div>
-    <div class="grid">
-      <a href="/c2#flask" class="card">
-        <div class="ct"><span class="lid">L05</span><span class="badge b-done">Complete</span></div>
-        <div class="ctitle">Building the Flask C2 listener</div>
-        <div class="cdesc">A POST /beacon route that receives raw file bytes, stamps each upload with a timestamp and host ID, and writes it to an uploads folder. Tested with curl first.</div>
-        <div class="cf"><span class="mtag">T1071.001</span><span class="cdl on">↓ c2_server.py</span><span class="arr">→</span></div>
-      </a>
-      <a href="/c2#exfil" class="card">
-        <div class="ct"><span class="lid">L06</span><span class="badge b-done">Complete</span></div>
-        <div class="ctitle">HTTP exfiltration from the Go payload</div>
-        <div class="cdesc">How sendToC2() builds the POST request, sets custom identification headers, handles timeouts, and reads the server's JSON response.</div>
-        <div class="cf"><span class="mtag">T1041</span><span class="cdl on">↓ sendToC2 snippet</span><span class="arr">→</span></div>
-      </a>
-    </div>
-  </div>
+      <!-- Recon -->
+      <div class="phase p-recon">
+        <div class="phase-hd">
+          <div class="ph-num">02</div>
+          <div class="ph-title">Reconnaissance</div>
+          <div class="ph-sub">Host enumeration &middot; persistence &middot; beacon loop</div>
+        </div>
+        <div class="grid">
+          <a href="/recon#v1" class="card">
+            <div class="ct"><span class="lid">L02</span><span class="badge b-done">Complete</span></div>
+            <div class="ctitle">First recon &mdash; network interfaces and system info</div>
+            <div class="cdesc">Introduces the net package (no child process) vs shelling out to cmd.exe. Writes a report to disk and sends it via one HTTP POST.</div>
+            <div class="cf"><span class="mtag">T1082 &middot; T1016</span><span class="cdl on">&#8595; v1 + word doc</span><span class="arr">&rarr;</span></div>
+          </a>
+          <a href="/recon#v2" class="card">
+            <div class="ct"><span class="lid">L03</span><span class="badge b-done">Complete</span></div>
+            <div class="ctitle">Expanded recon &mdash; connections, processes, accounts</div>
+            <div class="cdesc">Adds netstat, tasklist, net localgroup, quser, arp, and wmic. Each command explained with attacker value and detection risk.</div>
+            <div class="cf"><span class="mtag">T1049 &middot; T1069 &middot; T1057</span><span class="cdl on">&#8595; v2 + word doc</span><span class="arr">&rarr;</span></div>
+          </a>
+          <a href="/recon#v3" class="card">
+            <div class="ct"><span class="lid">L04</span><span class="badge b-done">Complete</span></div>
+            <div class="ctitle">Registry persistence and the beacon loop</div>
+            <div class="cdesc">Writes a Run key on first execution so the payload survives reboots. Wraps all collection in an infinite loop with a 60-second sleep.</div>
+            <div class="cf"><span class="mtag">T1547.001 &middot; T1071.001</span><span class="cdl on">&#8595; v3 + word doc</span><span class="arr">&rarr;</span></div>
+          </a>
+        </div>
+      </div>
 
-  <!-- Obfuscation -->
-  <div class="phase p-obf">
-    <div class="phase-hd">
-      <div class="ph-num">04</div>
-      <div class="ph-title">Obfuscation</div>
-      <div class="ph-sub">String encoding · sleep jitter · binary stripping</div>
-    </div>
-    <div class="wip-note">
-      <strong>In progress.</strong> This phase deals with making the payload harder to detect — encoding strings so the C2 URL isn't visible in plaintext, randomising the beacon interval so it doesn't show up as a regular heartbeat in network logs, and stripping the binary so Ghidra can't read function names.
-    </div>
-    <div class="grid">
-      <div class="card locked">
-        <div class="ct"><span class="lid">L07</span><span class="badge b-soon">Planned</span></div>
-        <div class="ctitle">XOR string obfuscation</div>
-        <div class="cdesc">Encode all hardcoded strings at compile time. Compare strings.exe output before and after to see what disappears.</div>
-        <div class="cf"><span class="mtag">T1027.002</span><span class="cdl">— coming soon</span></div>
+      <!-- C2 -->
+      <div class="phase p-c2">
+        <div class="phase-hd">
+          <div class="ph-num">03</div>
+          <div class="ph-title">C2 Server</div>
+          <div class="ph-sub">Flask listener &middot; HTTP exfil</div>
+        </div>
+        <div class="grid">
+          <a href="/c2#flask" class="card">
+            <div class="ct"><span class="lid">L05</span><span class="badge b-done">Complete</span></div>
+            <div class="ctitle">Building the Flask C2 listener</div>
+            <div class="cdesc">POST /beacon route, raw byte ingestion, timestamped filenames per host. Test with curl before touching Go.</div>
+            <div class="cf"><span class="mtag">T1071.001</span><span class="cdl on">&#8595; c2_server.py</span><span class="arr">&rarr;</span></div>
+          </a>
+          <a href="/c2#exfil" class="card">
+            <div class="ct"><span class="lid">L06</span><span class="badge b-done">Complete</span></div>
+            <div class="ctitle">HTTP exfiltration from the Go payload</div>
+            <div class="cdesc">How sendToC2() builds the POST, sets custom headers, handles timeouts, and reads the Flask JSON response.</div>
+            <div class="cf"><span class="mtag">T1041</span><span class="cdl on">&#8595; sendToC2 snippet</span><span class="arr">&rarr;</span></div>
+          </a>
+        </div>
       </div>
-      <div class="card locked">
-        <div class="ct"><span class="lid">L08</span><span class="badge b-soon">Planned</span></div>
-        <div class="ctitle">Sleep jitter</div>
-        <div class="cdesc">Replace the fixed 60s sleep with a random window. Explains why regular intervals are flagged by tools like Zeek and Suricata.</div>
-        <div class="cf"><span class="mtag">T1497</span><span class="cdl">— coming soon</span></div>
+
+      <!-- Obfuscation -->
+      <div class="phase p-obf">
+        <div class="phase-hd">
+          <div class="ph-num">04</div>
+          <div class="ph-title">Obfuscation</div>
+          <div class="ph-sub">String encoding &middot; jitter &middot; binary stripping</div>
+        </div>
+        <div class="wip-note">
+          <strong>In progress.</strong> XOR string encoding (C2 URL hidden at rest), sleep jitter (no fixed heartbeat), and binary stripping (no function names in Ghidra).
+        </div>
+        <div class="grid">
+          <div class="card locked">
+            <div class="ct"><span class="lid">L07</span><span class="badge b-soon">Planned</span></div>
+            <div class="ctitle">XOR string obfuscation</div>
+            <div class="cdesc">Encode all hardcoded strings. Compare strings.exe output before and after to see what disappears from the binary.</div>
+            <div class="cf"><span class="mtag">T1027.002</span><span class="cdl">&mdash; coming soon</span></div>
+          </div>
+          <div class="card locked">
+            <div class="ct"><span class="lid">L08</span><span class="badge b-soon">Planned</span></div>
+            <div class="ctitle">Sleep jitter</div>
+            <div class="cdesc">Replace the fixed 60s sleep with a random window. Explains why regular intervals are flagged by Zeek beacon detection.</div>
+            <div class="cf"><span class="mtag">T1497</span><span class="cdl">&mdash; coming soon</span></div>
+          </div>
+          <div class="card locked">
+            <div class="ct"><span class="lid">L09</span><span class="badge b-soon">Planned</span></div>
+            <div class="ctitle">Binary stripping</div>
+            <div class="cdesc">-ldflags="-s -w" removes debug info. Ghidra comparison and size difference before and after.</div>
+            <div class="cf"><span class="mtag">T1027</span><span class="cdl">&mdash; coming soon</span></div>
+          </div>
+        </div>
       </div>
-      <div class="card locked">
-        <div class="ct"><span class="lid">L09</span><span class="badge b-soon">Planned</span></div>
-        <div class="ctitle">Binary stripping</div>
-        <div class="cdesc">-ldflags="-s -w" removes debug info and DWARF tables. Size comparison and Ghidra analysis before and after.</div>
-        <div class="cf"><span class="mtag">T1027</span><span class="cdl">— coming soon</span></div>
+
+      <!-- Blue Team -->
+      <div class="phase p-defend">
+        <div class="phase-hd">
+          <div class="ph-num">&#9650;</div>
+          <div class="ph-title">Blue Team Analysis</div>
+          <div class="ph-sub">Detection &middot; Pyramid of Pain &middot; Kill Chain intercepts</div>
+        </div>
+        <div class="grid">
+          <a href="/defender" class="card">
+            <div class="ct"><span class="lid">Analysis</span><span class="badge b-done">Complete</span></div>
+            <div class="ctitle">How this payload would be detected</div>
+            <div class="cdesc">Kill Chain detection diagram, host and network detection tables, Pyramid of Pain mapping of what the payload bypasses.</div>
+            <div class="cf"><span class="mtag">Sysmon &middot; Zeek &middot; Wireshark</span><span class="cdl on">&#8595; Detection doc</span><span class="arr">&rarr;</span></div>
+          </a>
+        </div>
       </div>
+
     </div>
+
+    <!-- MITRE SEARCH SIDEBAR -->
+    <aside>
+      <div class="mitre-search">
+        <div class="ms-title">// MITRE ATT&amp;CK lookup</div>
+        <div class="ms-input-wrap">
+          <input type="text" class="ms-input" id="mitre-input" placeholder="Type T1082, T1547..." autocomplete="off" spellcheck="false">
+        </div>
+        <div class="ms-result" id="mitre-result">
+          <div class="mr-id" id="mr-id"></div>
+          <div class="mr-name" id="mr-name"></div>
+          <div class="mr-desc" id="mr-desc"></div>
+          <a class="mr-link" id="mr-link" target="_blank">View on MITRE &rarr;</a>
+        </div>
+        <div class="ms-notfound" id="mitre-notfound">No technique found. Try T1082 or T1547.</div>
+        <p style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:14px;line-height:1.6">Techniques used in this project are pre-loaded. Any T-number opens the MITRE ATT&amp;CK site.</p>
+      </div>
+    </aside>
   </div>
 </main>
 
-<footer>Final Year Cybersecurity Project &nbsp;·&nbsp; Educational use only &nbsp;·&nbsp; Lab environment</footer>
+<footer>Final Year Cybersecurity Project &nbsp;&middot;&nbsp; Educational use only &nbsp;&middot;&nbsp; Lab environment</footer>
+
+<script>
+const techniques = {
+  "T1082":{"name":"System Information Discovery","desc":"Systeminfo enumerates OS version, hotfixes, hostname, domain, and hardware specs. Used in v1."},
+  "T1016":{"name":"System Network Configuration Discovery","desc":"net.Interfaces() enumerates NICs, IPs, and MACs natively without spawning cmd.exe. Used in v1."},
+  "T1049":{"name":"System Network Connections Discovery","desc":"netstat -ano lists all TCP/UDP connections with owning PIDs. Added in v2."},
+  "T1069":{"name":"Permission Groups Discovery","desc":"net localgroup administrators lists all accounts with local admin rights. Added in v2."},
+  "T1069.001":{"name":"Local Groups Discovery","desc":"net localgroup administrators specifically targets local group membership. Used in v2."},
+  "T1057":{"name":"Process Discovery","desc":"tasklist /fo csv returns running processes in parseable CSV format. Used to identify AV/EDR by process name. Added in v2."},
+  "T1033":{"name":"System Owner/User Discovery","desc":"quser shows active sessions and idle time. Used for OPSEC timing decisions. Added in v2."},
+  "T1074":{"name":"Data Staged","desc":"The recon report is written to C:\\temp\\ before exfiltration. Creates a forensic artefact on disk."},
+  "T1074.001":{"name":"Local Data Staging","desc":"Specifically staging to a local file (C:\\temp\\recon_combined.txt) before exfil via HTTP. All payload versions."},
+  "T1547":{"name":"Boot or Logon Autostart Execution","desc":"Broadly covers persistence mechanisms that trigger on startup or login."},
+  "T1547.001":{"name":"Registry Run Keys / Startup Folder","desc":"reg add to HKCU\\...\\Run ensures the payload re-executes on every user login. Introduced in v3."},
+  "T1071":{"name":"Application Layer Protocol","desc":"Using standard application-layer protocols for C2 to blend with legitimate traffic."},
+  "T1071.001":{"name":"Web Protocols","desc":"HTTP POST to /beacon on port 5000 every 60 seconds. Plain HTTP, no TLS. Introduced in Phase 03."},
+  "T1041":{"name":"Exfiltration Over C2 Channel","desc":"Recon file sent via the same HTTP connection used for C2 beaconing. sendToC2() function."},
+  "T1027":{"name":"Obfuscated Files or Information","desc":"Binary stripping with -ldflags to remove debug symbols. Planned in Phase 04."},
+  "T1027.002":{"name":"Software Packing","desc":"XOR string encoding of C2 URL and command strings. Planned in Phase 04."},
+  "T1497":{"name":"Virtualization/Sandbox Evasion","desc":"Sleep jitter randomises the beacon interval to defeat fixed-timing detection. Planned in Phase 04."}
+};
+
+const inp=document.getElementById('mitre-input'),res=document.getElementById('mitre-result'),nf=document.getElementById('mitre-notfound');
+inp.addEventListener('input',function(){
+  const q=this.value.trim().toUpperCase().replace(/\s/g,'');
+  if(!q){res.classList.remove('show');nf.classList.remove('show');return}
+  const t=techniques[q]||techniques[q.replace(/\.\d+$/,'')];
+  if(t){
+    document.getElementById('mr-id').textContent=q;
+    document.getElementById('mr-name').textContent=t.name;
+    document.getElementById('mr-desc').textContent=t.desc;
+    document.getElementById('mr-link').href='https://attack.mitre.org/techniques/'+q.replace('.','/')+'/';
+    res.classList.add('show');nf.classList.remove('show');
+  } else if(q.match(/^T\d+/)){
+    document.getElementById('mr-id').textContent=q;
+    document.getElementById('mr-name').textContent='External technique';
+    document.getElementById('mr-desc').textContent='Not in this project\'s dataset. Click to view on MITRE ATT\u0026CK.';
+    document.getElementById('mr-link').href='https://attack.mitre.org/techniques/'+q.replace('.','/')+'/';
+    res.classList.add('show');nf.classList.remove('show');
+  } else {
+    res.classList.remove('show');nf.classList.add('show');
+  }
+});
+</script>
 </body>
 </html>
