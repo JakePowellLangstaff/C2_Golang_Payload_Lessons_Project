@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L01 — Foundation: Go Environment Setup</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0a0c10;--bg2:#111520;--bg3:#181d2b;--bgc:#0d1117;--border:#232a3e;--text:#c8cfe0;--dim:#5a6480;--head:#eef0f8;--amber:#f0a030;--red:#e03a3a;--green:#2ecc71;--blue:#4a8fff;--mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
+    header{border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100}
+    .hi{max-width:1100px;margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:32px;height:56px}
+    .logo{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:600;text-decoration:none}
+    .logo span{color:var(--dim)}
+    nav{display:flex;gap:4px}
+    nav a{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;padding:6px 10px;border-radius:4px;transition:.15s}
+    nav a:hover{color:var(--text);background:var(--bg3)}
+    nav a.on{color:var(--amber);background:rgba(240,160,48,.08)}
+    .wrap{max-width:1100px;margin:0 auto;padding:56px 32px 96px;display:grid;grid-template-columns:210px 1fr;gap:48px;align-items:start}
+    .sidebar{position:sticky;top:80px}
+    .sb-label{font-family:var(--mono);font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+    .sb-nav{display:flex;flex-direction:column;gap:2px}
+    .sb-nav a{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;padding:6px 10px;border-radius:4px;border-left:2px solid transparent;transition:.15s}
+    .sb-nav a:hover{color:var(--text);background:var(--bg2)}
+    .sb-nav a.on{color:var(--blue);border-left-color:var(--blue);background:rgba(74,143,255,.07)}
+    .sb-div{border:none;border-top:1px solid var(--border);margin:12px 0}
+    .dl-btn{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--amber);text-decoration:none;padding:7px 10px;border-radius:5px;border:1px solid rgba(240,160,48,.2);background:rgba(240,160,48,.06);margin-bottom:6px;transition:.15s}
+    .dl-btn:hover{border-color:var(--amber);background:rgba(240,160,48,.12)}
+    .content{min-width:0}
+    .hero{margin-bottom:44px;border-left:3px solid var(--blue);padding-left:22px}
+    .eyebrow{font-family:var(--mono);font-size:11px;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+    .hero h1{font-size:34px;font-weight:800;color:var(--head);line-height:1.1;margin-bottom:12px}
+    .hero p{color:var(--dim);font-family:var(--mono);font-size:13px;max-width:560px;line-height:1.7}
+    .section{margin-bottom:52px;scroll-margin-top:80px}
+    h2{font-size:20px;font-weight:800;color:var(--head);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+    h3{font-size:15px;font-weight:600;color:var(--head);margin-bottom:10px;margin-top:24px}
+    p{font-size:14px;color:var(--text);line-height:1.8;margin-bottom:12px}
+    a.il{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(74,143,255,.3);transition:.15s}
+    a.il:hover{border-bottom-color:var(--blue)}
+    .code-wrap{background:var(--bgc);border:1px solid var(--border);border-radius:7px;overflow:hidden;margin:16px 0}
+    .code-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:7px 14px;display:flex;align-items:center;justify-content:space-between}
+    .code-fn{font-family:var(--mono);font-size:11px;color:var(--amber)}
+    .code-lang{font-family:var(--mono);font-size:10px;color:var(--dim);text-transform:uppercase}
+    pre{padding:18px 20px;font-family:var(--mono);font-size:12.5px;line-height:1.7;color:#abb2bf;overflow-x:auto;white-space:pre}
+    .kw{color:#c678dd}.fn{color:#61afef}.str{color:#98c379}.cm{color:#5c6370;font-style:italic}
+    .callout{border-left:3px solid var(--amber);background:rgba(240,160,48,.04);border-radius:0 6px 6px 0;padding:13px 17px;margin:16px 0;font-size:14px;line-height:1.75}
+    .callout strong{color:var(--amber)}
+    .blue-c{border-left-color:var(--blue)!important;background:rgba(74,143,255,.04)!important}
+    .blue-c strong{color:var(--blue)!important}
+    .green-c{border-left-color:var(--green)!important;background:rgba(46,204,113,.04)!important}
+    .green-c strong{color:var(--green)!important}
+    table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;margin:16px 0}
+    th{background:var(--bg3);color:var(--dim);text-transform:uppercase;font-size:10px;letter-spacing:.06em;padding:9px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+    tr:last-child td{border-bottom:none}
+    tr:nth-child(odd) td{background:var(--bg2)}
+    .sep{border:none;border-top:1px solid var(--border);margin:48px 0}
+    .nav-btns{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
+    .nb-p{display:inline-flex;align-items:center;gap:8px;background:rgba(240,160,48,.08);border:1px solid rgba(240,160,48,.25);color:var(--amber);text-decoration:none;padding:10px 18px;border-radius:6px;font-family:var(--mono);font-size:13px;font-weight:600;transition:.15s}
+    .nb-p:hover{background:rgba(240,160,48,.14)}
+    .nb-s{display:inline-flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);color:var(--dim);text-decoration:none;padding:10px 18px;border-radius:6px;font-family:var(--mono);font-size:13px;transition:.15s}
+    .nb-s:hover{color:var(--text)}
+    footer{border-top:1px solid var(--border);padding:24px 32px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--dim)}
+    @media(max-width:768px){.wrap{grid-template-columns:1fr}.sidebar{position:static}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="hi">
+    <a href="/" class="logo">recon<span>.</span>beacon</a>
+    <nav>
+      <a href="/">Home</a><a href="/lessons">Lessons</a><a href="/recon">Recon</a>
+      <a href="/c2">C2 Server</a><a href="/obfuscation">Obfuscation</a>
+      <a href="/zoo">Sample Zoo</a><a href="/defender">Blue Team</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <aside class="sidebar">
+    <div class="sb-label">// on this page</div>
+    <nav class="sb-nav">
+      <a href="#why" class="on">Why Go?</a>
+      <a href="#install">Install on Windows</a>
+      <a href="#hello">First program</a>
+      <a href="#cross">Cross-compilation</a>
+      <a href="#pipeline">Build pipeline</a>
+      <a href="#static">Static binaries</a>
+    </nav>
+    <hr class="sb-div">
+    <div class="sb-label">// downloads</div>
+    <a href="{{ url_for('static', filename='payloads/hello.go') }}" download class="dl-btn">&#8595; hello.go</a>
+    <a href="{{ url_for('static', filename='downloadables/Lesson_01_Foundation.docx') }}" download class="dl-btn">&#8595; Lesson 01.docx</a>
+  </aside>
+
+  <main class="content">
+    <div class="hero">
+      <div class="eyebrow">// lesson 01 &mdash; foundation</div>
+      <h1>Setting up Go and compiling to .exe</h1>
+      <p>Before writing implant code you need to understand why Go is the right tool for this and how to turn source code into a working Windows binary. This covers the full path from install to a cross-compiled .exe.</p>
+    </div>
+
+    <section class="section" id="why">
+      <h2>Why Go?</h2>
+      <p>Most early offensive tooling was written in C. Python and PowerShell became popular for post-exploitation because they are already on Windows. Go sits between the two: it compiles to native machine code like C, is much faster to write, and produces a completely self-contained binary with zero dependencies on the target machine.</p>
+      <p>When you compile a Go program, everything needed to run it is baked into the single output file. No runtime to install, no DLLs to carry alongside it, nothing. Drop the .exe on any 64-bit Windows machine and it runs immediately. That is the core reason Go appears regularly in offensive tooling research.</p>
+      <table>
+        <thead><tr><th>Language</th><th>Target requires</th><th>Static binary</th><th>Cross-compile to .exe</th></tr></thead>
+        <tbody>
+          <tr><td>Python</td><td>Python 3 runtime</td><td>No (unless bundled)</td><td>Messy</td></tr>
+          <tr><td>PowerShell</td><td>.NET / PS engine</td><td>No</td><td>No</td></tr>
+          <tr><td>C</td><td>Nothing (static)</td><td>Yes</td><td>Yes, with MinGW</td></tr>
+          <tr><td>Go</td><td>Nothing</td><td>Yes &mdash; by default</td><td>Yes &mdash; one environment variable</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <hr class="sep">
+
+    <section class="section" id="install">
+      <h2>Installing the Go toolchain on Windows</h2>
+      <p>Download the Windows installer from <a href="https://go.dev/dl/" target="_blank" class="il">go.dev/dl</a>. Run the .msi and follow the prompts &mdash; it sets PATH automatically. Open a new terminal and verify:</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">Command Prompt or PowerShell</span><span class="code-lang">shell</span></div>
+        <pre>go version
+<span class="cm"># go version go1.22.0 windows/amd64</span></pre>
+      </div>
+      <p>In VS Code, install the <strong>Go extension</strong> by Google from the Extensions panel (Ctrl+Shift+X). The first time you open a .go file it will prompt you to install <code>gopls</code> and other tools &mdash; accept all. This gives you autocomplete, inline error checking, and auto-formatting on save.</p>
+      <div class="callout blue-c">
+        <strong>GOPATH location.</strong> By default Go stores downloaded modules at <code>C:\Users\YourName\go</code>. You do not need to change this. Run <code>go env GOPATH</code> in a terminal to confirm your exact path.
+      </div>
+    </section>
+    <hr class="sep">
+
+    <section class="section" id="hello">
+      <h2>Your first Go program</h2>
+      <p>Create a new file called <code>hello.go</code>. This is the minimum valid Go program:</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">hello.go</span><span class="code-lang">Go</span></div>
+        <pre><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    fmt.<span class="fn">Println</span>(<span class="str">"Hello from Go"</span>)
+}</pre>
+      </div>
+      <p>Every Go program starts with <code>package main</code>, which tells the compiler this is a standalone executable rather than a library. The <code>main()</code> function is the entry point. No class, no <code>public static void</code>, nothing else required.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">terminal</span><span class="code-lang">shell</span></div>
+        <pre><span class="cm"># Run without building a binary first</span>
+go run hello.go
+
+<span class="cm"># Compile to an executable</span>
+go build -o hello.exe hello.go
+hello.exe
+<span class="cm"># Hello from Go</span></pre>
+      </div>
+    </section>
+    <hr class="sep">
+
+    <section class="section" id="cross">
+      <h2>Cross-compilation</h2>
+      <p>Two environment variables control the compilation target. Since you are on Windows, you set them inline before the build command:</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">PowerShell</span><span class="code-lang">shell</span></div>
+        <pre><span class="cm"># Build a 64-bit Windows .exe (already the default on Windows)</span>
+$env:GOOS="windows"; $env:GOARCH="amd64"; go build -o payload.exe main.go
+
+<span class="cm"># Build a Linux binary from Windows (useful for C2 server if on Linux)</span>
+$env:GOOS="linux"; $env:GOARCH="amd64"; go build -o payload main.go
+
+<span class="cm"># Reset after cross-compiling</span>
+Remove-Item Env:GOOS; Remove-Item Env:GOARCH</pre>
+      </div>
+      <table>
+        <thead><tr><th>GOOS</th><th>GOARCH</th><th>Output</th><th>When to use</th></tr></thead>
+        <tbody>
+          <tr><td>windows</td><td>amd64</td><td>.exe (64-bit)</td><td>All payload builds for modern Windows targets</td></tr>
+          <tr><td>windows</td><td>386</td><td>.exe (32-bit)</td><td>Older systems or shellcode loaders</td></tr>
+          <tr><td>linux</td><td>amd64</td><td>ELF binary</td><td>Linux lab servers or C2 infrastructure</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>No MinGW or Windows SDK required.</strong> Unlike C cross-compilation, Go handles all target formats natively. The compiler knows how to produce a Windows PE binary from any host OS without external toolchains.
+      </div>
+    </section>
+    <hr class="sep">
+
+    <section class="section" id="pipeline">
+      <h2>Build pipeline &mdash; visualised</h2>
+      <p>This shows the path from source code to running .exe on the target VM, and where the C2 server fits in. Every lesson builds one of these stages.</p>
+      <svg width="100%" viewBox="0 0 680 210" xmlns="http://www.w3.org/2000/svg" style="margin:20px 0;display:block">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <!-- Box 1 Source -->
+        <rect x="20" y="72" width="110" height="60" rx="7" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <rect x="20" y="72" width="110" height="4" rx="7" fill="#4a8fff"/>
+        <text x="75" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8" font-weight="600">hello.go</text>
+        <text x="75" y="117" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">Go source</text>
+        <!-- Arrow 1 -->
+        <line x1="132" y1="102" x2="162" y2="102" stroke="#5a6480" stroke-width="1" marker-end="url(#ar)"/>
+        <text x="147" y="94" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#5a6480">go build</text>
+        <!-- Box 2 Binary -->
+        <rect x="164" y="72" width="120" height="60" rx="7" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <rect x="164" y="72" width="120" height="4" rx="7" fill="#f0a030"/>
+        <text x="224" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8" font-weight="600">payload.exe</text>
+        <text x="224" y="117" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">static binary</text>
+        <!-- Arrow 2 -->
+        <line x1="286" y1="102" x2="316" y2="102" stroke="#5a6480" stroke-width="1" marker-end="url(#ar)"/>
+        <text x="301" y="94" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#5a6480">transfer</text>
+        <!-- Box 3 Target -->
+        <rect x="318" y="72" width="120" height="60" rx="7" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <rect x="318" y="72" width="120" height="4" rx="7" fill="#e03a3a"/>
+        <text x="378" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8" font-weight="600">Windows VM</text>
+        <text x="378" y="117" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">target machine</text>
+        <!-- Arrow 3 -->
+        <line x1="440" y1="102" x2="470" y2="102" stroke="#5a6480" stroke-width="1" marker-end="url(#ar)"/>
+        <text x="455" y="94" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#5a6480">HTTP POST</text>
+        <!-- Box 4 C2 -->
+        <rect x="472" y="72" width="110" height="60" rx="7" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <rect x="472" y="72" width="110" height="4" rx="7" fill="#8b5cf6"/>
+        <text x="527" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8" font-weight="600">Flask C2</text>
+        <text x="527" y="117" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">port 5000</text>
+        <!-- Phase labels -->
+        <text x="75" y="158" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#4a8fff">L01 Foundation</text>
+        <text x="224" y="158" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#f0a030">L02&ndash;04 Recon</text>
+        <text x="378" y="158" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#e03a3a">Target VM</text>
+        <text x="527" y="158" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#8b5cf6">L05&ndash;06 C2</text>
+      </svg>
+    </section>
+    <hr class="sep">
+
+    <section class="section" id="static">
+      <h2>Static binaries and the strip flags</h2>
+      <p>A Go binary compiled without flags includes full debug symbols and DWARF debugging tables. Running Ghidra or <code>strings.exe</code> on the binary reveals function names, variable names, and source file paths. The strip flags remove this information at compile time without affecting runtime behaviour.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">PowerShell &mdash; standard vs stripped build</span><span class="code-lang">shell</span></div>
+        <pre><span class="cm"># Standard build &mdash; includes debug info, ~1.8MB</span>
+go build -o payload.exe main.go
+
+<span class="cm"># Stripped build &mdash; no debug symbols, no DWARF tables, ~1.2MB</span>
+<span class="cm"># -s removes the symbol table  -w removes DWARF debugging info</span>
+go build -ldflags="-s -w" -o payload_stripped.exe main.go</pre>
+      </div>
+      <div class="callout green-c">
+        <strong>Use -ldflags="-s -w" for all subsequent lessons.</strong> From Lesson 02 onward, always use the stripped build. The obfuscation phase demonstrates the before/after difference in Ghidra and with strings.exe.
+      </div>
+
+      <div class="nav-btns">
+        <a href="/recon" class="nb-p">Next: Reconnaissance &rarr;</a>
+        <a href="/lessons" class="nb-s">&larr; All lessons</a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>Final Year Cybersecurity Project &nbsp;&middot;&nbsp; Educational use only &nbsp;&middot;&nbsp; Lab environment</footer>
+
+<script>
+  const ss=document.querySelectorAll('.section'),ls=document.querySelectorAll('.sb-nav a');
+  ss.forEach(s=>new IntersectionObserver(e=>{e.forEach(n=>{if(n.isIntersecting){ls.forEach(l=>l.classList.remove('on'));const a=document.querySelector('.sb-nav a[href="#'+n.target.id+'"]');if(a)a.classList.add('on')}})},{rootMargin:'-40% 0px -55% 0px'}).observe(s));
+</script>
+</body>
+</html>

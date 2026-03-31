@@ -4,8 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-     return render_template("home.html")
-            
+    return render_template("home.html")
 
 @app.route("/zoo")
 def zoo():
@@ -14,7 +13,6 @@ def zoo():
 @app.route("/c2")
 def c2():
     return render_template("c2.html")
-
 
 @app.route("/lessons")
 def lessons():
@@ -41,5 +39,4 @@ def defender():
 # ===============================================
 
 if __name__ == "__main__":
-    
-    app.run(host="0.0.0.0", port=8000)  # allow external connections
+    app.run(host="0.0.0.0", port=8000)

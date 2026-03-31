@@ -346,8 +346,8 @@
     .mitre-table tr:nth-child(odd) td { background: var(--bg2); }
     .mitre-table tr:nth-child(even) td { background: var(--bg); }
     .tid { color: var(--blue); font-weight: 600; }
-    .tier-s { color: var(--red); font-weight: 600; }
-    .tier-a { color: var(--amber); font-weight: 600; }
+    .t-hi { color: var(--red); font-weight: 600; }
+    .t-md { color: var(--amber); font-weight: 600; }
     .tier-b { color: var(--text-dim); }
 
     /* ── CODE BLOCK ──────────────────────────────────────── */
@@ -570,7 +570,8 @@
       <a href="/recon" class="active">Recon</a>
       <a href="/c2">C2 Server</a>
       <a href="/obfuscation">Obfuscation</a>
-      <a href="/docs">Docs</a>
+     
+      <a href="/defender">Blue Team</a>
     </nav>
   </div>
 </header>
@@ -590,26 +591,26 @@
     <hr class="sidebar-divider">
     <div class="sidebar-dl-header">// .go source files</div>
 
-    <a href="{{ url_for('static', filename='downloads/net_scan.go') }}" download class="sidebar-dl-link">
+    <a href="{{ url_for('static', filename='payloads/net_scan.go') }}" download class="sidebar-dl-link">
       <span class="sidebar-dl-icon">↓</span> net_scan.go
     </a>
-    <a href="{{ url_for('static', filename='downloads/net_scan_v2.go') }}" download class="sidebar-dl-link">
+    <a href="{{ url_for('static', filename='payloads/net_scan_v2.go') }}" download class="sidebar-dl-link">
       <span class="sidebar-dl-icon">↓</span> net_scan_v2.go
     </a>
-    <a href="{{ url_for('static', filename='downloads/net_scan_v3.go') }}" download class="sidebar-dl-link">
+    <a href="{{ url_for('static', filename='payloads/net_scan_v3.go') }}" download class="sidebar-dl-link">
       <span class="sidebar-dl-icon">↓</span> net_scan_v3.go
     </a>
 
     <hr class="sidebar-divider">
     <div class="sidebar-dl-header">// word doc walkthroughs</div>
 
-    <a href="{{ url_for('static', filename='downloads/Lesson_01_net_scan_v1.docx') }}" download class="sidebar-dl-link">
+    <a href="{{ url_for('static', filename='downloadables/Lesson_01_net_scan_v1.docx') }}" download class="sidebar-dl-link">
       <span class="sidebar-dl-icon">↓</span> Lesson 01.docx
     </a>
-    <a href="{{ url_for('static', filename='downloads/Lesson_02_net_scan_v2.docx') }}" download class="sidebar-dl-link">
+    <a href="{{ url_for('static', filename='downloadables/Lesson_02_net_scan_v2.docx') }}" download class="sidebar-dl-link">
       <span class="sidebar-dl-icon">↓</span> Lesson 02.docx
     </a>
-    <a href="{{ url_for('static', filename='downloads/Lesson_03_net_scan_v3.docx') }}" download class="sidebar-dl-link">
+    <a href="{{ url_for('static', filename='downloadables/Lesson_03_net_scan_v3.docx') }}" download class="sidebar-dl-link">
       <span class="sidebar-dl-icon">↓</span> Lesson 03.docx
     </a>
   </aside>
@@ -733,7 +734,7 @@
               <tr><td class="evt">Sysmon EID 1</td><td>cmd.exe child of payload with systeminfo argument</td><td class="high">High</td></tr>
               <tr><td class="evt">Sysmon EID 11</td><td>File created at C:\temp\recon_combined.txt</td><td class="med">Medium</td></tr>
               <tr><td class="evt">Network IDS</td><td>HTTP POST to non-standard port with X-Host header</td><td class="high">High</td></tr>
-              <tr><td class="evt">AV hash</td><td>SHA-256 of .exe — changes on every recompile</td><td class="tier-b">Low</td></tr>
+              <tr><td class="evt">AV hash</td><td>SHA-256 of .exe — changes on every recompile</td><td class="dim">Low</td></tr>
             </tbody>
           </table>
         </div>
@@ -741,7 +742,7 @@
         <div>
           <div class="section-label">downloads</div>
           <div class="download-row">
-            <a href="{{ url_for('static', filename='downloads/net_scan.go') }}" download class="dl-card">
+            <a href="{{ url_for('static', filename='payloads/net_scan.go') }}" download class="dl-card">
               <div class="dl-icon dl-icon-go">🐹</div>
               <div class="dl-info">
                 <div class="dl-filename">net_scan.go</div>
@@ -749,7 +750,7 @@
               </div>
               <span class="dl-arrow">↓</span>
             </a>
-            <a href="{{ url_for('static', filename='downloads/Lesson_01_net_scan_v1.docx') }}" download class="dl-card">
+            <a href="{{ url_for('static', filename='downloadables/Lesson_01_net_scan_v1.docx') }}" download class="dl-card">
               <div class="dl-icon dl-icon-docx">📄</div>
               <div class="dl-info">
                 <div class="dl-filename">Lesson_01_net_scan_v1.docx</div>
@@ -773,7 +774,7 @@
         <div class="ver-num">v2</div>
         <div class="version-header-text">
           <h2>net_scan_v2.go — Expanded Host Recon</h2>
-          <p>Six additional S-tier and A-tier intelligence commands added on top of v1</p>
+          <p>Six additional high-value intelligence commands added on top of v1</p>
         </div>
         <div class="version-status">
           <span class="status-pill status-done">Complete</span>
@@ -788,44 +789,44 @@
         </div>
 
         <div>
-          <div class="section-label">command table — s-tier and a-tier</div>
+          <div class="section-label">command breakdown — what each one collects</div>
           <table class="mitre-table">
             <thead>
               <tr><th>Tier</th><th>Command</th><th>MITRE</th><th>Attacker value</th></tr>
             </thead>
             <tbody>
               <tr>
-                <td class="tier-s">S</td>
+                <td style="color:#e03a3a;font-weight:600">★★★</td>
                 <td>netstat -ano</td>
                 <td class="tid">T1049</td>
                 <td>Active connections + owning PIDs — cross-ref with tasklist to find C2, RDP sessions</td>
               </tr>
               <tr>
-                <td class="tier-s">S</td>
+                <td style="color:#e03a3a;font-weight:600">★★★</td>
                 <td>net localgroup administrators</td>
                 <td class="tid">T1069.001</td>
                 <td>Lists all local and domain admin accounts — informs lateral movement and privesc targets</td>
               </tr>
               <tr>
-                <td class="tier-s">S</td>
+                <td style="color:#e03a3a;font-weight:600">★★★</td>
                 <td>tasklist /fo csv</td>
                 <td class="tid">T1057</td>
                 <td>CSV format enables programmatic AV/EDR fingerprinting by process name</td>
               </tr>
               <tr>
-                <td class="tier-a">A</td>
+                <td style="color:#f0a030">★★</td>
                 <td>quser</td>
                 <td class="tid">T1033</td>
                 <td>Idle time reveals if machine is in active use — critical for OPSEC timing decisions</td>
               </tr>
               <tr>
-                <td class="tier-a">A</td>
+                <td style="color:#f0a030">★★</td>
                 <td>arp -a</td>
                 <td class="tid">T1016</td>
                 <td>Passive subnet mapping — reveals adjacent hosts without any active scanning</td>
               </tr>
               <tr>
-                <td class="tier-a">A</td>
+                <td style="color:#f0a030">★★</td>
                 <td>wmic logicaldisk</td>
                 <td class="tid">T1082</td>
                 <td>Free space check — determines if host can stage large tools or memory dumps</td>
@@ -852,27 +853,27 @@
             </div>
             <div class="diff-row">
               <div class="diff-mark add">+</div>
-              <div class="diff-content"><strong>netstat -ano</strong> <span class="dim">— S-tier: active network connections with PIDs</span></div>
+              <div class="diff-content"><strong>netstat -ano</strong> <span class="dim">— active network connections with PIDs</span></div>
             </div>
             <div class="diff-row">
               <div class="diff-mark add">+</div>
-              <div class="diff-content"><strong>net localgroup administrators</strong> <span class="dim">— S-tier: admin account enumeration</span></div>
+              <div class="diff-content"><strong>net localgroup administrators</strong> <span class="dim">— admin account enumeration</span></div>
             </div>
             <div class="diff-row">
               <div class="diff-mark add">+</div>
-              <div class="diff-content"><strong>tasklist /fo csv</strong> <span class="dim">— S-tier: running process list in parseable format</span></div>
+              <div class="diff-content"><strong>tasklist /fo csv</strong> <span class="dim">— running process list in parseable format</span></div>
             </div>
             <div class="diff-row">
               <div class="diff-mark add">+</div>
-              <div class="diff-content"><strong>quser</strong> <span class="dim">— A-tier: active session and idle time</span></div>
+              <div class="diff-content"><strong>quser</strong> <span class="dim">— active session and idle time</span></div>
             </div>
             <div class="diff-row">
               <div class="diff-mark add">+</div>
-              <div class="diff-content"><strong>arp -a</strong> <span class="dim">— A-tier: passive ARP cache, adjacent hosts</span></div>
+              <div class="diff-content"><strong>arp -a</strong> <span class="dim">— passive ARP cache, adjacent hosts</span></div>
             </div>
             <div class="diff-row">
               <div class="diff-mark add">+</div>
-              <div class="diff-content"><strong>wmic logicaldisk</strong> <span class="dim">— A-tier: disk size and free space</span></div>
+              <div class="diff-content"><strong>wmic logicaldisk</strong> <span class="dim">— disk size and free space</span></div>
             </div>
             <div class="diff-row">
               <div class="diff-mark same">=</div>
@@ -882,13 +883,13 @@
         </div>
 
         <div class="callout">
-          <strong>Detection note on wmic:</strong> wmic.exe is one of the most heavily monitored executables in enterprise EDR rule sets. Any process spawning wmic as a child is flagged by most commercial EDR products. This is a Pyramid of Pain Artifacts-tier indicator — relatively easy for a defender to block, and equally easy for an attacker to swap out for a PowerShell CIM equivalent.
+          <strong>Detection note on wmic:</strong> wmic.exe is one of the most heavily monitored executables in enterprise EDR rule sets. Any process spawning wmic as a child is flagged by most commercial EDR products. This is a Artifacts-level indicator — relatively easy for a defender to block, and equally easy for an attacker to swap out for a PowerShell CIM equivalent.
         </div>
 
         <div>
           <div class="section-label">downloads</div>
           <div class="download-row">
-            <a href="{{ url_for('static', filename='downloads/net_scan_v2.go') }}" download class="dl-card">
+            <a href="{{ url_for('static', filename='payloads/net_scan_v2.go') }}" download class="dl-card">
               <div class="dl-icon dl-icon-go">🐹</div>
               <div class="dl-info">
                 <div class="dl-filename">net_scan_v2.go</div>
@@ -896,7 +897,7 @@
               </div>
               <span class="dl-arrow">↓</span>
             </a>
-            <a href="{{ url_for('static', filename='downloads/Lesson_02_net_scan_v2.docx') }}" download class="dl-card">
+            <a href="{{ url_for('static', filename='downloadables/Lesson_02_net_scan_v2.docx') }}" download class="dl-card">
               <div class="dl-icon dl-icon-docx">📄</div>
               <div class="dl-info">
                 <div class="dl-filename">Lesson_02_net_scan_v2.docx</div>
@@ -1045,7 +1046,7 @@ persistCmd := <span class="c-pkg">fmt</span>.<span class="c-fn">Sprintf</span>(
         <div>
           <div class="section-label">downloads</div>
           <div class="download-row">
-            <a href="{{ url_for('static', filename='downloads/net_scan_v3.go') }}" download class="dl-card">
+            <a href="{{ url_for('static', filename='payloads/net_scan_v3.go') }}" download class="dl-card">
               <div class="dl-icon dl-icon-go">🐹</div>
               <div class="dl-info">
                 <div class="dl-filename">net_scan_v3.go</div>
@@ -1053,7 +1054,7 @@ persistCmd := <span class="c-pkg">fmt</span>.<span class="c-fn">Sprintf</span>(
               </div>
               <span class="dl-arrow">↓</span>
             </a>
-            <a href="{{ url_for('static', filename='downloads/Lesson_03_net_scan_v3.docx') }}" download class="dl-card">
+            <a href="{{ url_for('static', filename='downloadables/Lesson_03_net_scan_v3.docx') }}" download class="dl-card">
               <div class="dl-icon dl-icon-docx">📄</div>
               <div class="dl-info">
                 <div class="dl-filename">Lesson_03_net_scan_v3.docx</div>
