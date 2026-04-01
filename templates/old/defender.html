@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blue Team — Detection Analysis</title>
+  <title>Blue Team — Detection and Analysis</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--bg:#0a0c10;--bg2:#111520;--bg3:#181d2b;--bgc:#0d1117;--border:#232a3e;--text:#c8cfe0;--dim:#5a6480;--head:#eef0f8;--amber:#f0a030;--red:#e03a3a;--green:#2ecc71;--blue:#4a8fff;--teal:#2dd4bf;--mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif}
+    :root{--bg:#0a0c10;--bg2:#111520;--bg3:#181d2b;--bgc:#0d1117;--border:#232a3e;--text:#c8cfe0;--dim:#5a6480;--head:#eef0f8;--amber:#f0a030;--red:#e03a3a;--green:#2ecc71;--blue:#4a8fff;--teal:#2dd4bf;--purple:#8b5cf6;--mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif}
     body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
     header{border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100}
     .hi{max-width:1100px;margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:32px;height:56px}
     .logo{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:600;text-decoration:none}
     .logo span{color:var(--dim)}
-    nav{display:flex;gap:4px}
+    nav{display:flex;gap:4px;flex-wrap:wrap}
     nav a{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;padding:6px 10px;border-radius:4px;transition:.15s}
     nav a:hover{color:var(--text);background:var(--bg3)}
     nav a.on{color:var(--teal);background:rgba(45,212,191,.08)}
@@ -45,7 +45,7 @@
     td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;line-height:1.5}
     tr:last-child td{border-bottom:none}
     tr:nth-child(odd) td{background:var(--bg2)}
-    .evt{color:#8b5cf6;font-weight:600}
+    .evt{color:var(--purple);font-weight:600}
     .sev-hi{color:var(--red);font-weight:600}
     .sev-med{color:var(--amber)}
     .sev-lo{color:var(--dim)}
@@ -55,6 +55,29 @@
     .sep{border:none;border-top:1px solid var(--border);margin:48px 0}
     .callout{border-left:3px solid var(--teal);background:rgba(45,212,191,.04);border-radius:0 6px 6px 0;padding:13px 17px;margin:16px 0;font-size:14px;line-height:1.75}
     .callout strong{color:var(--teal)}
+    .callout.amber{border-left-color:var(--amber);background:rgba(240,160,48,.04)}
+    .callout.amber strong{color:var(--amber)}
+    .callout.red{border-left-color:var(--red);background:rgba(224,58,58,.04)}
+    .callout.red strong{color:var(--red)}
+    .callout.blue{border-left-color:var(--blue);background:rgba(74,143,255,.04)}
+    .callout.blue strong{color:var(--blue)}
+    .code-wrap{background:var(--bgc);border:1px solid var(--border);border-radius:7px;overflow:hidden;margin:14px 0}
+    .code-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:7px 14px;display:flex;align-items:center;justify-content:space-between}
+    .code-fn{font-family:var(--mono);font-size:11px;color:var(--amber)}
+    .code-lang{font-family:var(--mono);font-size:10px;color:var(--dim);text-transform:uppercase}
+    pre{padding:16px 18px;font-family:var(--mono);font-size:12px;line-height:1.7;color:#abb2bf;overflow-x:auto;white-space:pre}
+    .kw{color:#c678dd}.fn{color:#61afef}.str{color:#98c379}.cm{color:#5c6370;font-style:italic}.num{color:#d19a66}
+    .tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin:16px 0}
+    .tool-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 18px}
+    .tc-name{font-size:13px;font-weight:600;color:var(--head);margin-bottom:4px}
+    .tc-type{font-family:var(--mono);font-size:10px;color:var(--teal);margin-bottom:8px}
+    .tc-desc{font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.6}
+    .step-list{display:flex;flex-direction:column;gap:12px;margin:16px 0}
+    .step{display:flex;gap:14px;align-items:flex-start}
+    .step-n{background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.2);color:var(--teal);font-family:var(--mono);font-size:11px;font-weight:600;padding:3px 10px;border-radius:4px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+    .step-body{font-size:14px;line-height:1.75;color:var(--text)}
+    .step-body strong{color:var(--head)}
+    code{font-family:var(--mono);font-size:11.5px;background:var(--bg3);border:1px solid var(--border);padding:1px 6px;border-radius:3px;color:#98c379}
     footer{border-top:1px solid var(--border);padding:24px 32px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--dim)}
     @media(max-width:768px){.wrap{grid-template-columns:1fr}.sidebar{position:static}}
   </style>
@@ -76,37 +99,43 @@
     <div class="sb-label">// on this page</div>
     <nav class="sb-nav">
       <a href="#overview" class="on">Overview</a>
-      <a href="#killchain">Kill Chain detection</a>
-      <a href="#host">Host-based</a>
-      <a href="#network">Network-based</a>
-      <a href="#pyramid">Pyramid analysis</a>
+      <a href="#killchain">Kill Chain intercepts</a>
+      <a href="#host">Host-based detection</a>
+      <a href="#network">Network detection</a>
+      <a href="#static-toolkit">Static analysis toolkit</a>
+      <a href="#defeating-obfusc">Defeating obfuscation</a>
+      <a href="#network-obfusc">Network-layer obfuscation</a>
+      <a href="#virustotal">VirusTotal</a>
+      <a href="#pyramid">Pyramid of Pain</a>
     </nav>
     <hr class="sb-div">
-    <div class="sb-label">// downloads</div>
+    <div class="sb-label">// download</div>
     <a href="{{ url_for('static', filename='downloadables/BlueTeam_Detection_Analysis.docx') }}" download class="dl-btn">&#8595; Detection Analysis.docx</a>
   </aside>
 
   <main class="content">
     <div class="hero">
       <div class="eyebrow">// blue team analysis</div>
-      <h1>How this payload would be detected</h1>
-      <p>For every technique in this project, this page documents the detection method, the tool that surfaces it, and the signal strength. Understanding both sides is the point of the exercise.</p>
+      <h1>How this payload is detected and analysed</h1>
+      <p>Every offensive technique in this project mapped to the defensive tool that catches it — from Sysmon events through static binary analysis to network timing detection.</p>
     </div>
 
+    <!-- ═══════ OVERVIEW ═══════ -->
     <section class="section" id="overview">
-      <h2>Why blue team analysis matters here</h2>
-      <p>Building an offensive tool without understanding how it is detected misses half the picture. This page maps every technique in the payload &mdash; from the cmd.exe child process to the registry Run key to the HTTP beacon interval &mdash; to the specific detection method a SOC analyst or EDR system would use to find it.</p>
-      <p>The detection coverage is deliberately layered. Most techniques are visible at multiple levels simultaneously: Sysmon catches the process event, Wireshark shows the network traffic, and Autoruns finds the persistence. A real defender uses all of these together, which is why the payload is noisy even at version 3.</p>
+      <h2>Why this page exists</h2>
+      <p>Building an offensive tool without understanding how it is detected misses the point of the exercise. This page documents every detection method for every technique in the project. Each phase of the payload is matched to the specific tool, event, or signature that would surface it to a SOC analyst or incident responder.</p>
+      <p>The analysis covers four layers: host-based detection (Sysmon, Autoruns), network-based detection (Wireshark, Zeek), static binary analysis (PEStudio, FLOSS, Ghidra), and the obfuscation bypass methods that an analyst uses to defeat the techniques implemented in Phase 04. VirusTotal and the reporting process are covered at the end.</p>
       <div class="callout">
-        <strong>Lab setup for this analysis:</strong> Sysmon with the SwiftOnSecurity config installed on the target VM. Wireshark running on the operator machine. Autoruns and Process Monitor from the Sysinternals Suite. All detection events described below are reproducible in the lab by following the instructions on the <a href="/" class="il">home page</a>.
+        <strong>Lab setup for this analysis.</strong> Sysmon with the <a href="https://github.com/SwiftOnSecurity/sysmon-config" target="_blank" class="il">SwiftOnSecurity config</a> on the target VM. Wireshark on the operator machine. <a href="https://www.winitor.com/tools/pestudio/" target="_blank" class="il">PEStudio</a>, <a href="https://github.com/mandiant/flare-floss" target="_blank" class="il">FLOSS</a>, and <a href="https://ghidra-sre.org" target="_blank" class="il">Ghidra</a> on an analysis machine.
       </div>
     </section>
 
     <hr class="sep">
 
+    <!-- ═══════ KILL CHAIN DIAGRAM ═══════ -->
     <section class="section" id="killchain">
-      <h2>Kill Chain stage &mdash; detection intercept points</h2>
-      <p>This diagram shows the Cyber Kill Chain stages covered by this project and where a defender can intercept the attack at each stage.</p>
+      <h2>Kill Chain detection intercept points</h2>
+      <p>Where a defender can interrupt the attack at each stage of the Cyber Kill Chain.</p>
 
       <svg width="100%" viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" style="margin:20px 0;display:block">
         <defs>
@@ -114,143 +143,347 @@
             <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </marker>
         </defs>
-        <!-- Attack chain boxes (left column) -->
-        <text x="120" y="24" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480" text-transform="uppercase">ATTACK STAGE</text>
-        <text x="420" y="24" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">DETECTION METHOD</text>
-
-        <!-- Stage rows -->
+        <text x="120" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">ATTACK STAGE</text>
+        <text x="460" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">DETECTION METHOD</text>
         <!-- Recon -->
-        <rect x="20" y="38" width="200" height="48" rx="6" fill="#111520" stroke="#f0a030" stroke-width="1"/>
-        <text x="120" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f0a030" font-weight="600">Reconnaissance</text>
-        <text x="120" y="74" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">Phase 02 (v1, v2, v3)</text>
-        <line x1="222" y1="62" x2="260" y2="62" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
-        <rect x="262" y="38" width="390" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
-        <text x="457" y="58" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Sysmon EID 1 &mdash; cmd.exe child process chain</text>
-        <text x="457" y="74" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#e03a3a">High signal &mdash; tasklist/netstat parent anomaly</text>
-
+        <rect x="20" y="36" width="200" height="48" rx="6" fill="#111520" stroke="#f0a030" stroke-width="1"/>
+        <text x="120" y="56" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#f0a030" font-weight="600">Reconnaissance</text>
+        <text x="120" y="72" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">netstat, tasklist, systeminfo</text>
+        <line x1="222" y1="60" x2="256" y2="60" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
+        <rect x="258" y="36" width="400" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <text x="458" y="56" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Sysmon EID 1 — cmd.exe child chain</text>
+        <text x="458" y="72" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#e03a3a">Very High — anomalous parent process</text>
         <!-- Weaponization -->
-        <rect x="20" y="100" width="200" height="48" rx="6" fill="#111520" stroke="#4a8fff" stroke-width="1"/>
-        <text x="120" y="120" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#4a8fff" font-weight="600">Weaponization</text>
-        <text x="120" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">Go binary compiled to .exe</text>
-        <line x1="222" y1="124" x2="260" y2="124" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
-        <rect x="262" y="100" width="390" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
-        <text x="457" y="120" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">AV hash signature / strings.exe (C2 URL plaintext)</text>
-        <text x="457" y="136" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0a030">Medium &mdash; hash changes on recompile</text>
-
-        <!-- Delivery / Exploitation grey -->
-        <rect x="20" y="162" width="200" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="0.5" stroke-dasharray="4 3"/>
-        <text x="120" y="182" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#5a6480">Delivery / Exploitation</text>
-        <text x="120" y="198" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#3a4258">Out of scope &mdash; lab only</text>
-        <line x1="222" y1="186" x2="260" y2="186" stroke="#3a4258" stroke-width="1" stroke-dasharray="4 3"/>
-        <rect x="262" y="162" width="390" height="48" rx="6" fill="#111520" stroke="#3a4258" stroke-width="0.5"/>
-        <text x="457" y="186" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#3a4258">N/A for this project</text>
-
+        <rect x="20" y="98" width="200" height="48" rx="6" fill="#111520" stroke="#4a8fff" stroke-width="1"/>
+        <text x="120" y="118" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#4a8fff" font-weight="600">Weaponization</text>
+        <text x="120" y="134" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">Go binary → .exe</text>
+        <line x1="222" y1="122" x2="256" y2="122" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
+        <rect x="258" y="98" width="400" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <text x="458" y="118" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">PEStudio / FLOSS / strings.exe / AV hash</text>
+        <text x="458" y="134" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0a030">Medium — FLOSS defeats XOR encoding</text>
+        <!-- Skip delivery/exploit -->
+        <rect x="20" y="160" width="200" height="48" rx="6" fill="#111520" stroke="#3a4258" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text x="120" y="186" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#5a6480">Delivery / Exploitation</text>
+        <line x1="222" y1="184" x2="256" y2="184" stroke="#3a4258" stroke-width="1" stroke-dasharray="4 3"/>
+        <rect x="258" y="160" width="400" height="48" rx="6" fill="#111520" stroke="#3a4258" stroke-width="0.5"/>
+        <text x="458" y="184" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#3a4258">Out of scope — lab environment only</text>
         <!-- Installation -->
-        <rect x="20" y="224" width="200" height="48" rx="6" fill="#111520" stroke="#e03a3a" stroke-width="1"/>
-        <text x="120" y="244" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#e03a3a" font-weight="600">Installation</text>
-        <text x="120" y="260" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">Registry Run Key (v3)</text>
-        <line x1="222" y1="248" x2="260" y2="248" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
-        <rect x="262" y="224" width="390" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
-        <text x="457" y="244" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Sysmon EID 13 + Autoruns.exe</text>
-        <text x="457" y="260" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#e03a3a">Very high &mdash; HKCU Run write is a top SIEM rule</text>
-
+        <rect x="20" y="222" width="200" height="48" rx="6" fill="#111520" stroke="#e03a3a" stroke-width="1"/>
+        <text x="120" y="242" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#e03a3a" font-weight="600">Installation</text>
+        <text x="120" y="258" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">HKCU Run key persistence</text>
+        <line x1="222" y1="246" x2="256" y2="246" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
+        <rect x="258" y="222" width="400" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <text x="458" y="242" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Sysmon EID 13 + Autoruns.exe</text>
+        <text x="458" y="258" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#e03a3a">Very High — top SIEM detection rule</text>
         <!-- C2 -->
-        <rect x="20" y="286" width="200" height="48" rx="6" fill="#111520" stroke="#8b5cf6" stroke-width="1"/>
-        <text x="120" y="306" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#8b5cf6" font-weight="600">Command &amp; Control</text>
-        <text x="120" y="322" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">HTTP /beacon every 60s</text>
-        <line x1="222" y1="310" x2="260" y2="310" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
-        <rect x="262" y="286" width="390" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
-        <text x="457" y="306" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Zeek beacon detection / Wireshark timing analysis</text>
-        <text x="457" y="322" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#e03a3a">High &mdash; fixed 60s interval is a detectable pattern</text>
-
-        <!-- Data staging -->
-        <rect x="20" y="348" width="200" height="48" rx="6" fill="#111520" stroke="#2dd4bf" stroke-width="1"/>
-        <text x="120" y="368" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#2dd4bf" font-weight="600">Local Data Staging</text>
-        <text x="120" y="384" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">C:\temp\recon_combined.txt</text>
-        <line x1="222" y1="372" x2="260" y2="372" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
-        <rect x="262" y="348" width="390" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
-        <text x="457" y="368" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Sysmon EID 11 / forensic file system analysis</text>
-        <text x="457" y="384" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0a030">Medium &mdash; artefact persists on disk</text>
+        <rect x="20" y="284" width="200" height="48" rx="6" fill="#111520" stroke="#8b5cf6" stroke-width="1"/>
+        <text x="120" y="304" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#8b5cf6" font-weight="600">Command &amp; Control</text>
+        <text x="120" y="320" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">HTTP POST /beacon</text>
+        <line x1="222" y1="308" x2="256" y2="308" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
+        <rect x="258" y="284" width="400" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <text x="458" y="304" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Wireshark / Zeek beacon detection</text>
+        <text x="458" y="320" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0a030">High — jitter reduces but doesn't eliminate</text>
+        <!-- Staging -->
+        <rect x="20" y="346" width="200" height="48" rx="6" fill="#111520" stroke="#2dd4bf" stroke-width="1"/>
+        <text x="120" y="366" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#2dd4bf" font-weight="600">Local Data Staging</text>
+        <text x="120" y="382" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#5a6480">C:\temp\recon_combined.txt</text>
+        <line x1="222" y1="370" x2="256" y2="370" stroke="#5a6480" stroke-width="1" marker-end="url(#ar2)"/>
+        <rect x="258" y="346" width="400" height="48" rx="6" fill="#111520" stroke="#232a3e" stroke-width="1"/>
+        <text x="458" y="366" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" fill="#eef0f8">Sysmon EID 11 / forensic file recovery</text>
+        <text x="458" y="382" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#f0a030">Medium — artefact persists on disk</text>
       </svg>
     </section>
 
     <hr class="sep">
 
+    <!-- ═══════ HOST DETECTION ═══════ -->
     <section class="section" id="host">
       <h2>Host-based detection</h2>
-      <p>All events below are generated by Sysmon with the SwiftOnSecurity config, or by Sysinternals tools run manually on the target VM.</p>
+      <p>All events below are generated by Sysmon with the SwiftOnSecurity config. Each maps to a specific payload action.</p>
       <table>
         <thead><tr><th>Event / Tool</th><th>What triggers it</th><th>Severity</th></tr></thead>
         <tbody>
-          <tr><td class="evt">Sysmon EID 1</td><td>cmd.exe spawned as child of the payload. Parent-child chain: payload.exe &rarr; cmd.exe &rarr; systeminfo.exe (and netstat, tasklist, etc). Anomalous parent process path.</td><td class="sev-hi">High</td></tr>
-          <tr><td class="evt">Sysmon EID 13</td><td>Registry value created at HKCU\Software\Microsoft\Windows\CurrentVersion\Run. Value name "ReconBeacon", data = full path to .exe. This is one of the highest-signal detection rules in enterprise SIEM environments.</td><td class="sev-hi">Very High</td></tr>
-          <tr><td class="evt">Sysmon EID 11</td><td>File created at C:\temp\recon_combined.txt. File creation event fires on every beacon cycle, approximately every 60 seconds.</td><td class="sev-med">Medium</td></tr>
-          <tr><td class="evt">Sysmon EID 3</td><td>Outbound TCP connection from payload.exe to operator IP on port 5000. Connection fires every beacon cycle.</td><td class="sev-hi">High</td></tr>
-          <tr><td>Autoruns.exe</td><td>ReconBeacon Run key entry highlighted in yellow (unknown/unsigned binary). Immediately visible on any forensic examination of startup items.</td><td class="sev-hi">Very High</td></tr>
-          <tr><td>strings.exe</td><td>C2 URL (http://192.168.1.10:5000/beacon), registry path, and all command strings visible in plaintext in unobfuscated binary.</td><td class="sev-hi">High</td></tr>
-          <tr><td>Process Monitor</td><td>Full file, registry, and network event trace for every action the payload takes. Replay-capable forensic analysis of each beacon cycle.</td><td class="sev-med">Forensic</td></tr>
+          <tr><td class="evt">Sysmon EID 1</td><td>cmd.exe spawned as child of the payload. Full chain: payload.exe &rarr; cmd.exe &rarr; systeminfo.exe, netstat.exe, tasklist.exe, etc. The parent image path is anomalous — no legitimate software spawns this many cmd.exe children this rapidly.</td><td class="sev-hi">High</td></tr>
+          <tr><td class="evt">Sysmon EID 13</td><td>Registry value set at HKCU\Software\Microsoft\Windows\CurrentVersion\Run. Value name "ReconBeacon", data is the full path to the .exe. Writing to any Run key fires this event. It is one of the highest-signal detections in enterprise SIEM rule sets.</td><td class="sev-hi">Very High</td></tr>
+          <tr><td class="evt">Sysmon EID 11</td><td>File created at C:\temp\recon_combined.txt. This event fires on every beacon cycle (~every 60 seconds), making it time-correlated with the network beacon event.</td><td class="sev-med">Medium</td></tr>
+          <tr><td class="evt">Sysmon EID 3</td><td>Outbound TCP connection from payload.exe to operator machine IP on port 5000. The combination of source process, destination port, and regularity is distinctive.</td><td class="sev-hi">High</td></tr>
+          <tr><td>Autoruns.exe</td><td>ReconBeacon entry under HKCU Run highlighted yellow (unsigned/unknown binary). Immediately visible on any startup analysis. The binary has no publisher, no signature, and the name "ReconBeacon" is not associated with any known software.</td><td class="sev-hi">Very High</td></tr>
+          <tr><td>Process Monitor</td><td>Full trace of every file, registry, and network action in sequence: MkdirAll &rarr; systeminfo spawn &rarr; WriteFile &rarr; TCP connect &rarr; Sleep. The sequence itself is the signature.</td><td class="sev-med">Forensic</td></tr>
+          <tr><td>strings.exe</td><td>On unobfuscated builds (v1–v3): C2 URL, registry path, all command strings visible in plaintext. On obfuscated builds (v4–v5): strings removed but XOR key byte visible, encoded byte arrays present as data.</td><td class="sev-hi">High</td></tr>
         </tbody>
       </table>
     </section>
 
     <hr class="sep">
 
+    <!-- ═══════ NETWORK DETECTION ═══════ -->
     <section class="section" id="network">
       <h2>Network-based detection</h2>
       <table>
-        <thead><tr><th>Detection method</th><th>What it sees</th><th>Severity</th></tr></thead>
+        <thead><tr><th>Method</th><th>What it sees</th><th>Severity</th></tr></thead>
         <tbody>
-          <tr><td>Wireshark / packet capture</td><td>X-Host and X-Filename headers visible in plaintext HTTP POST. Non-standard headers with "X-" prefix are an unusual pattern on port 5000 traffic.</td><td class="sev-hi">High</td></tr>
-          <tr><td>Zeek beacon detection</td><td>Fixed 60-second inter-arrival time on outbound POST requests. Zeek's beacon detection script flags connections with a regularity score above threshold.</td><td class="sev-hi">High</td></tr>
-          <tr><td>Network flow logs (NetFlow / IPFIX)</td><td>Repeated POST to same destination IP:port at regular intervals. Both the destination and the regularity are anomalous on a typical workstation.</td><td class="sev-med">Medium</td></tr>
-          <tr><td>Firewall egress filtering</td><td>Outbound traffic on TCP port 5000. Blocked by default in most enterprise environments. The payload would silently fail and retry on the next beacon cycle.</td><td class="sev-med">Medium</td></tr>
-          <tr><td>IDS rule (Suricata / Snort)</td><td>Can be written against the X-Host and X-Filename header combination, or against the /beacon URI path. Custom rules are straightforward once the pattern is known.</td><td class="sev-med">Medium</td></tr>
+          <tr><td>Wireshark / packet capture</td><td>X-Host and X-Filename headers visible in plaintext HTTP. Non-standard X- prefixed headers on port 5000 traffic are immediately unusual. The POST body contains the full recon report in plaintext.</td><td class="sev-hi">High</td></tr>
+          <tr><td>Zeek beacon detection</td><td>Fixed or semi-regular inter-arrival time on outbound connections. Zeek's notice framework scores periodicity — v3 scores extremely high (exactly 60s). v5 (jitter) scores lower but still above typical legitimate traffic.</td><td class="sev-hi">High</td></tr>
+          <tr><td>Network flow logs</td><td>Repeated POST to same destination IP:port. Volume is small (one file per cycle) but the pattern is consistent and destination is non-standard (port 5000).</td><td class="sev-med">Medium</td></tr>
+          <tr><td>Firewall egress filtering</td><td>Port 5000 outbound blocked by default enterprise firewall policy. Payload fails silently and retries next cycle.</td><td class="sev-med">Medium</td></tr>
+          <tr><td>Suricata / Snort IDS</td><td>Custom rule on X-Host + X-Filename header combination, or on /beacon URI. Rule is straightforward once the pattern is known from a single captured beacon.</td><td class="sev-med">Medium</td></tr>
         </tbody>
       </table>
     </section>
 
     <hr class="sep">
 
-    <section class="section" id="pyramid">
-      <h2>Pyramid of Pain &mdash; what the payload bypasses and what it does not</h2>
-      <p>The Pyramid of Pain (David J. Bianco, 2013) describes how difficult it is for an attacker to change each type of indicator once a defender detects and blocks it. Higher tiers cause more pain to the attacker. The table below maps each tier to this project's current payload.</p>
+    <!-- ═══════ STATIC ANALYSIS TOOLKIT ═══════ -->
+    <section class="section" id="static-toolkit">
+      <h2>Static analysis toolkit</h2>
+      <p>These are the tools an analyst uses to examine the payload binary before executing it. Static analysis works on the file on disk without running anything.</p>
+
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tc-name">PEStudio</div>
+          <div class="tc-type">PE analyzer — free Windows tool</div>
+          <div class="tc-desc">Examines PE headers, imports, strings, entropy, and indicators in one view. First stop for any Windows binary. Flags suspicious imports (CreateProcess, WriteFile, RegSetValueEx) and calculates section entropy to detect packing.</div>
+        </div>
+        <div class="tool-card">
+          <div class="tc-name">FLOSS</div>
+          <div class="tc-type">Obfuscated string solver — Mandiant</div>
+          <div class="tc-desc">Specifically designed to recover strings that static tools miss. Emulates code to find strings decoded at runtime — defeats XOR, ROT, and other simple encoding schemes. Recovers the C2 URL from v4/v5 even though strings.exe shows nothing.</div>
+        </div>
+        <div class="tool-card">
+          <div class="tc-name">Detect-It-Easy (DiE)</div>
+          <div class="tc-type">Compiler / packer identifier — free</div>
+          <div class="tc-desc">Identifies Go binaries by their runtime structure within seconds. Even stripped binaries are immediately identified as Go. Shows Go version used for compilation. Critical first step before attempting Ghidra analysis.</div>
+        </div>
+        <div class="tool-card">
+          <div class="tc-name">Ghidra</div>
+          <div class="tc-type">Reverse engineering suite — NSA/free</div>
+          <div class="tc-desc">Full disassembly and decompilation. On unstripped binaries shows complete function names. On stripped Go binaries, used with GoReSym plugin to recover names. Can script XOR decoding to recover all encoded strings automatically.</div>
+        </div>
+        <div class="tool-card">
+          <div class="tc-name">GoReSym</div>
+          <div class="tc-type">Go symbol recovery — Mandiant</div>
+          <div class="tc-desc">Recovers function names from stripped Go binaries by parsing the Go module metadata that the runtime requires. Defeats -ldflags="-s -w" stripping. Run as a standalone tool or as a Ghidra plugin.</div>
+        </div>
+        <div class="tool-card">
+          <div class="tc-name">strings.exe / strings2</div>
+          <div class="tc-type">String extractor — Sysinternals</div>
+          <div class="tc-desc">Baseline first step. On unobfuscated builds extracts the C2 URL, commands, and paths immediately. On obfuscated builds, absence of expected strings confirms obfuscation is present — then escalate to FLOSS.</div>
+        </div>
+      </div>
+
+      <h3>PEStudio walkthrough — what to look for</h3>
+      <p>Download PEStudio from <a href="https://www.winitor.com/tools/pestudio/" target="_blank" class="il">winitor.com</a>. Drag the .exe onto it. The key panels:</p>
+      <div class="step-list">
+        <div class="step"><div class="step-n">Indicators</div><div class="step-body"><strong>First panel to check.</strong> PEStudio flags suspicious characteristics automatically. For the payload you will see: process creation (exec.Command), file write (os.WriteFile), network access (net/http), registry modification (reg.exe via cmd). These are all flagged red.</div></div>
+        <div class="step"><div class="step-n">Strings</div><div class="step-body">On unobfuscated v3: immediately shows the C2 URL, <code>HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code>, <code>netstat -ano</code>, <code>tasklist /fo csv</code>. On obfuscated v4/v5: no readable C2 strings. This confirms obfuscation is present.</div></div>
+        <div class="step"><div class="step-n">Imports</div><div class="step-body">Go binaries have a large number of imports because the standard library is compiled in. Look for <code>CreateProcessW</code>, <code>RegSetValueExW</code>, <code>WSAStartup</code>. These reveal the binary's capabilities regardless of obfuscation.</div></div>
+        <div class="step"><div class="step-n">Entropy</div><div class="step-body">XOR-encoded byte arrays show as slightly higher entropy sections compared to unobfuscated code. Entropy above 7.2 for a non-packed section is suspicious and worth investigating in Ghidra.</div></div>
+        <div class="step"><div class="step-n">TLS / Signature</div><div class="step-body">The binary is unsigned. No digital signature, no trusted publisher. PEStudio flags this immediately. Combined with the other indicators it confirms this is not legitimate software.</div></div>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- ═══════ DEFEATING OBFUSCATION ═══════ -->
+    <section class="section" id="defeating-obfusc">
+      <h2>Defeating the obfuscation — analyst workflow</h2>
+      <p>Each obfuscation technique implemented in Phase 04 has a corresponding analysis method. An experienced analyst defeats all three within about 20 minutes.</p>
+
+      <h3>Defeating XOR string obfuscation (L07) with FLOSS</h3>
+      <p>FLOSS (FLARE Obfuscated String Solver) emulates the binary's decoding routines and extracts the strings they produce at runtime. It recognises XOR decoding loops automatically. Download from <a href="https://github.com/mandiant/flare-floss" target="_blank" class="il">github.com/mandiant/flare-floss</a>.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">Command Prompt — FLOSS against the obfuscated binary</span><span class="code-lang">shell</span></div>
+        <pre><span class="cm"># Run FLOSS against the obfuscated binary</span>
+floss.exe v4_xor.exe
+
+<span class="cm"># FLOSS output will include the decoded strings:</span>
+<span class="cm"># DECODED STRINGS (from emulated XOR routine):</span>
+<span class="str">http://192.168.1.10:5000/beacon</span>
+<span class="str">HKCU\Software\Microsoft\Windows\CurrentVersion\Run</span>
+<span class="str">ReconBeacon</span>
+<span class="str">netstat -ano</span>
+<span class="str">tasklist /fo csv</span>
+<span class="str">C:\temp\recon_combined.txt</span></pre>
+      </div>
+      <div class="callout red">
+        <strong>XOR with a single byte key is defeated completely by FLOSS.</strong> FLOSS was specifically designed for this exact pattern. The decode() function in v4/v5 is a textbook XOR loop — FLOSS emulates it and prints every decoded string. The analyst has the C2 IP within seconds.
+      </div>
+
+      <h3>Defeating XOR in Ghidra manually</h3>
+      <p>If FLOSS is not available, the same result is achievable in Ghidra in a few minutes:</p>
+      <div class="step-list">
+        <div class="step"><div class="step-n">1</div><div class="step-body">Import the binary into Ghidra, let auto-analysis run. In the Symbol Tree, search for functions named <code>main.decode</code> (unstripped) or look for short functions with a loop containing XOR operations (stripped).</div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body">The decode function looks like: a loop, each iteration loads a byte, XORs with constant 0x5A, stores result. The constant 0x5A in the decompiler output is the XOR key.</div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body">In Ghidra's Script Manager, run a Python script to decode all byte arrays: find all <code>byte[]</code> data sections, XOR each byte with 0x5A, print readable output. This is a 10-line script.</div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-body">Alternatively: open the binary in a hex editor, locate the encoded byte arrays (they are stored consecutively as global variables), copy them to a Python script and XOR decode manually.</div></div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">Python — manual XOR decode of extracted bytes</span><span class="code-lang">python</span></div>
+        <pre><span class="cm"># Paste the encoded bytes from Ghidra here</span>
+encoded = [0x32,0x2e,0x2e,0x2a,0x60,0x75,0x75,0x6b,0x63,0x68,
+           0x74,0x6b,0x6c,0x62,0x74,0x6b,0x74,0x6b,0x6a,0x60,
+           0x6f,0x6a,0x6a,0x6a,0x75,0x38,0x3f,0x3b,0x39,0x35,0x34]
+
+key = 0x5A
+decoded = ''.join(chr(b ^ key) for b in encoded)
+print(decoded)
+<span class="cm"># Output: http://192.168.1.10:5000/beacon</span></pre>
+      </div>
+
+      <h3>Defeating binary stripping (L09) with GoReSym</h3>
+      <p>Download GoReSym from <a href="https://github.com/mandiant/GoReSym" target="_blank" class="il">github.com/mandiant/GoReSym</a>. It parses the Go module metadata embedded in the binary's <code>.gopclntab</code> section — this section is required by the Go runtime and cannot be removed with -ldflags.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">Command Prompt — GoReSym against stripped binary</span><span class="code-lang">shell</span></div>
+        <pre>GoReSym.exe v5_final.exe
+
+<span class="cm"># Output includes recovered function names:</span>
+<span class="cm"># main.main</span>
+<span class="cm"># main.sendToC2</span>
+<span class="cm"># main.jitteredSleep</span>
+<span class="cm"># main.decode</span>
+<span class="cm"># Go version: go1.22.0</span>
+<span class="cm"># Build path: C:\Users\sally\...\v5_jitter.go</span></pre>
+      </div>
+      <div class="callout amber">
+        <strong>GoReSym also recovers the build path.</strong> The output includes the full file system path where the binary was compiled — in this case exposing the operator's username and directory structure. This is a significant OPSEC failure that stripping alone does not address.
+      </div>
+
+      <h3>Identifying Go binaries with Detect-It-Easy</h3>
+      <p>Before spending time on a binary, DiE confirms whether it is Go, which version, and whether it is packed or protected. Download from <a href="https://github.com/horsicq/Detect-It-Easy" target="_blank" class="il">github.com/horsicq/Detect-It-Easy</a>.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">Command Prompt</span><span class="code-lang">shell</span></div>
+        <pre>die.exe v5_final.exe
+<span class="cm"># Compiler: Go(1.22.0)[-]</span>
+<span class="cm"># Library: Go Standard Library</span>
+<span class="cm"># No packer detected</span></pre>
+      </div>
+
+      <h3>Summary — analyst time to fully defeat Phase 04</h3>
       <table>
-        <thead><tr><th>Tier</th><th>Example in this project</th><th>Bypassed by current payload?</th></tr></thead>
+        <thead><tr><th>Technique</th><th>Tool to defeat it</th><th>Time required</th><th>Skill level</th></tr></thead>
         <tbody>
-          <tr>
-            <td style="color:#e03a3a;font-weight:600">TTPs</td>
-            <td>Beaconing every 60s, Run key persistence, netstat/tasklist enumeration sequence</td>
-            <td class="bypass-no">No &mdash; core behaviour unchanged by any phase of this project</td>
-          </tr>
-          <tr>
-            <td style="color:#e06020;font-weight:600">Tools</td>
-            <td>The compiled .exe binary</td>
-            <td class="bypass-part">Partial &mdash; binary stripping + garble (Phase 04) hardens against static analysis signatures</td>
-          </tr>
-          <tr>
-            <td style="color:#f0a030;font-weight:600">Network Artifacts</td>
-            <td>X-Host header, /beacon URI, port 5000, HTTP (not HTTPS)</td>
-            <td class="bypass-no">No &mdash; headers are hardcoded, channel is plaintext HTTP</td>
-          </tr>
-          <tr>
-            <td style="color:#f0a030;font-weight:600">Host Artifacts</td>
-            <td>C:\temp\recon_combined.txt, "ReconBeacon" Run key value name</td>
-            <td class="bypass-no">No &mdash; static filenames and key names remain constant</td>
-          </tr>
-          <tr>
-            <td style="color:#4a8fff;font-weight:600">IP Addresses</td>
-            <td>192.168.1.10:5000 hardcoded in binary</td>
-            <td class="bypass-yes">Trivial &mdash; change the IP and recompile; hash changes too</td>
-          </tr>
-          <tr>
-            <td style="color:#5a6480;font-weight:600">Hash Values</td>
-            <td>SHA-256 of the .exe</td>
-            <td class="bypass-yes">Yes &mdash; any recompile produces a completely different hash</td>
-          </tr>
+          <tr><td>XOR string obfuscation (L07)</td><td>FLOSS — automated</td><td>Under 2 minutes</td><td class="bypass-yes">Low</td></tr>
+          <tr><td>XOR string obfuscation (L07)</td><td>Ghidra + Python script</td><td>5–10 minutes</td><td class="bypass-part">Medium</td></tr>
+          <tr><td>Binary stripping (L09)</td><td>GoReSym — automated</td><td>Under 1 minute</td><td class="bypass-yes">Low</td></tr>
+          <tr><td>Sleep jitter (L08)</td><td>Zeek + sustained capture</td><td>15–30 minutes of capture</td><td class="bypass-part">Medium</td></tr>
+          <tr><td>Sleep jitter (L08)</td><td>Wireshark timing export</td><td>5 minutes + capture time</td><td class="bypass-yes">Low</td></tr>
         </tbody>
       </table>
-      <p style="margin-top:16px">The practical conclusion is that this payload is easily detected at the Network Artifacts and Host Artifacts tiers &mdash; the tiers that are most useful to a working SOC analyst. Blocking a hash or an IP is trivial to evade. Detecting a registry Run key write or a beacon timing pattern is much harder for the attacker to change without altering core behaviour.</p>
     </section>
+
+    <hr class="sep">
+
+    <!-- ═══════ NETWORK LAYER OBFUSCATION ═══════ -->
+    <section class="section" id="network-obfusc">
+      <h2>Network-layer obfuscation — what the payload does and how to detect it</h2>
+      <p>Sleep jitter is the only network-layer obfuscation technique implemented in this project. Understanding exactly what it changes — and what it does not change — is important for both the attacker and the defender.</p>
+
+      <h3>What plain HTTP beaconing looks like in Wireshark (v3 — no jitter)</h3>
+      <p>With filter <code>http.request.method == "POST"</code> running against v3 traffic:</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">Wireshark packet list — v3 (fixed 60s interval)</span><span class="code-lang">log</span></div>
+        <pre>Time       Source          Destination     Protocol  Info
+0.000      192.168.1.5     192.168.1.10    HTTP      POST /beacon HTTP/1.1
+60.001     192.168.1.5     192.168.1.10    HTTP      POST /beacon HTTP/1.1
+120.002    192.168.1.5     192.168.1.10    HTTP      POST /beacon HTTP/1.1
+180.001    192.168.1.5     192.168.1.10    HTTP      POST /beacon HTTP/1.1
+<span class="cm"># Inter-arrival times: 60.001, 60.001, 59.999 — perfectly regular</span>
+<span class="cm"># Zeek beacon score: 0.98 out of 1.0 — flagged immediately</span></pre>
+      </div>
+
+      <h3>What jittered beaconing looks like (v5 — ±20%)</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">Wireshark packet list — v5 (jitter ±20%)</span><span class="code-lang">log</span></div>
+        <pre>Time       Source          Destination     Protocol  Info
+0.000      192.168.1.5     192.168.1.10    HTTP      POST /beacon HTTP/1.1
+53.241     192.168.1.5     192.168.1.10    HTTP      POST /beacon HTTP/1.1
+119.884    192.168.1.5     192.168.1.10    HTTP      POST /beacon HTTP/1.1
+187.102    192.168.1.5     192.168.1.10    HTTP      POST /beacon HTTP/1.1
+<span class="cm"># Inter-arrival times: 53.2, 66.6, 67.2 — varies but clusters around 60s</span>
+<span class="cm"># Zeek beacon score: ~0.6 — below default threshold but still suspicious</span></pre>
+      </div>
+
+      <h3>How to detect jittered beaconing</h3>
+      <p>Jitter reduces the beacon score but does not eliminate it. Several detection approaches still work:</p>
+      <div class="step-list">
+        <div class="step"><div class="step-n">Method 1</div><div class="step-body"><strong>Sustained capture + statistical analysis.</strong> Collect 30+ beacons (about 30 minutes). Calculate the mean and standard deviation of inter-arrival times. A legitimate user's browser makes requests with high variance. A jittered beacon has variance that clusters tightly around a mean — in this case around 60 seconds with a standard deviation of about 8 seconds. Export Wireshark stats: Statistics &rarr; Conversations, filter by the destination IP.</div></div>
+        <div class="step"><div class="step-n">Method 2</div><div class="step-body"><strong>Zeek with adjusted thresholds.</strong> The default Zeek beacon detection threshold catches periodicity scores above 0.7. Lowering to 0.5 catches ±20% jitter at the cost of more false positives. The trade-off is an operational decision.</div></div>
+        <div class="step"><div class="step-n">Method 3</div><div class="step-body"><strong>Protocol anomaly detection.</strong> Jitter does not change the HTTP headers. X-Host and X-Filename are still non-standard. A Suricata rule matching these specific headers fires regardless of timing: <code>alert http any any -&gt; any 5000 (msg:"ReconBeacon C2"; http.header; content:"X-Filename"; content:"X-Host"; sid:1000001;)</code></div></div>
+        <div class="step"><div class="step-n">Method 4</div><div class="step-body"><strong>Destination consistency.</strong> Every beacon goes to the same IP:port. Even with jitter, 30 POST requests to the same non-standard port from the same workstation over 30 minutes is anomalous. Network flow analysis flags this by destination frequency, not by timing.</div></div>
+      </div>
+
+      <h3>What jitter does NOT obfuscate</h3>
+      <table>
+        <thead><tr><th>Network indicator</th><th>Affected by jitter?</th><th>Remaining detection</th></tr></thead>
+        <tbody>
+          <tr><td>X-Host / X-Filename headers</td><td class="bypass-no">No — unchanged</td><td>Suricata rule on header names</td></tr>
+          <tr><td>Destination IP:port</td><td class="bypass-no">No — same every beacon</td><td>Flow frequency analysis</td></tr>
+          <tr><td>/beacon URI path</td><td class="bypass-no">No — hardcoded in both sides</td><td>HTTP URI pattern matching</td></tr>
+          <tr><td>Plain HTTP (no TLS)</td><td class="bypass-no">No — POST body readable</td><td>Full content inspection, DLP</td></tr>
+          <tr><td>Fixed 60s exact timing</td><td class="bypass-yes">Yes — defeated by ±20% window</td><td>Requires sustained capture + statistics</td></tr>
+          <tr><td>Beacon regularity (clustering)</td><td class="bypass-part">Partial — reduced not eliminated</td><td>Zeek with lowered threshold</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout blue">
+        <strong>What HTTPS would change.</strong> Upgrading the C2 server to TLS (adding a self-signed cert to Flask) would encrypt the POST body and headers — X-Host and X-Filename would no longer be visible in Wireshark. The URI (/beacon) would also be hidden. Destination IP and timing analysis would still work. This is the most significant remaining network detection gap in the current implementation.
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- ═══════ VIRUSTOTAL ═══════ -->
+    <section class="section" id="virustotal">
+      <h2>VirusTotal — analysis and reporting</h2>
+      <p>VirusTotal scans files and URLs against 70+ antivirus engines simultaneously and provides behaviour analysis from sandboxes. It is the fastest way to check whether a binary is detected by mainstream AV and to understand its capabilities without running it yourself.</p>
+
+      <h3>How to submit a sample for analysis</h3>
+      <div class="step-list">
+        <div class="step"><div class="step-n">Step 1</div><div class="step-body">Go to <a href="https://www.virustotal.com" target="_blank" class="il">virustotal.com</a>. You do not need an account for basic analysis, but an account is required to view full behaviour reports and to submit files larger than 32MB. The payload binaries in this project are well under this limit.</div></div>
+        <div class="step"><div class="step-n">Step 2</div><div class="step-body"><strong>File tab:</strong> Click Choose file and select the .exe. VirusTotal will hash the file first — if the hash has been seen before, it returns cached results instantly without uploading. For the first submission of a new binary, the file is uploaded and scanned.</div></div>
+        <div class="step"><div class="step-n">Step 3</div><div class="step-body"><strong>URL tab:</strong> You can also submit the C2 URL (http://192.168.1.10:5000/beacon) to check if the IP or domain is flagged. A local lab IP (192.168.x.x) will not be flagged, but a real C2 domain would appear in threat intel databases if it has been reported before.</div></div>
+        <div class="step"><div class="step-n">Warning</div><div class="step-body"><strong>Files submitted to VirusTotal become public.</strong> Any premium user can download samples you submit. Never submit files containing credentials, personal data, or proprietary information. For lab binaries this is fine — for real incident response samples, submit only hashes or use a private scanning service.</div></div>
+      </div>
+
+      <h3>Reading the results</h3>
+      <div class="step-list">
+        <div class="step"><div class="step-n">Detection ratio</div><div class="step-body">The headline number — e.g. "14/72" means 14 of 72 engines detected it. For a new Go binary with XOR obfuscation and symbol stripping, expect 0–5 detections on first submission. Without obfuscation (v3), expect 5–15 detections flagging the network behaviour and registry modification. A detection ratio above 30 means well-known malware with established signatures.</div></div>
+        <div class="step"><div class="step-n">Detection names</div><div class="step-body">Each engine reports its own name for what it found. Generic names like "Trojan.Generic" or "Malware.Heuristic" mean the engine flagged it by behaviour, not a specific signature. Named detections like "GoStealer.A" mean the engine has a specific signature for this family. For a custom-built educational payload, expect generic names if anything.</div></div>
+        <div class="step"><div class="step-n">Details tab</div><div class="step-body">Shows file metadata: SHA256, MD5, file size, PE header data, compilation timestamp, imports, sections. Check the imports list — for this payload you should see network, file system, process creation, and registry imports flagged.</div></div>
+        <div class="step"><div class="step-n">Behaviour tab</div><div class="step-body">Sandbox analysis from Cuckoo, Cape, and other automated sandboxes. This is the most useful section. Shows: processes created (cmd.exe children), files written (C:\temp\recon_combined.txt), registry modifications (HKCU Run key), network connections (POST to C2). This is behavioural analysis that XOR encoding and binary stripping do not defeat.</div></div>
+        <div class="step"><div class="step-n">Relations tab</div><div class="step-body">If the binary has been seen before, shows related files, URLs, and domains. For a fresh lab binary this will be empty. For known malware families this tab maps the infrastructure.</div></div>
+      </div>
+
+      <h3>How to report malware to VirusTotal</h3>
+      <p>If you analyse a binary and believe it is malicious but it is not detected by enough engines, you can submit it with context:</p>
+      <div class="step-list">
+        <div class="step"><div class="step-n">Method 1</div><div class="step-body"><strong>Reanalyse button:</strong> If a file was previously scanned, click Reanalyse to trigger a fresh scan with current engine definitions. New signatures added since the last scan may now detect it.</div></div>
+        <div class="step"><div class="step-n">Method 2</div><div class="step-body"><strong>Submit to AV vendors directly:</strong> On the detection results page, for each engine that did NOT detect the file, there is a "Submit sample" link that sends it directly to that vendor's malware research team. This is how new signatures get added.</div></div>
+        <div class="step"><div class="step-n">Method 3</div><div class="step-body"><strong>NCSC / CISA reporting:</strong> For incidents involving actual systems, report to <a href="https://www.ncsc.gov.ie/reporting/" target="_blank" class="il">NCSC Ireland</a> or <a href="https://www.cisa.gov/report" target="_blank" class="il">CISA (US)</a>. These agencies coordinate threat intelligence sharing and issue advisories. VirusTotal analysis output is accepted as supporting evidence in incident reports.</div></div>
+        <div class="step"><div class="step-n">Method 4</div><div class="step-body"><strong>For this project specifically:</strong> Submitting the lab payloads to VirusTotal is a valid exercise — it shows what AV coverage looks like before and after obfuscation. The unobfuscated v3 binary versus the obfuscated v5 binary will likely have different detection ratios. Document both ratios in the project write-up.</div></div>
+      </div>
+    </section>
+
+    <hr class="sep">
+
+    <!-- ═══════ PYRAMID ═══════ -->
+    <section class="section" id="pyramid">
+      <h2>Pyramid of Pain — what the payload bypasses</h2>
+      <p>The higher the tier, the harder it is for the attacker to change their indicator once detected. The current payload (v5, fully obfuscated) maps as follows:</p>
+      <table>
+        <thead><tr><th>Tier</th><th>Example</th><th>Bypassed?</th></tr></thead>
+        <tbody>
+          <tr><td style="color:#e03a3a;font-weight:600">TTPs</td><td>Beaconing behaviour, Run key persistence, cmd.exe children</td><td class="bypass-no">No — core behaviour is unchanged</td></tr>
+          <tr><td style="color:#e06020;font-weight:600">Tools</td><td>The compiled .exe binary</td><td class="bypass-part">Partial — FLOSS + GoReSym defeat static obfuscation within minutes</td></tr>
+          <tr><td style="color:#f0a030;font-weight:600">Network Artifacts</td><td>X-Host header, /beacon URI, port 5000</td><td class="bypass-no">No — headers and URI are hardcoded</td></tr>
+          <tr><td style="color:#f0a030;font-weight:600">Host Artifacts</td><td>C:\temp\recon_combined.txt, ReconBeacon Run key</td><td class="bypass-no">No — static file and key names unchanged</td></tr>
+          <tr><td style="color:#4a8fff;font-weight:600">IP Addresses</td><td>192.168.1.10:5000</td><td class="bypass-yes">Trivial — change IP and recompile</td></tr>
+          <tr><td style="color:#5a6480;font-weight:600">Hash Values</td><td>SHA-256 of the .exe</td><td class="bypass-yes">Yes — any recompile produces a new hash</td></tr>
+        </tbody>
+      </table>
+    </section>
+
   </main>
 </div>
 
@@ -258,7 +491,7 @@
 
 <script>
   const ss=document.querySelectorAll('.section'),ls=document.querySelectorAll('.sb-nav a');
-  ss.forEach(s=>new IntersectionObserver(e=>{e.forEach(n=>{if(n.isIntersecting){ls.forEach(l=>l.classList.remove('on'));const a=document.querySelector('.sb-nav a[href="#'+n.target.id+'"]');if(a)a.classList.add('on')}})},{rootMargin:'-40% 0px -55% 0px'}).observe(s));
+  ss.forEach(s=>new IntersectionObserver(e=>{e.forEach(n=>{if(n.isIntersecting){ls.forEach(l=>l.classList.remove('on'));const a=document.querySelector('.sb-nav a[href="#'+n.target.id+'"]');if(a)a.classList.add('on')}})},{rootMargin:'-35% 0px -55% 0px'}).observe(s));
 </script>
 </body>
 </html>
