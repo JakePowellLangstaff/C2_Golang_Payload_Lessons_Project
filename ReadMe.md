@@ -7,7 +7,7 @@ Requirements
 Python 3.11+
 
 Setup
-##1. Clone the repo
+#1. Clone the repo
 git clone cd C2_zooSetup_early
 
 ###2. Create virtual environment
