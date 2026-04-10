@@ -23,21 +23,21 @@ pip install flask gunicorn
    That is all that is needed — no other packages required.
 
 5. Run locally
-python webpage.py
+   python webpage.py
 
-Site runs at http://localhost:8000
+   Site runs at http://localhost:8000
 
 6. Run with Gunicorn (production)
-gunicorn --bind 0.0.0.0:8000 --workers 2 webpage:app
+   gunicorn --bind 0.0.0.0:8000 --workers 2 webpage:app
 
-Note on Ports
-Default port is 8000. If port 8000 is already in use on your machine:
+   Note on Ports
+   Default port is 8000. If port 8000 is already in use on your machine:
 
-python webpage.py
+   python webpage.py
 
-Flask will show the port in terminal output
-Or with Gunicorn on a different port:
-gunicorn --bind 0.0.0.0:5001 --workers 2 webpage:app When deployed to Kubernetes the site is exposed on NodePort 30081.
+   Flask will show the port in terminal output
+   Or with Gunicorn on a different port:
+   gunicorn --bind 0.0.0.0:5001 --workers 2 webpage:app When deployed to Kubernetes the site is exposed on NodePort 30081.
 
 Project Structure
 ├── webpage.py # Main Flask app ├── templates/ # HTML pages ├── static/ # CSS and assets ├── downloadables/ │ ├── lessonDocs/ # Word document walkthroughs │ └── lessonPayloads/ # Go source files └── uploads/ # C2 beacon uploads (only if implemented from front end c2 section and configured not in form of downloadable due to ethical considerations)
