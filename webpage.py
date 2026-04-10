@@ -75,6 +75,10 @@ def defender():
 def zoo():
     return render_template("zoo.html")
 
+@app.route("/c2server")
+def c2server():
+    return render_template("c2server.html")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

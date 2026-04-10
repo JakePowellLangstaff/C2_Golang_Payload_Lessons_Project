@@ -332,47 +332,83 @@ print(decoded)
       </div>
 
       <h3>Defeating binary stripping (L09) with GoReSym</h3>
-      <p>Download GoReSym from <a href="https://github.com/mandiant/GoReSym" target="_blank" class="il">github.com/mandiant/GoReSym</a>. It parses the Go module metadata embedded in the binary's <code>.gopclntab</code> section — this section is required by the Go runtime and cannot be removed with -ldflags.</p>
+      <p>Binary stripping with <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">-ldflags="-s -w"</code> removes the symbol table and DWARF debug sections. Ghidra can no longer read function names directly and generates generic labels like <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">FUN_00401a20</code> instead of <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">main.sendToC2</code>. However, stripping is defeated in under one minute by GoReSym.</p>
+
+      <h3>Why stripping does not fully work &mdash; the .gopclntab section</h3>
+      <p>Every Go binary contains a section called <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">.gopclntab</code> (Go program counter to line table). The Go runtime requires this section to handle panics, print stack traces, and support garbage collection. It cannot be removed even with <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">-ldflags="-s -w"</code> because removing it breaks the binary at runtime. GoReSym reads <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">.gopclntab</code> directly and reconstructs the full function name table, entirely bypassing the missing symbol table.</p>
+      <p>Download GoReSym from <a href="https://github.com/mandiant/GoReSym" target="_blank" class="il">github.com/mandiant/GoReSym</a> and run it against the stripped binary:</p>
       <div class="code-wrap">
-        <div class="code-bar"><span class="code-fn">Command Prompt — GoReSym against stripped binary</span><span class="code-lang">shell</span></div>
+        <div class="code-bar"><span class="code-fn">Command Prompt &mdash; GoReSym against v5_final.exe (stripped)</span><span class="code-lang">shell</span></div>
         <pre>GoReSym.exe v5_final.exe
 
-<span class="cm"># Output includes recovered function names:</span>
-<span class="cm"># main.main</span>
-<span class="cm"># main.sendToC2</span>
-<span class="cm"># main.jitteredSleep</span>
-<span class="cm"># main.decode</span>
-<span class="cm"># Go version: go1.22.0</span>
-<span class="cm"># Build path: C:\Users\sally\...\v5_jitter.go</span></pre>
+<span class="cm"># All names recovered despite -ldflags="-s -w":</span>
+<span class="cm">#   Version:   go1.22.0</span>
+<span class="cm">#   BuildPath: C:\Users\sally\OneDrive\Desktop\payloads\...\v5_jitter.go</span>
+<span class="cm">#   main.main</span>
+<span class="cm">#   main.sendToC2</span>
+<span class="cm">#   main.jitteredSleep</span>
+<span class="cm">#   main.decode</span></pre>
       </div>
-      <div class="callout amber">
-        <strong>GoReSym also recovers the build path.</strong> The output includes the full file system path where the binary was compiled — in this case exposing the operator's username and directory structure. This is a significant OPSEC failure that stripping alone does not address.
+      <div class="callout red">
+        <strong>Build path exposure &mdash; significant OPSEC failure.</strong> GoReSym recovers the full file system path where the binary was compiled, exposing the operator's Windows username, OneDrive path, and project folder name. This persists in the binary even after stripping and cannot be removed with <code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,.2);padding:1px 5px;border-radius:3px">-ldflags</code>. The only remedies are compiling from a neutral path such as <code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,.2);padding:1px 5px;border-radius:3px">C:\build\</code> or using <strong>garble</strong>, which randomises these paths at build time.
       </div>
 
-      <h3>Identifying Go binaries with Detect-It-Easy</h3>
-      <p>Before spending time on a binary, DiE confirms whether it is Go, which version, and whether it is packed or protected. Download from <a href="https://github.com/horsicq/Detect-It-Easy" target="_blank" class="il">github.com/horsicq/Detect-It-Easy</a>.</p>
+      <h3>Identifying Go binaries with Detect-It-Easy (DiE)</h3>
+      <p>Before spending time on a binary, DiE identifies the compiler, version, and any packer within seconds &mdash; regardless of stripping. Download from <a href="https://github.com/horsicq/Detect-It-Easy" target="_blank" class="il">github.com/horsicq/Detect-It-Easy</a>.</p>
       <div class="code-wrap">
-        <div class="code-bar"><span class="code-fn">Command Prompt</span><span class="code-lang">shell</span></div>
+        <div class="code-bar"><span class="code-fn">Command Prompt &mdash; DiE against stripped binary</span><span class="code-lang">shell</span></div>
         <pre>die.exe v5_final.exe
 <span class="cm"># Compiler: Go(1.22.0)[-]</span>
-<span class="cm"># Library: Go Standard Library</span>
-<span class="cm"># No packer detected</span></pre>
+<span class="cm"># Library:  Go Standard Library</span>
+<span class="cm"># No packer detected &mdash; PE64 Windows executable</span></pre>
       </div>
 
-      <h3>Summary — analyst time to fully defeat Phase 04</h3>
+      <h3>PEStudio entropy analysis &mdash; confirming obfuscation is present</h3>
+      <p>Even after stripping, PEStudio shows elevated entropy in the data sections where the XOR-encoded byte arrays live. Normal code sections sit at 5.5&ndash;6.5 entropy. Sections containing tightly packed encoded data push above 6.8, which PEStudio flags as suspicious &mdash; confirming obfuscation is present and that FLOSS should be the next step.</p>
+      <table>
+        <thead><tr><th>PE section</th><th>Expected entropy (clean binary)</th><th>This payload (obfuscated)</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:var(--mono)">.text (code)</td><td>5.5 &ndash; 6.5</td><td>6.1 &ndash; 6.4 &mdash; normal</td></tr>
+          <tr><td style="font-family:var(--mono)">.data (globals)</td><td>3.0 &ndash; 5.0</td><td>6.8 &ndash; 7.1 &mdash; elevated, flags XOR arrays</td></tr>
+          <tr><td style="font-family:var(--mono)">.gopclntab</td><td>Go-specific &mdash; always present</td><td>Present &mdash; immediately confirms Go binary</td></tr>
+        </tbody>
+      </table>
+
+      <h3>What stripping does NOT protect against</h3>
+      <p>Binary stripping only affects static analysis of the file on disk. Every runtime and network detection method is completely unaffected &mdash; the binary executes identically whether stripped or not.</p>
+      <table>
+        <thead><tr><th>Detection method</th><th>Affected by stripping?</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Sysmon EID 1 &mdash; process creation</td><td class="diff-add">No</td><td>cmd.exe child processes still spawn &mdash; process tree is identical</td></tr>
+          <tr><td>Sysmon EID 13 &mdash; registry write</td><td class="diff-add">No</td><td>HKCU Run key write fires the same event regardless of binary metadata</td></tr>
+          <tr><td>Sysmon EID 3 &mdash; network connection</td><td class="diff-add">No</td><td>Outbound POST to port 5000 still generates the event</td></tr>
+          <tr><td>Sysmon EID 11 &mdash; file created</td><td class="diff-add">No</td><td>C:\temp\recon_combined.txt is written every cycle regardless</td></tr>
+          <tr><td>Autoruns.exe &mdash; persistence</td><td class="diff-add">No</td><td>ReconBeacon Run key still appears &mdash; unsigned, unknown publisher</td></tr>
+          <tr><td>Wireshark / Zeek &mdash; network</td><td class="diff-add">No</td><td>Stripping changes no bytes that travel on the wire</td></tr>
+          <tr><td>FLOSS &mdash; string recovery</td><td class="diff-add">No</td><td>FLOSS emulates the XOR decode loop &mdash; encoded arrays are still in the binary</td></tr>
+          <tr><td>GoReSym &mdash; symbol recovery</td><td class="diff-add">No</td><td>.gopclntab persists &mdash; all function names recoverable in under 1 minute</td></tr>
+          <tr><td>Detect-It-Easy &mdash; compiler ID</td><td class="diff-add">No</td><td>Go runtime structure is always present and always identifiable</td></tr>
+          <tr><td>Ghidra &mdash; function names</td><td class="diff-same">Partially</td><td>Names hidden without GoReSym; fully recovered with GoReSym plugin in ~1 minute</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Summary &mdash; analyst time to fully defeat Phase 04</h3>
       <table>
         <thead><tr><th>Technique</th><th>Tool to defeat it</th><th>Time required</th><th>Skill level</th></tr></thead>
         <tbody>
-          <tr><td>XOR string obfuscation (L07)</td><td>FLOSS — automated</td><td>Under 2 minutes</td><td class="bypass-yes">Low</td></tr>
-          <tr><td>XOR string obfuscation (L07)</td><td>Ghidra + Python script</td><td>5–10 minutes</td><td class="bypass-part">Medium</td></tr>
-          <tr><td>Binary stripping (L09)</td><td>GoReSym — automated</td><td>Under 1 minute</td><td class="bypass-yes">Low</td></tr>
-          <tr><td>Sleep jitter (L08)</td><td>Zeek + sustained capture</td><td>15–30 minutes of capture</td><td class="bypass-part">Medium</td></tr>
+          <tr><td>XOR string obfuscation (L07)</td><td>FLOSS &mdash; automated</td><td>Under 2 minutes</td><td class="bypass-yes">Low</td></tr>
+          <tr><td>XOR string obfuscation (L07)</td><td>Ghidra + Python script</td><td>5&ndash;10 minutes</td><td class="bypass-part">Medium</td></tr>
+          <tr><td>Sleep jitter (L08)</td><td>Zeek + sustained capture</td><td>15&ndash;30 minutes of capture</td><td class="bypass-part">Medium</td></tr>
           <tr><td>Sleep jitter (L08)</td><td>Wireshark timing export</td><td>5 minutes + capture time</td><td class="bypass-yes">Low</td></tr>
+          <tr><td>Binary stripping (L09)</td><td>GoReSym &mdash; automated</td><td>Under 1 minute</td><td class="bypass-yes">Low</td></tr>
+          <tr><td>Binary stripping (L09)</td><td>Detect-It-Easy &mdash; compiler ID</td><td>Under 10 seconds</td><td class="bypass-yes">Low</td></tr>
+          <tr><td>Binary stripping (L09)</td><td>PEStudio &mdash; entropy analysis</td><td>Under 2 minutes</td><td class="bypass-yes">Low</td></tr>
         </tbody>
       </table>
     </section>
 
     <hr class="sep">
+
 
     <!-- ═══════ NETWORK LAYER OBFUSCATION ═══════ -->
     <section class="section" id="network-obfusc">

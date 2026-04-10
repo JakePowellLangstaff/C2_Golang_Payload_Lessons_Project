@@ -236,42 +236,68 @@ c2URL := <span class="fn">decode</span>(encC2URL)</pre>
         <span class="lb-status s-done">Complete</span>
       </div>
 
-      <p>A Go binary compiled without flags embeds the symbol table (all function names and variable names) and DWARF debugging tables (source file paths, line numbers). Load an unstripped binary in Ghidra and you can read every function name: <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">main.main</code>, <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">main.sendToC2</code>, <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">main.decode</code>. The strip flags remove all of this without changing any runtime behaviour.</p>
-
-      <h3>Build commands</h3>
-      <div class="code-wrap">
-        <div class="code-bar"><span class="code-fn">PowerShell</span><span class="code-lang">shell</span></div>
-        <pre><span class="cm"># Standard build &mdash; function names visible in Ghidra (~1.8MB)</span>
-go build -o v5_jitter.exe v5_jitter.go
-
-<span class="cm"># Stripped build &mdash; no function names, no source paths (~1.2MB)</span>
-go build -ldflags="-s -w" -o v5_final.exe v5_jitter.go
-
-<span class="cm"># Verify: should show nothing for either search</span>
-strings.exe v5_final.exe | findstr "http"
-strings.exe v5_final.exe | findstr "netstat"</pre>
-      </div>
+      <p>A Go binary compiled without flags embeds the symbol table (all function names and variable names) and DWARF debugging tables (source file paths, line numbers). Load an unstripped binary in Ghidra and you can read every function name: <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">main.main</code>, <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">main.sendToC2</code>, <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">main.decode</code>. The strip flags remove all of this without changing any runtime behaviour. The source code itself does not change &mdash; stripping is applied entirely at compile time via two linker flags.</p>
 
       <h3>What each flag removes</h3>
       <table>
-        <thead><tr><th>Flag</th><th>Removes</th><th>Effect on runtime</th></tr></thead>
+        <thead><tr><th>Flag</th><th>Removes from binary</th><th>Effect on runtime</th></tr></thead>
         <tbody>
-          <tr><td style="font-family:var(--mono)">-s</td><td>Symbol table &mdash; all function names, variable names, package paths</td><td>None</td></tr>
-          <tr><td style="font-family:var(--mono)">-w</td><td>DWARF debugging info &mdash; source file paths, line numbers, type info</td><td>None</td></tr>
-          <tr><td style="font-family:var(--mono)">-s -w</td><td>Both. Maximum size reduction and analyst visibility reduction</td><td>None</td></tr>
+          <tr><td style="font-family:var(--mono)">-s</td><td>Symbol table &mdash; all function names, variable names, package import paths</td><td>None</td></tr>
+          <tr><td style="font-family:var(--mono)">-w</td><td>DWARF debug info &mdash; source file paths, line numbers, type info used by Ghidra and dlv</td><td>None</td></tr>
+          <tr><td style="font-family:var(--mono)">-s -w</td><td>Both together &mdash; maximum analyst visibility reduction and size reduction</td><td>None</td></tr>
         </tbody>
       </table>
 
-      <div class="callout">
-        <strong>What still remains.</strong> The Go runtime is still in the binary &mdash; tools like Detect-It-Easy still identify it as a Go binary. A tool called GoReSym (Mandiant) can recover Go function names from stripped binaries using the module data structure the runtime requires. Binary stripping slows down analysis; it does not prevent it. The advanced extension is <strong>garble</strong> &mdash; a build-time obfuscator that defeats GoReSym as well.
+      <h3>Build commands</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">PowerShell &mdash; both builds side by side</span><span class="code-lang">shell</span></div>
+        <pre><span class="cm"># Standard build &mdash; function names visible in Ghidra (~1.8 MB)</span>
+GOOS=windows GOARCH=amd64 go build -o v5_jitter.exe v5_jitter.go
+
+<span class="cm"># Stripped build &mdash; no function names, no source paths (~1.2 MB, ~33% smaller)</span>
+GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o v5_final.exe v5_jitter.go
+
+<span class="cm"># Compare sizes</span>
+dir v5_jitter.exe v5_final.exe
+
+<span class="cm"># Verify strings are gone &mdash; both should return no output</span>
+strings.exe v5_final.exe | findstr "http"
+strings.exe v5_final.exe | findstr "netstat"
+strings.exe v5_final.exe | findstr "main.sendToC2"</pre>
       </div>
 
-      <h3>Final build &mdash; all three techniques combined</h3>
-      <p>v5_jitter.go compiled with the strip flags is the most complete version produced in this project. It applies all three obfuscation layers: XOR string encoding (no plaintext strings), sleep jitter (no fixed beacon interval), and binary stripping (no function names in Ghidra).</p>
+      <h3>What Ghidra sees &mdash; before and after stripping</h3>
+      <table>
+        <thead><tr><th>What Ghidra shows</th><th>Unstripped (v5_jitter.exe)</th><th>Stripped (v5_final.exe)</th></tr></thead>
+        <tbody>
+          <tr><td>Function names in Symbol Tree</td><td class="diff-same">main.main, main.sendToC2, main.decode, main.jitteredSleep &mdash; all readable</td><td class="diff-add">FUN_00401a20, FUN_00403b10 &mdash; generic auto-named functions only</td></tr>
+          <tr><td>Source file paths</td><td class="diff-same">C:\Users\sally\...\v5_jitter.go visible in strings</td><td class="diff-add">Removed &mdash; no build path exposed</td></tr>
+          <tr><td>Line number info</td><td class="diff-same">Present &mdash; Ghidra maps each instruction to source line</td><td class="diff-add">Removed &mdash; no source correlation possible</td></tr>
+          <tr><td>Binary size</td><td class="diff-same">~1.8 MB</td><td class="diff-add">~1.2 MB &mdash; ~33% reduction</td></tr>
+          <tr><td>Runtime behaviour</td><td class="diff-add">Identical</td><td class="diff-add">Identical</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout red">
+        <strong>Important limitation.</strong> Stripping removes debug info but the Go runtime itself stays in the binary. The <code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,.2);padding:1px 5px;border-radius:3px">.gopclntab</code> section &mdash; which the runtime needs to handle panics and stack traces &mdash; cannot be removed with <code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,.2);padding:1px 5px;border-radius:3px">-ldflags</code>. A Mandiant tool called <strong>GoReSym</strong> parses this section and recovers all function names from a stripped binary in under one minute. Stripping raises the cost of analysis; it does not prevent it. See the Blue Team page for the full GoReSym walkthrough.
+      </div>
+
+      <h3>Final build &mdash; all three obfuscation layers combined</h3>
+      <p>v5_jitter.go compiled with the strip flags is the most complete version produced in this project. It stacks all three Phase 04 techniques: XOR string encoding (no plaintext strings in the binary), sleep jitter (no fixed beacon interval on the network), and binary stripping (no function names in Ghidra). The source code is identical to v5_jitter.go &mdash; only the build command changes.</p>
       <div class="code-wrap">
-        <div class="code-bar"><span class="code-fn">Final build command</span><span class="code-lang">shell</span></div>
+        <div class="code-bar"><span class="code-fn">Final production build command</span><span class="code-lang">shell</span></div>
         <pre>GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o v5_final.exe v5_jitter.go</pre>
       </div>
+
+      <h3>Obfuscation layer summary &mdash; all three techniques</h3>
+      <table>
+        <thead><tr><th>Layer</th><th>Version introduced</th><th>Detection vector addressed</th><th>What it does NOT hide</th></tr></thead>
+        <tbody>
+          <tr><td>XOR string encoding</td><td>v4</td><td>strings.exe, static AV signatures, plaintext string search</td><td>Runtime behaviour, network traffic, Sysmon events</td></tr>
+          <tr><td>Sleep jitter</td><td>v5</td><td>Fixed-interval beacon detection (Zeek, Suricata)</td><td>Destination IP/port, POST method, payload content</td></tr>
+          <tr><td>Binary stripping</td><td>v5_final</td><td>Ghidra function names, DWARF debug info, source file paths</td><td>.gopclntab (GoReSym recovers names), runtime identity as Go binary</td></tr>
+        </tbody>
+      </table>
     </div>
 
   </main>
