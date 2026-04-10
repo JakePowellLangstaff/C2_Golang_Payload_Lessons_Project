@@ -20,7 +20,7 @@ Linux/Mac: source venv/bin/activate
 4. Install dependencies
 pip install flask gunicorn
 
-That is all that is needed — no other packages required.
+   That is all that is needed — no other packages required.
 
 5. Run locally
 python webpage.py
