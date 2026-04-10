@@ -7,28 +7,28 @@ Requirements
 Python 3.11+
 
 Setup
-#1. Clone the repo
+1. Clone the repo
 git clone cd C2_zooSetup_early
 
-###2. Create virtual environment
+2. Create virtual environment
 python -m venv venv
 
-###3. Activate virtual environment
+3. Activate virtual environment
 Windows: venv\Scripts\activate
 
 Linux/Mac: source venv/bin/activate
 
-###4. Install dependencies
+4. Install dependencies
 pip install flask gunicorn
 
 That is all that is needed — no other packages required.
 
-###5. Run locally
+5. Run locally
 python webpage.py
 
 Site runs at http://localhost:8000
 
-###6. Run with Gunicorn (production)
+6. Run with Gunicorn (production)
 gunicorn --bind 0.0.0.0:8000 --workers 2 webpage:app
 
 Note on Ports
