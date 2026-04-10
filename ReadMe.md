@@ -31,6 +31,10 @@ pip install flask gunicorn
 
 That is all that is needed — no other packages required.
 
+Note: Gunicorn does not run on Windows. On Windows use:
+python webpage.py
+
+Gunicorn is used automatically on the AWS Linux server deployment.
 ### 5. Run locally
 python webpage.py
 
