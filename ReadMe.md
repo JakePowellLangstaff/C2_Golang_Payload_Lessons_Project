@@ -14,7 +14,7 @@ git clone cd C2_zooSetup_early
 python -m venv venv
 
 3. Activate virtual environment
-Windows: venv\Scripts\activate
+Windows: venv\Scripts\activate|
 Linux/Mac: source venv/bin/activate
 
 4. Install dependencies
