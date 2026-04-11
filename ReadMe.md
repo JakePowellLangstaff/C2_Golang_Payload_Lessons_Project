@@ -22,7 +22,7 @@ Linux/Mac: source venv/bin/activate
 
    That is all that is needed — no other packages required.
  
-  note: Gunicorn is not supported on windows
+      note: Gunicorn is not supported on windows
 
 6. Run locally
    python webpage.py
