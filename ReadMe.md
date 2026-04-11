@@ -18,11 +18,11 @@ Windows: venv\Scripts\activate|
 Linux/Mac: source venv/bin/activate
 
 4. Install dependencies
-pip install flask gunicorn
+  pip install flask gunicorn
 
- That is all that is needed — no other packages required.
+   That is all that is needed — no other packages required.
  
-note: Gunicorn is not supported on windows
+  note: Gunicorn is not supported on windows
 
 6. Run locally
    python webpage.py
