@@ -20,14 +20,16 @@ Linux/Mac: source venv/bin/activate
 4. Install dependencies
 pip install flask gunicorn
 
-   That is all that is needed — no other packages required.
+ That is all that is needed — no other packages required.
+ 
+note: Gunicorn is not supported on windows
 
-5. Run locally
+6. Run locally
    python webpage.py
 
    Site runs at http://localhost:8000
 
-6. Run with Gunicorn (production)
+7. Run with Gunicorn (production)
    gunicorn --bind 0.0.0.0:8000 --workers 2 webpage:app
 
    Note on Ports
@@ -40,7 +42,12 @@ pip install flask gunicorn
    gunicorn --bind 0.0.0.0:5001 --workers 2 webpage:app When deployed to Kubernetes the site is exposed on NodePort 30081.
 
 Project Structure
-├── webpage.py # Main Flask app ├── templates/ # HTML pages ├── static/ # CSS and assets ├── downloadables/ │ ├── lessonDocs/ # Word document walkthroughs │ └── lessonPayloads/ # Go source files └── uploads/ # C2 beacon uploads (only if implemented from front end c2 section and configured not in form of downloadable due to ethical considerations)
+├── webpage.py # Main Flask app 
+├── templates/ # HTML pages 
+├── static/ # CSS and assets 
+├── downloadables/ │ 
+         ├── lessonDocs/ # Word document walkthroughs │ └── lessonPayloads/ # Go source files 
+└── uploads/ # C2 beacon uploads (only if implemented from front end c2 section and configured not in form of downloadable due to ethical considerations)
 
 Ethical Notice
 All materials are for educational use in a controlled lab environment only. No compiled binaries are distributed publicly.
