@@ -1,0 +1,729 @@
+=== RECONNAISSANCE REPORT ===
+Generated: 2026-04-23 22:40:06
+
+Beacon Cycle: 1776980406
+
+=== NETWORK INTERFACES ===
+Interface: Ethernet ([192.168.1.10/24])
+Interface: Ethernet 3 ([fe80::6406:79d1:146c:dd7a/64 192.168.56.1/24])
+Interface: Wi-Fi ([fe80::3abe:a1f9:6d96:2d8d/64 169.254.221.42/16])
+Interface: Local Area Connection* 1 ([fe80::2dc0:9eac:ead5:82eb/64 169.254.83.21/16])
+Interface: Local Area Connection* 10 ([fe80::861:dee6:7d39:1339/64 169.254.175.57/16])
+Interface: Loopback Pseudo-Interface 1 ([::1/128 127.0.0.1/8])
+
+=== SYSTEM INFORMATION ===
+
+Host Name:                 DESKTOP-K4G34NI
+OS Name:                   Microsoft Windows 10 Pro
+OS Version:                10.0.19045 N/A Build 19045
+OS Manufacturer:           Microsoft Corporation
+OS Configuration:          Standalone Workstation
+OS Build Type:             Multiprocessor Free
+Registered Owner:          sallypjake@yahoo.co.uk
+Registered Organization:   N/A
+Product ID:                00330-80141-64907-AA366
+Original Install Date:     05/01/2021, 01:36:50
+System Boot Time:          23/04/2026, 02:07:02
+System Manufacturer:       System manufacturer
+System Model:              System Product Name
+System Type:               x64-based PC
+Processor(s):              1 Processor(s) Installed.
+                           [01]: Intel64 Family 6 Model 94 Stepping 3 GenuineIntel ~4001 Mhz
+BIOS Version:              American Megatrends Inc. 1902, 27/06/2016
+Windows Directory:         C:\WINDOWS
+System Directory:          C:\WINDOWS\system32
+Boot Device:               \Device\HarddiskVolume8
+System Locale:             en-us;English (United States)
+Input Locale:              en-us;English (United States)
+Time Zone:                 (UTC+00:00) Dublin, Edinburgh, Lisbon, London
+Total Physical Memory:     32,683 MB
+Available Physical Memory: 17,248 MB
+Virtual Memory: Max Size:  43,691 MB
+Virtual Memory: Available: 25,077 MB
+Virtual Memory: In Use:    18,614 MB
+Page File Location(s):     D:\pagefile.sys
+                           E:\pagefile.sys
+Domain:                    WORKGROUP
+Logon Server:              \\DESKTOP-K4G34NI
+Hotfix(s):                 55 Hotfix(s) Installed.
+                           [01]: KB5066130
+                           [02]: KB5027122
+                           [03]: KB4577586
+                           [04]: KB4580325
+                           [05]: KB4589212
+                           [06]: KB4593175
+                           [07]: KB4598481
+                           [08]: KB5000736
+                           [09]: KB5011048
+                           [10]: KB5012170
+                           [11]: KB5015684
+                           [12]: KB5072653
+                           [13]: KB5066791
+                           [14]: KB5006753
+                           [15]: KB5007273
+                           [16]: KB5011352
+                           [17]: KB5011651
+                           [18]: KB5014032
+                           [19]: KB5014035
+                           [20]: KB5014671
+                           [21]: KB5015895
+                           [22]: KB5016705
+                           [23]: KB5018506
+                           [24]: KB5020372
+                           [25]: KB5022924
+                           [26]: KB5023794
+                           [27]: KB5025315
+                           [28]: KB5026879
+                           [29]: KB5028318
+                           [30]: KB5028380
+                           [31]: KB5029709
+                           [32]: KB5031539
+                           [33]: KB5032392
+                           [34]: KB5032907
+                           [35]: KB5034224
+                           [36]: KB5036447
+                           [37]: KB5037018
+                           [38]: KB5037240
+                           [39]: KB5037995
+                           [40]: KB5039336
+                           [41]: KB5041579
+                           [42]: KB5043935
+                           [43]: KB5043130
+                           [44]: KB5046823
+                           [45]: KB5050388
+                           [46]: KB5050111
+                           [47]: KB5052916
+                           [48]: KB5054682
+                           [49]: KB5058526
+                           [50]: KB5059504
+                           [51]: KB5063706
+                           [52]: KB5063261
+                           [53]: KB5063979
+                           [54]: KB5066790
+                           [55]: KB5005699
+Network Card(s):           3 NIC(s) Installed.
+                           [01]: Intel(R) Ethernet Connection (2) I219-V
+                                 Connection Name: Ethernet
+                                 DHCP Enabled:    Yes
+                                 DHCP Server:     192.168.1.1
+                                 IP address(es)
+                                 [01]: 192.168.1.10
+                           [02]: ASUS PCE-N15 11n Wireless LAN PCI-E Card
+                                 Connection Name: Wi-Fi
+                                 Status:          Media disconnected
+                           [03]: VirtualBox Host-Only Ethernet Adapter
+                                 Connection Name: Ethernet 3
+                                 DHCP Enabled:    No
+                                 IP address(es)
+                                 [01]: 192.168.56.1
+                                 [02]: fe80::6406:79d1:146c:dd7a
+Hyper-V Requirements:      VM Monitor Mode Extensions: Yes
+                           Virtualization Enabled In Firmware: Yes
+                           Second Level Address Translation: Yes
+                           Data Execution Prevention Available: Yes
+
+
+=== 1. NETWORK CONNECTIONS ===
+
+Active Connections
+
+  Proto  Local Address          Foreign Address        State           PID
+  TCP    0.0.0.0:80             0.0.0.0:0              LISTENING       3536
+  TCP    0.0.0.0:135            0.0.0.0:0              LISTENING       516
+  TCP    0.0.0.0:443            0.0.0.0:0              LISTENING       3536
+  TCP    0.0.0.0:445            0.0.0.0:0              LISTENING       4
+  TCP    0.0.0.0:3306           0.0.0.0:0              LISTENING       15120
+  TCP    0.0.0.0:5000           0.0.0.0:0              LISTENING       22088
+  TCP    0.0.0.0:5040           0.0.0.0:0              LISTENING       10076
+  TCP    0.0.0.0:5357           0.0.0.0:0              LISTENING       4
+  TCP    0.0.0.0:5426           0.0.0.0:0              LISTENING       4
+  TCP    0.0.0.0:8000           0.0.0.0:0              LISTENING       22424
+  TCP    0.0.0.0:9012           0.0.0.0:0              LISTENING       8592
+  TCP    0.0.0.0:9013           0.0.0.0:0              LISTENING       8592
+  TCP    0.0.0.0:9014           0.0.0.0:0              LISTENING       7016
+  TCP    0.0.0.0:49664          0.0.0.0:0              LISTENING       820
+  TCP    0.0.0.0:49665          0.0.0.0:0              LISTENING       740
+  TCP    0.0.0.0:49666          0.0.0.0:0              LISTENING       1480
+  TCP    0.0.0.0:49667          0.0.0.0:0              LISTENING       1508
+  TCP    0.0.0.0:49668          0.0.0.0:0              LISTENING       4104
+  TCP    0.0.0.0:49678          0.0.0.0:0              LISTENING       812
+  TCP    0.0.0.0:54235          0.0.0.0:0              LISTENING       4
+  TCP    0.0.0.0:54899          0.0.0.0:0              LISTENING       3452
+  TCP    127.0.0.1:1337         0.0.0.0:0              LISTENING       1044
+  TCP    127.0.0.1:5354         0.0.0.0:0              LISTENING       4548
+  TCP    127.0.0.1:8080         0.0.0.0:0              LISTENING       3452
+  TCP    127.0.0.1:8080         127.0.0.1:56058        FIN_WAIT_2      3452
+  TCP    127.0.0.1:8080         127.0.0.1:56060        FIN_WAIT_2      3452
+  TCP    127.0.0.1:13340        0.0.0.0:0              LISTENING       1888
+  TCP    127.0.0.1:13344        0.0.0.0:0              LISTENING       1888
+  TCP    127.0.0.1:28385        0.0.0.0:0              LISTENING       4
+  TCP    127.0.0.1:28390        0.0.0.0:0              LISTENING       4
+  TCP    127.0.0.1:37566        0.0.0.0:0              LISTENING       13764
+  TCP    127.0.0.1:37566        127.0.0.1:55020        ESTABLISHED     13764
+  TCP    127.0.0.1:37566        127.0.0.1:55032        ESTABLISHED     13764
+  TCP    127.0.0.1:49670        0.0.0.0:0              LISTENING       4760
+  TCP    127.0.0.1:54966        0.0.0.0:0              LISTENING       3452
+  TCP    127.0.0.1:55020        127.0.0.1:37566        ESTABLISHED     3452
+  TCP    127.0.0.1:55032        127.0.0.1:37566        ESTABLISHED     3452
+  TCP    127.0.0.1:56058        127.0.0.1:8080         CLOSE_WAIT      19464
+  TCP    127.0.0.1:56060        127.0.0.1:8080         CLOSE_WAIT      19464
+  TCP    127.0.0.1:56093        127.0.0.1:1042         SYN_SENT        8592
+  TCP    127.0.0.1:61368        0.0.0.0:0              LISTENING       22640
+  TCP    127.0.0.1:65444        0.0.0.0:0              LISTENING       11808
+  TCP    192.168.1.10:139       0.0.0.0:0              LISTENING       4
+  TCP    192.168.1.10:49966     192.168.1.16:8008      ESTABLISHED     13776
+  TCP    192.168.1.10:49967     192.168.1.17:8008      ESTABLISHED     13776
+  TCP    192.168.1.10:50064     2.19.176.195:443       ESTABLISHED     9336
+  TCP    192.168.1.10:50326     209.85.203.188:5228    ESTABLISHED     5304
+  TCP    192.168.1.10:50341     192.168.1.16:8009      ESTABLISHED     5304
+  TCP    192.168.1.10:50417     52.214.181.141:443     ESTABLISHED     5304
+  TCP    192.168.1.10:52563     4.207.247.137:443      ESTABLISHED     11896
+  TCP    192.168.1.10:54585     52.58.142.208:443      ESTABLISHED     5304
+  TCP    192.168.1.10:54901     172.67.129.53:443      ESTABLISHED     3452
+  TCP    192.168.1.10:54902     185.199.109.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54910     172.67.129.53:443      ESTABLISHED     3452
+  TCP    192.168.1.10:54911     172.67.129.53:443      ESTABLISHED     3452
+  TCP    192.168.1.10:54913     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54914     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54915     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54916     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54917     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54918     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54919     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54920     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54921     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54922     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54923     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54924     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54925     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54926     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54927     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54928     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54929     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54930     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54931     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54932     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54933     4.208.26.197:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:54934     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54935     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54936     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54937     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54938     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54939     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54940     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54941     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54942     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54943     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54944     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54945     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54946     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54947     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54948     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54949     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54950     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54951     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54952     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54953     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54954     185.199.108.133:443    ESTABLISHED     3452
+  TCP    192.168.1.10:54955     18.97.36.66:443        ESTABLISHED     5304
+  TCP    192.168.1.10:54962     52.214.67.209:443      ESTABLISHED     5304
+  TCP    192.168.1.10:55013     13.107.253.52:443      CLOSE_WAIT      3452
+  TCP    192.168.1.10:55015     87.249.137.52:443      ESTABLISHED     3452
+  TCP    192.168.1.10:55034     2.18.238.120:443       ESTABLISHED     3452
+  TCP    192.168.1.10:55053     209.85.203.95:443      ESTABLISHED     3452
+  TCP    192.168.1.10:55060     20.93.72.182:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:55077     20.93.72.182:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:55085     20.93.72.182:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:55086     20.93.72.182:443       CLOSE_WAIT      3452
+  TCP    192.168.1.10:55145     13.107.253.52:443      CLOSE_WAIT      3452
+  TCP    192.168.1.10:55149     13.107.253.52:443      CLOSE_WAIT      3452
+  TCP    192.168.1.10:55191     13.107.253.52:443      CLOSE_WAIT      3452
+  TCP    192.168.1.10:55217     74.125.193.94:443      ESTABLISHED     3452
+  TCP    192.168.1.10:55218     74.125.193.94:443      ESTABLISHED     3452
+  TCP    192.168.1.10:55478     13.60.224.77:22        ESTABLISHED     2204
+  TCP    192.168.1.10:55565     20.42.73.30:443        ESTABLISHED     19440
+  TCP    192.168.1.10:55784     104.18.6.134:443       TIME_WAIT       0
+  TCP    192.168.1.10:55787     104.18.9.172:443       CLOSE_WAIT      5304
+  TCP    192.168.1.10:55789     104.18.6.134:443       CLOSE_WAIT      5304
+  TCP    192.168.1.10:55790     104.18.22.55:443       CLOSE_WAIT      5304
+  TCP    192.168.1.10:55833     192.168.1.17:8009      ESTABLISHED     19464
+  TCP    192.168.1.10:55857     13.107.253.52:443      CLOSE_WAIT      3452
+  TCP    192.168.1.10:55889     4.207.247.137:443      ESTABLISHED     11896
+  TCP    192.168.1.10:56027     20.199.39.224:443      ESTABLISHED     19440
+  TCP    192.168.1.10:56053     213.156.156.61:80      ESTABLISHED     21000
+  TCP    192.168.1.10:56059     150.171.28.11:443      ESTABLISHED     3452
+  TCP    192.168.1.10:56076     192.168.1.16:8009      TIME_WAIT       0
+  TCP    192.168.1.10:56080     140.82.114.22:443      ESTABLISHED     19440
+  TCP    192.168.1.10:56083     192.168.1.16:8009      TIME_WAIT       0
+  TCP    192.168.1.10:56088     192.168.1.16:8009      ESTABLISHED     19464
+  TCP    192.168.1.10:56092     48.209.162.134:443     ESTABLISHED     24464
+  TCP    192.168.56.1:139       0.0.0.0:0              LISTENING       4
+  TCP    [::]:80                [::]:0                 LISTENING       3536
+  TCP    [::]:135               [::]:0                 LISTENING       516
+  TCP    [::]:443               [::]:0                 LISTENING       3536
+  TCP    [::]:445               [::]:0                 LISTENING       4
+  TCP    [::]:3306              [::]:0                 LISTENING       15120
+  TCP    [::]:5357              [::]:0                 LISTENING       4
+  TCP    [::]:5426              [::]:0                 LISTENING       4
+  TCP    [::]:49664             [::]:0                 LISTENING       820
+  TCP    [::]:49665             [::]:0                 LISTENING       740
+  TCP    [::]:49666             [::]:0                 LISTENING       1480
+  TCP    [::]:49667             [::]:0                 LISTENING       1508
+  TCP    [::]:49668             [::]:0                 LISTENING       4104
+  TCP    [::]:49678             [::]:0                 LISTENING       812
+  TCP    [::]:54235             [::]:0                 LISTENING       4
+  TCP    [::]:54899             [::]:0                 LISTENING       3452
+  TCP    [::1]:5426             [::1]:49854            ESTABLISHED     4
+  TCP    [::1]:5426             [::1]:49863            ESTABLISHED     4
+  TCP    [::1]:5426             [::1]:49864            ESTABLISHED     4
+  TCP    [::1]:5426             [::1]:49946            ESTABLISHED     4
+  TCP    [::1]:5426             [::1]:49947            ESTABLISHED     4
+  TCP    [::1]:13337            [::]:0                 LISTENING       1044
+  TCP    [::1]:37566            [::]:0                 LISTENING       13764
+  TCP    [::1]:49669            [::]:0                 LISTENING       4784
+  TCP    [::1]:49854            [::1]:5426             ESTABLISHED     17696
+  TCP    [::1]:49863            [::1]:5426             ESTABLISHED     17696
+  TCP    [::1]:49864            [::1]:5426             ESTABLISHED     17696
+  TCP    [::1]:49946            [::1]:5426             ESTABLISHED     17696
+  TCP    [::1]:49947            [::1]:5426             ESTABLISHED     17696
+  UDP    0.0.0.0:123            *:*                                    11800
+  UDP    0.0.0.0:500            *:*                                    4576
+  UDP    0.0.0.0:3702           *:*                                    6032
+  UDP    0.0.0.0:3702           *:*                                    6032
+  UDP    0.0.0.0:4500           *:*                                    4576
+  UDP    0.0.0.0:5050           *:*                                    10076
+  UDP    0.0.0.0:5353           *:*                                    5304
+  UDP    0.0.0.0:5353           *:*                                    16452
+  UDP    0.0.0.0:5353           *:*                                    9920
+  UDP    0.0.0.0:5353           *:*                                    9920
+  UDP    0.0.0.0:5353           *:*                                    5304
+  UDP    0.0.0.0:5353           *:*                                    2372
+  UDP    0.0.0.0:5353           *:*                                    16452
+  UDP    0.0.0.0:5353           *:*                                    9920
+  UDP    0.0.0.0:5353           *:*                                    16452
+  UDP    0.0.0.0:5353           *:*                                    5304
+  UDP    0.0.0.0:5355           *:*                                    2372
+  UDP    0.0.0.0:50679          *:*                                    4548
+  UDP    0.0.0.0:50685          *:*                                    6032
+  UDP    0.0.0.0:63535          *:*                                    5304
+  UDP    127.0.0.1:1900         *:*                                    2952
+  UDP    127.0.0.1:10010        *:*                                    12652
+  UDP    127.0.0.1:10011        *:*                                    9236
+  UDP    127.0.0.1:44301        *:*                                    4928
+  UDP    127.0.0.1:50626        *:*                                    9336
+  UDP    127.0.0.1:50678        *:*                                    3420
+  UDP    127.0.0.1:63052        *:*                                    2952
+  UDP    192.168.1.10:137       *:*                                    4
+  UDP    192.168.1.10:138       *:*                                    4
+  UDP    192.168.1.10:1900      *:*                                    2952
+  UDP    192.168.1.10:2177      *:*                                    19032
+  UDP    192.168.1.10:5353      *:*                                    4548
+  UDP    192.168.1.10:63050     *:*                                    2952
+  UDP    192.168.56.1:137       *:*                                    4
+  UDP    192.168.56.1:138       *:*                                    4
+  UDP    192.168.56.1:1900      *:*                                    2952
+  UDP    192.168.56.1:2177      *:*                                    19032
+  UDP    192.168.56.1:5353      *:*                                    4548
+  UDP    192.168.56.1:63051     *:*                                    2952
+  UDP    [::]:123               *:*                                    11800
+  UDP    [::]:500               *:*                                    4576
+  UDP    [::]:3702              *:*                                    6032
+  UDP    [::]:3702              *:*                                    6032
+  UDP    [::]:4500              *:*                                    4576
+  UDP    [::]:5353              *:*                                    2372
+  UDP    [::]:5353              *:*                                    9920
+  UDP    [::]:5353              *:*                                    5304
+  UDP    [::]:5353              *:*                                    16452
+  UDP    [::]:5355              *:*                                    2372
+  UDP    [::]:50680             *:*                                    4548
+  UDP    [::]:50686             *:*                                    6032
+  UDP    [::1]:1900             *:*                                    2952
+  UDP    [::1]:5353             *:*                                    4548
+  UDP    [::1]:63049            *:*                                    2952
+  UDP    [fe80::6406:79d1:146c:dd7a%14]:1900  *:*                                    2952
+  UDP    [fe80::6406:79d1:146c:dd7a%14]:2177  *:*                                    19032
+  UDP    [fe80::6406:79d1:146c:dd7a%14]:63048  *:*                                    2952
+
+
+=== 2. LOCAL ADMINS ===
+Alias name     administrators
+Comment        Administrators have complete and unrestricted access to the computer/domain
+
+Members
+
+-------------------------------------------------------------------------------
+Administrator
+jeff
+sally
+The command completed successfully.
+
+
+
+=== 3. RUNNING PROCESSES ===
+"Image Name","PID","Session Name","Session#","Mem Usage"
+"System Idle Process","0","Services","0","8 K"
+"System","4","Services","0","148 K"
+"Registry","124","Services","0","121,804 K"
+"smss.exe","468","Services","0","1,260 K"
+"csrss.exe","636","Services","0","6,140 K"
+"wininit.exe","740","Services","0","7,220 K"
+"csrss.exe","748","Console","1","6,684 K"
+"services.exe","812","Services","0","15,044 K"
+"lsass.exe","820","Services","0","34,164 K"
+"svchost.exe","968","Services","0","30,516 K"
+"fontdrvhost.exe","996","Services","0","4,532 K"
+"svchost.exe","516","Services","0","19,428 K"
+"winlogon.exe","908","Console","1","12,240 K"
+"svchost.exe","1036","Services","0","11,472 K"
+"fontdrvhost.exe","1056","Console","1","9,528 K"
+"svchost.exe","1144","Services","0","6,104 K"
+"dwm.exe","1200","Console","1","86,688 K"
+"svchost.exe","1208","Services","0","11,252 K"
+"svchost.exe","1216","Services","0","12,908 K"
+"svchost.exe","1344","Services","0","7,264 K"
+"svchost.exe","1480","Services","0","22,244 K"
+"svchost.exe","1508","Services","0","18,156 K"
+"svchost.exe","1552","Services","0","14,768 K"
+"svchost.exe","1636","Services","0","11,636 K"
+"svchost.exe","1644","Services","0","10,752 K"
+"svchost.exe","1696","Services","0","8,516 K"
+"svchost.exe","1796","Services","0","12,692 K"
+"svchost.exe","1836","Services","0","6,872 K"
+"NVDisplay.Container.exe","1880","Services","0","46,228 K"
+"svchost.exe","1968","Services","0","11,404 K"
+"AsusCertService.exe","2044","Services","0","9,020 K"
+"svchost.exe","2052","Services","0","6,656 K"
+"svchost.exe","2060","Services","0","8,488 K"
+"svchost.exe","2140","Services","0","8,052 K"
+"svchost.exe","2156","Services","0","8,948 K"
+"svchost.exe","2212","Services","0","8,460 K"
+"svchost.exe","2228","Services","0","9,724 K"
+"svchost.exe","2240","Services","0","24,764 K"
+"svchost.exe","2292","Services","0","11,644 K"
+"svchost.exe","2372","Services","0","10,316 K"
+"svchost.exe","2520","Services","0","7,612 K"
+"svchost.exe","2612","Services","0","32,052 K"
+"svchost.exe","2680","Services","0","7,320 K"
+"NVDisplay.Container.exe","2824","Console","1","70,480 K"
+"svchost.exe","3028","Services","0","16,896 K"
+"svchost.exe","3060","Services","0","16,076 K"
+"atkexComSvc.exe","2428","Services","0","13,600 K"
+"svchost.exe","3112","Services","0","24,276 K"
+"WmiPrvSE.exe","3184","Services","0","16,088 K"
+"WmiPrvSE.exe","3260","Services","0","31,528 K"
+"svchost.exe","3360","Services","0","10,240 K"
+"svchost.exe","3420","Services","0","11,864 K"
+"svchost.exe","3900","Services","0","8,392 K"
+"svchost.exe","4008","Services","0","7,612 K"
+"svchost.exe","4016","Services","0","11,132 K"
+"svchost.exe","3764","Services","0","19,400 K"
+"svchost.exe","3716","Services","0","13,800 K"
+"spoolsv.exe","4104","Services","0","16,516 K"
+"svchost.exe","4216","Services","0","9,068 K"
+"svchost.exe","4532","Services","0","15,324 K"
+"svchost.exe","4540","Services","0","52,004 K"
+"mDNSResponder.exe","4548","Services","0","7,812 K"
+"CorsairGamingAudioCfgService64.exe","4556","Services","0","8,324 K"
+"svchost.exe","4568","Services","0","8,044 K"
+"svchost.exe","4576","Services","0","8,996 K"
+"btwdins.exe","4584","Services","0","10,492 K"
+"svchost.exe","4592","Services","0","52,660 K"
+"Corsair.Service.exe","4600","Services","0","88,900 K"
+"horizon_client_service.exe","4664","Services","0","12,944 K"
+"ftscanmgrhv.exe","4672","Services","0","9,076 K"
+"ftnlsv.exe","4696","Services","0","8,140 K"
+"GameInputRedistService.exe","4716","Services","0","29,860 K"
+"AdobeUpdateService.exe","4724","Services","0","7,856 K"
+"DSAUpdateService.exe","4744","Services","0","40,772 K"
+"DSAService.exe","4752","Services","0","112,592 K"
+"CueLLAccessService.exe","4760","Services","0","12,428 K"
+"jhi_service.exe","4784","Services","0","7,144 K"
+"MpDefenderCoreService.exe","4812","Services","0","20,092 K"
+"svchost.exe","4820","Services","0","7,204 K"
+"svchost.exe","4828","Services","0","8,572 K"
+"FoxitPDFReaderUpdateService.exe","4896","Services","0","8,196 K"
+"PnkBstrA.exe","4928","Services","0","7,224 K"
+"MBAMService.exe","4956","Services","0","81,704 K"
+"svchost.exe","4996","Services","0","7,428 K"
+"nvcontainer.exe","5004","Services","0","37,452 K"
+"NovabenchService.exe","5036","Services","0","95,168 K"
+"GameInputRedistService.exe","4316","Console","1","7,916 K"
+"LMS.exe","4364","Services","0","10,444 K"
+"OfficeClickToRun.exe","4356","Services","0","63,404 K"
+"svchost.exe","4284","Services","0","6,264 K"
+"svchost.exe","4396","Services","0","9,448 K"
+"svchost.exe","4276","Services","0","6,460 K"
+"svchost.exe","2952","Services","0","8,252 K"
+"RzChromaStreamServer.exe","1888","Services","0","8,252 K"
+"GameManagerService.exe","2924","Services","0","41,480 K"
+"RzUpdateEngineService.exe","5184","Services","0","16,608 K"
+"RZSurroundService.exe","5196","Services","0","8,292 K"
+"wallpaperservice32.exe","5204","Services","0","6,140 K"
+"svchost.exe","5228","Services","0","8,380 K"
+"Sysmon64.exe","5236","Services","0","18,800 K"
+"RazerCentralService.exe","5244","Services","0","81,572 K"
+"vmwsprrdpwks.exe","5340","Services","0","9,824 K"
+"MsMpEng.exe","5364","Services","0","428,100 K"
+"vmware-usbarbitrator64.exe","5372","Services","0","12,188 K"
+"vmwetlm.exe","5380","Services","0","17,876 K"
+"windhawk.exe","5388","Services","0","7,928 K"
+"svchost.exe","5552","Services","0","6,584 K"
+"wallpaper32.exe","5956","Console","1","167,712 K"
+"svchost.exe","6032","Services","0","10,540 K"
+"unsecapp.exe","6048","Services","0","7,780 K"
+"svchost.exe","5980","Services","0","6,980 K"
+"svchost.exe","6080","Services","0","6,836 K"
+"gamingservices.exe","6184","Services","0","35,476 K"
+"gamingservicesnet.exe","6192","Services","0","10,844 K"
+"svchost.exe","6272","Services","0","14,684 K"
+"svchost.exe","6288","Services","0","6,580 K"
+"windhawk.exe","8128","Console","1","9,084 K"
+"sihost.exe","4968","Console","1","27,792 K"
+"svchost.exe","7308","Console","1","46,292 K"
+"SearchIndexer.exe","7172","Services","0","50,924 K"
+"svchost.exe","8208","Console","1","41,324 K"
+"taskhostw.exe","8348","Console","1","4,044 K"
+"AcPowerNotification.exe","8360","Console","1","16,352 K"
+"taskhostw.exe","8468","Console","1","19,920 K"
+"svchost.exe","8532","Services","0","10,088 K"
+"ArmourySocketServer.exe","8592","Console","1","4,744 K"
+"dllhost.exe","8660","Services","0","12,320 K"
+"svchost.exe","8828","Services","0","8,940 K"
+"svchost.exe","8972","Services","0","24,612 K"
+"ctfmon.exe","9000","Console","1","22,560 K"
+"svchost.exe","9188","Services","0","6,936 K"
+"explorer.exe","9936","Console","1","255,132 K"
+"svchost.exe","10076","Services","0","19,844 K"
+"svchost.exe","10116","Services","0","5,716 K"
+"nvcontainer.exe","9124","Console","1","39,704 K"
+"nvcontainer.exe","9236","Console","1","31,172 K"
+"nvcontainer.exe","9336","Console","1","85,888 K"
+"svchost.exe","10432","Services","0","9,692 K"
+"svchost.exe","10808","Services","0","8,948 K"
+"svchost.exe","10936","Services","0","10,888 K"
+"svchost.exe","11048","Services","0","19,800 K"
+"svchost.exe","11068","Services","0","31,900 K"
+"AggregatorHost.exe","11228","Services","0","9,504 K"
+"Razer Synapse Service.exe","11512","Services","0","143,464 K"
+"svchost.exe","11800","Services","0","8,836 K"
+"svchost.exe","11896","Services","0","21,828 K"
+"wslservice.exe","11908","Services","0","22,520 K"
+"wslinstaller.exe","11924","Services","0","11,560 K"
+"svchost.exe","11772","Services","0","12,804 K"
+"svchost.exe","4472","Console","1","35,416 K"
+"WhatsApp.Root.exe","12400","Console","1","155,556 K"
+"nvsphelper64.exe","12600","Console","1","13,080 K"
+"NVIDIA Overlay.exe","12652","Console","1","183,456 K"
+"audiodg.exe","12796","Services","0","13,928 K"
+"SearchApp.exe","8524","Console","1","85,856 K"
+"StartMenuExperienceHost.exe","3876","Console","1","80,628 K"
+"RuntimeBroker.exe","13352","Console","1","53,852 K"
+"svchost.exe","13440","Services","0","25,676 K"
+"RuntimeBroker.exe","13476","Console","1","39,448 K"
+"NVIDIA Overlay.exe","13716","Console","1","74,280 K"
+"svchost.exe","13768","Services","0","13,772 K"
+"NVIDIA Overlay.exe","13776","Console","1","33,368 K"
+"Malwarebytes.exe","13784","Console","1","180,676 K"
+"msedgewebview2.exe","13856","Console","1","117,500 K"
+"msedgewebview2.exe","14048","Console","1","8,060 K"
+"NVIDIA Overlay.exe","14156","Console","1","20,952 K"
+"SearchApp.exe","14392","Console","1","269,876 K"
+"msedgewebview2.exe","14624","Console","1","81,624 K"
+"msedgewebview2.exe","14696","Console","1","38,964 K"
+"msedgewebview2.exe","14780","Console","1","21,212 K"
+"NVIDIA Overlay.exe","14888","Console","1","88,780 K"
+"msedgewebview2.exe","14996","Console","1","143,728 K"
+"RuntimeBroker.exe","15440","Console","1","10,928 K"
+"NisSrv.exe","16020","Services","0","14,912 K"
+"TextInputHost.exe","9440","Console","1","59,804 K"
+"RuntimeBroker.exe","17008","Console","1","34,284 K"
+"flux.exe","17348","Console","1","27,904 K"
+"ArmouryHtmlDebugServer.exe","7016","Console","1","1,092 K"
+"TranslucentTB.exe","3852","Console","1","62,524 K"
+"DSATray.exe","11608","Console","1","99,848 K"
+"Rainmeter.exe","17068","Console","1","43,592 K"
+"dllhost.exe","17892","Console","1","9,760 K"
+"RuntimeBroker.exe","17960","Console","1","11,008 K"
+"Razer Synapse Service Process.exe","17696","Console","1","66,964 K"
+"svchost.exe","18768","Console","1","14,224 K"
+"RzSDKServer.exe","1044","Services","0","11,024 K"
+"RzSDKService.exe","5192","Services","0","7,412 K"
+"RzAppManager","5420","Services","0","7,128 K"
+"conhost.exe","8100","Services","0","14,284 K"
+"RzBTLEManager","19248","Services","0","8,052 K"
+"conhost.exe","18220","Services","0","14,312 K"
+"RzDeviceManager","10232","Services","0","7,888 K"
+"conhost.exe","16924","Services","0","14,284 K"
+"RzDiagnostic","11808","Services","0","7,604 K"
+"conhost.exe","11956","Services","0","14,284 K"
+"RzIoTDeviceManager","11832","Services","0","5,848 K"
+"conhost.exe","18704","Services","0","14,268 K"
+"RzSmartlightingDeviceManager","12460","Services","0","5,844 K"
+"conhost.exe","5148","Services","0","14,296 K"
+"uhssvc.exe","12648","Services","0","7,548 K"
+"svchost.exe","18964","Services","0","11,552 K"
+"SecurityHealthService.exe","17544","Services","0","14,132 K"
+"opera.exe","9920","Console","1","621,004 K"
+"opera_crashreporter.exe","3448","Console","1","10,152 K"
+"opera.exe","8840","Console","1","335,876 K"
+"opera.exe","5304","Console","1","61,288 K"
+"opera.exe","4888","Console","1","31,412 K"
+"opera.exe","17372","Console","1","177,524 K"
+"opera.exe","16392","Console","1","191,836 K"
+"opera.exe","1712","Console","1","240,428 K"
+"opera.exe","4640","Console","1","748,632 K"
+"CompPkgSrv.exe","17424","Console","1","9,868 K"
+"opera.exe","10256","Console","1","650,220 K"
+"opera.exe","3156","Console","1","25,228 K"
+"opera.exe","19064","Console","1","47,948 K"
+"opera.exe","1008","Console","1","269,188 K"
+"opera.exe","3468","Console","1","318,184 K"
+"opera.exe","12064","Console","1","238,064 K"
+"opera.exe","11008","Console","1","296,388 K"
+"opera.exe","16260","Console","1","325,768 K"
+"opera.exe","5504","Console","1","235,160 K"
+"opera.exe","19020","Console","1","313,724 K"
+"opera.exe","920","Console","1","89,012 K"
+"opera.exe","17440","Console","1","175,844 K"
+"svchost.exe","1128","Services","0","12,752 K"
+"opera.exe","17260","Console","1","556,832 K"
+"MoUsoCoreWorker.exe","4740","Services","0","19,228 K"
+"ShellExperienceHost.exe","10944","Console","1","82,364 K"
+"svchost.exe","19032","Services","0","8,340 K"
+"opera.exe","8800","Console","1","173,520 K"
+"opera.exe","16432","Console","1","187,980 K"
+"opera.exe","964","Console","1","214,608 K"
+"opera.exe","14936","Console","1","361,400 K"
+"dllhost.exe","7268","Console","1","13,196 K"
+"svchost.exe","10192","Console","1","12,492 K"
+"UserOOBEBroker.exe","3392","Console","1","10,844 K"
+"RuntimeBroker.exe","2556","Console","1","26,604 K"
+"opera.exe","13972","Console","1","595,528 K"
+"WinRAR.exe","6488","Console","1","35,524 K"
+"svchost.exe","11416","Services","0","12,896 K"
+"opera.exe","17684","Console","1","173,048 K"
+"opera.exe","19244","Console","1","184,944 K"
+"opera.exe","16244","Console","1","217,088 K"
+"opera.exe","9272","Console","1","420,784 K"
+"opera.exe","11640","Console","1","236,940 K"
+"opera.exe","11280","Console","1","230,216 K"
+"opera.exe","19176","Console","1","178,408 K"
+"opera.exe","12980","Console","1","207,744 K"
+"opera.exe","13816","Console","1","37,348 K"
+"xampp-control.exe","4936","Console","1","22,028 K"
+"httpd.exe","3536","Console","1","22,960 K"
+"conhost.exe","10196","Console","1","13,300 K"
+"mysqld.exe","15120","Console","1","56,592 K"
+"httpd.exe","9308","Console","1","29,764 K"
+"javaw.exe","3452","Console","1","1,152,960 K"
+"msedgedriver.exe","13764","Console","1","16,764 K"
+"conhost.exe","13080","Console","1","11,440 K"
+"msedge.exe","16452","Console","1","170,648 K"
+"msedge.exe","18300","Console","1","8,460 K"
+"msedge.exe","18040","Console","1","80,156 K"
+"msedge.exe","19464","Console","1","35,996 K"
+"msedge.exe","19532","Console","1","19,244 K"
+"msedge.exe","19832","Console","1","59,168 K"
+"msedge.exe","20424","Console","1","83,096 K"
+"msedge.exe","20656","Console","1","32,916 K"
+"msedge.exe","20664","Console","1","25,536 K"
+"svchost.exe","21000","Services","0","22,676 K"
+"Code.exe","14024","Console","1","150,152 K"
+"Code.exe","12364","Console","1","31,080 K"
+"Code.exe","16656","Console","1","133,516 K"
+"Code.exe","19440","Console","1","48,272 K"
+"Code.exe","10488","Console","1","292,628 K"
+"Code.exe","17664","Console","1","375,560 K"
+"Code.exe","17712","Console","1","118,472 K"
+"Code.exe","20556","Console","1","109,248 K"
+"Code.exe","7572","Console","1","149,688 K"
+"Code.exe","21708","Console","1","104,400 K"
+"Code.exe","22220","Console","1","104,880 K"
+"CodeSetup-stable-10c8e557c8b9f9ed0a87f61f1c9a44bde731c409.exe","20472","Console","1","12,524 K"
+"CodeSetup-stable-10c8e557c8b9f9ed0a87f61f1c9a44bde731c409.tmp","21836","Console","1","42,364 K"
+"powershell.exe","21600","Console","1","85,592 K"
+"conhost.exe","21968","Console","1","17,084 K"
+"ssh.exe","2204","Console","1","9,976 K"
+"Code.exe","19856","Console","1","373,268 K"
+"Code.exe","12976","Console","1","129,332 K"
+"Code.exe","22312","Console","1","460,156 K"
+"Code.exe","23084","Console","1","107,476 K"
+"OpenConsole.exe","22532","Console","1","9,072 K"
+"powershell.exe","23336","Console","1","100,140 K"
+"pet.exe","22392","Console","1","9,440 K"
+"conhost.exe","22692","Console","1","11,656 K"
+"Code.exe","21212","Console","1","125,264 K"
+"pet.exe","23456","Console","1","9,268 K"
+"conhost.exe","22408","Console","1","11,660 K"
+"OpenConsole.exe","23472","Console","1","9,056 K"
+"powershell.exe","23520","Console","1","95,008 K"
+"Code.exe","22640","Console","1","476,768 K"
+"Code.exe","21296","Console","1","113,928 K"
+"OpenConsole.exe","23324","Console","1","9,072 K"
+"powershell.exe","5652","Console","1","101,904 K"
+"svchost.exe","21780","Services","0","8,148 K"
+"python.exe","22616","Console","1","4,684 K"
+"python.exe","22088","Console","1","39,988 K"
+"python.exe","21076","Console","1","4,684 K"
+"python.exe","5548","Console","1","39,316 K"
+"python.exe","23464","Console","1","4,692 K"
+"python.exe","22424","Console","1","40,304 K"
+"python.exe","11252","Console","1","4,688 K"
+"python.exe","16424","Console","1","40,040 K"
+"opera.exe","20844","Console","1","175,664 K"
+"opera.exe","5360","Console","1","208,440 K"
+"opera.exe","20220","Console","1","198,416 K"
+"opera.exe","23152","Console","1","34,068 K"
+"gopls.exe","24260","Console","1","139,152 K"
+"conhost.exe","24268","Console","1","11,652 K"
+"gopls.exe","24356","Console","1","21,668 K"
+"OpenConsole.exe","24256","Console","1","9,108 K"
+"powershell.exe","18584","Console","1","100,752 K"
+"opera.exe","9304","Console","1","47,636 K"
+"smartscreen.exe","24464","Console","1","24,588 K"
+"payload.exe","20588","Console","1","47,140 K"
+"conhost.exe","16888","Console","1","16,864 K"
+"WmiPrvSE.exe","23528","Services","0","9,468 K"
+"TrustedInstaller.exe","15748","Services","0","8,452 K"
+"TiWorker.exe","23888","Services","0","12,192 K"
+"cmd.exe","24432","Console","1","6,224 K"
+"tasklist.exe","21692","Console","1","10,592 K"
+
+
+=== 4. LOGGED-IN USERS ===
+ USERNAME              SESSIONNAME        ID  STATE   IDLE TIME  LOGON TIME
+>sally                 console             1  Active      none   23/04/2026 02:07
+
+
+=== 5. ARP CACHE ===
+
+Interface: 192.168.56.1 --- 0xe
+  Internet Address      Physical Address      Type
+  192.168.56.255        ff-ff-ff-ff-ff-ff     static    
+  224.0.0.22            01-00-5e-00-00-16     static    
+  224.0.0.251           01-00-5e-00-00-fb     static    
+  224.0.0.252           01-00-5e-00-00-fc     static    
+  239.255.255.250       01-00-5e-7f-ff-fa     static    
+
+Interface: 192.168.1.10 --- 0x10
+  Internet Address      Physical Address      Type
+  192.168.1.1           14-2e-5e-cf-21-f8     dynamic   
+  192.168.1.16          48-9e-9d-62-25-cf     dynamic   
+  192.168.1.19          c8-6c-3d-25-10-e6     dynamic   
+  192.168.1.255         ff-ff-ff-ff-ff-ff     static    
+  224.0.0.22            01-00-5e-00-00-16     static    
+  224.0.0.251           01-00-5e-00-00-fb     static    
+  224.0.0.252           01-00-5e-00-00-fc     static    
+  239.255.255.250       01-00-5e-7f-ff-fa     static    
+  255.255.255.255       ff-ff-ff-ff-ff-ff     static    
+
+
+=== 6. DISK INFORMATION ===
+Caption  FreeSpace      Size           
+C:       1159720960     118954516480   
+D:       94915981312    1000202039296  
+E:       8160284672     511463911424   
+F:       1783694786560  2000381014016  
+
+
+

