@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample Zoo — Malware Reference Collection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0a0c10; --bg2:#111520; --bg3:#181d2b; --bgc:#0d1117; --border:#232a3e;
+      --text:#c8cfe0; --dim:#5a6480; --head:#eef0f8;
+      --amber:#f0a030; --red:#e03a3a; --green:#2ecc71; --blue:#4a8fff; --purple:#8b5cf6; --teal:#2dd4bf;
+      --mono:'JetBrains Mono',monospace; --sans:'Syne',sans-serif;
+    }
+    body { background:var(--bg); color:var(--text); font-family:var(--sans); font-size:15px; line-height:1.6; min-height:100vh; }
+    header { border-bottom:1px solid var(--border); background:var(--bg); position:sticky; top:0; z-index:100; }
+    .hi { max-width:1100px; margin:0 auto; padding:0 32px; display:flex; align-items:center; gap:32px; height:56px; }
+    .logo { font-family:var(--mono); font-size:13px; color:var(--amber); font-weight:600; text-decoration:none; }
+    .logo span { color:var(--dim); }
+    nav a { font-family:var(--mono); font-size:12px; color:var(--dim); text-decoration:none; padding:6px 10px; border-radius:4px; transition:.15s; }
+    nav a:hover { color:var(--text); background:var(--bg3); }
+    nav a.on { color:var(--amber); background:rgba(240,160,48,.08); }
+
+    main { max-width:1100px; margin:0 auto; padding:56px 32px 96px; }
+
+    .hero { margin-bottom:44px; border-left:3px solid var(--red); padding-left:22px; }
+    .eyebrow { font-family:var(--mono); font-size:11px; color:var(--red); letter-spacing:.1em; text-transform:uppercase; margin-bottom:8px; }
+    .hero h1 { font-size:38px; font-weight:800; color:var(--head); line-height:1.1; margin-bottom:12px; }
+    .hero p { color:var(--dim); font-family:var(--mono); font-size:13px; max-width:600px; line-height:1.7; }
+
+    .warn-box { background:rgba(224,58,58,.05); border:1px solid rgba(224,58,58,.2); border-radius:8px; padding:16px 20px; margin-bottom:44px; font-family:var(--mono); font-size:12px; color:var(--dim); line-height:1.7; }
+    .warn-box strong { color:var(--red); }
+
+    /* filters */
+    .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; }
+    .filter-btn { font-family:var(--mono); font-size:11px; padding:5px 12px; border-radius:99px; border:1px solid var(--border); background:transparent; color:var(--dim); cursor:pointer; transition:.15s; }
+    .filter-btn:hover { border-color:var(--text); color:var(--text); }
+    .filter-btn.on { border-color:var(--amber); color:var(--amber); background:rgba(240,160,48,.07); }
+
+    /* category header */
+    .cat-header { margin-bottom:16px; margin-top:44px; padding-bottom:12px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
+    .cat-header:first-of-type { margin-top:0; }
+    .cat-title { font-size:17px; font-weight:800; color:var(--head); }
+    .cat-count { font-family:var(--mono); font-size:11px; color:var(--dim); margin-left:auto; }
+
+    /* sample grid */
+    .sample-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:12px; margin-bottom:8px; }
+    .sample-card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:18px 20px; text-decoration:none; display:block; transition:.15s; position:relative; overflow:hidden; }
+    .sample-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
+    .lang-go      .sample-card::before { background:var(--teal); }
+    .lang-python  .sample-card::before { background:var(--blue); }
+    .lang-c       .sample-card::before { background:var(--amber); }
+    .lang-ps      .sample-card::before { background:var(--purple); }
+    .lang-multi   .sample-card::before { background:var(--red); }
+    .sample-card:hover { border-color:#3a4258; transform:translateY(-2px); background:var(--bg3); }
+    .sc-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:9px; gap:8px; }
+    .sc-tags { display:flex; gap:5px; flex-wrap:wrap; }
+    .tag { font-family:var(--mono); font-size:10px; padding:2px 7px; border-radius:3px; border:1px solid var(--border); background:var(--bg3); color:var(--dim); }
+    .tag-go     { color:var(--teal); border-color:rgba(45,212,191,.2); background:rgba(45,212,191,.06); }
+    .tag-python { color:var(--blue); border-color:rgba(74,143,255,.2); background:rgba(74,143,255,.06); }
+    .tag-c      { color:var(--amber); border-color:rgba(240,160,48,.2); background:rgba(240,160,48,.06); }
+    .tag-ps     { color:var(--purple); border-color:rgba(139,92,246,.2); background:rgba(139,92,246,.06); }
+    .tag-ref    { color:var(--green); border-color:rgba(46,204,113,.2); background:rgba(46,204,113,.06); }
+    .tag-harm   { color:var(--red); border-color:rgba(224,58,58,.2); background:rgba(224,58,58,.06); }
+    .sc-name { font-size:14px; font-weight:600; color:var(--head); margin-bottom:6px; line-height:1.3; }
+    .sc-desc { font-family:var(--mono); font-size:11px; color:var(--dim); line-height:1.6; margin-bottom:12px; }
+    .sc-footer { display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid var(--border); }
+    .sc-mitre { font-family:var(--mono); font-size:10px; color:var(--dim); background:var(--bg3); padding:2px 7px; border-radius:3px; border:1px solid var(--border); }
+    .sc-link { font-family:var(--mono); font-size:10px; color:var(--amber); }
+    .dl-btn-sm { font-family:var(--mono); font-size:10px; color:var(--amber); background:rgba(240,160,48,.07); border:1px solid rgba(240,160,48,.2); padding:3px 9px; border-radius:4px; text-decoration:none; transition:.15s; }
+    .dl-btn-sm:hover { background:rgba(240,160,48,.14); border-color:var(--amber); }
+    .ext-btn { font-family:var(--mono); font-size:10px; color:var(--dim); background:var(--bg3); border:1px solid var(--border); padding:3px 9px; border-radius:4px; text-decoration:none; transition:.15s; }
+    .ext-btn:hover { color:var(--text); border-color:var(--text); }
+    .arr { font-size:10px; color:var(--dim); transition:.15s; }
+    .sample-card:hover .arr { transform:translateX(3px); }
+
+    .rec-note { background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:14px 18px; margin-top:28px; font-family:var(--mono); font-size:12px; color:var(--dim); line-height:1.7; }
+    .rec-note strong { color:var(--text); }
+
+    footer { border-top:1px solid var(--border); padding:24px 32px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--dim); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hi">
+    <a href="/" class="logo">recon<span>.</span>beacon</a>
+    <nav style="display:flex;gap:4px;">
+      <a href="/">Home</a>
+      <a href="/lessons">Lessons</a>
+      <a href="/recon">Recon</a>
+      <a href="/c2">C2 Server</a>
+      <a href="/obfuscation">Obfuscation</a>
+      <a href="/zoo" class="on">Sample Zoo</a>
+     
+      <a href="/defender">Blue Team</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="eyebrow">// sample zoo</div>
+    <h1>Reference Samples</h1>
+    <p>Annotated collection of public educational samples — other people's work studied for technique comparison. Each entry notes what it does well and what to look for in the code.</p>
+  </div>
+
+  <div class="warn-box">
+    <strong>Lab use only.</strong> Every sample listed here is from a public repository and is linked for educational and analytical purposes. Run them only in an isolated virtual machine with no internet access and no connection to anything you care about. Detonating unknown binaries on your host machine or a shared network is not a risk worth taking.
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- GO SAMPLES                                                -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="cat-header lang-go" style="border-bottom-color:rgba(45,212,191,.2);">
+    <div class="cat-title">Go Samples</div>
+    <div class="cat-count">directly comparable to this project</div>
+  </div>
+  <div class="sample-grid lang-go">
+
+    <div class="sample-card">
+      <div class="sc-top">
+        <div class="sc-tags"><span class="tag tag-go">Go</span><span class="tag">RAT</span><span class="tag">C2</span></div>
+        <span class="tag tag-ref">Reference</span>
+      </div>
+      <div class="sc-name">Sliver — Open Source C2 Framework</div>
+      <div class="sc-desc">Full implant framework written in Go. Covers everything in this project plus much more — mutual TLS, DNS beaconing, process injection, multiplayer operator support. Study it to see how production-grade Go C2 is structured, not to copy it wholesale.</div>
+      <div class="sc-footer">
+        <span class="sc-mitre">T1071 · T1095 · T1572</span>
+        <a href="https://github.com/BishopFox/sliver" target="_blank" class="ext-btn">GitHub ↗</a>
+      </div>
+    </div>
+
+    <div class="sample-card">
+      <div class="sc-top">
+        <div class="sc-tags"><span class="tag tag-go">Go</span><span class="tag">Loader</span><span class="tag">Injection</span></div>
+        <span class="tag tag-ref">Reference</span>
+      </div>
+      <div class="sc-name">Go-Inject — Shellcode Loader</div>
+      <div class="sc-desc">Minimal Go shellcode injection using Windows API calls via the syscall package — the alternative to shelling out to cmd.exe that's mentioned in the OPSEC section. Good for understanding how to avoid spawning child processes entirely.</div>
+      <div class="sc-footer">
+        <span class="sc-mitre">T1055 · T1027</span>
+        <a href="https://github.com/Ne0nd0g/go-shellcode" target="_blank" class="ext-btn">GitHub ↗</a>
+      </div>
+    </div>
+
+    <div class="sample-card">
+      <div class="sc-top">
+        <div class="sc-tags"><span class="tag tag-go">Go</span><span class="tag">Recon</span><span class="tag">OPSEC</span></div>
+        <span class="tag">Study</span>
+      </div>
+      <div class="sc-name">garble — Go Binary Obfuscation</div>
+      <div class="sc-desc">A Go build tool that randomises symbol names, shuffles code layout, and applies literal obfuscation at compile time. Drop-in replacement for the go build command. The obfuscation phase of this project demonstrates what garble protects against.</div>
+      <div class="sc-footer">
+        <span class="sc-mitre">T1027</span>
+        <a href="https://github.com/burrowers/garble" target="_blank" class="ext-btn">GitHub ↗</a>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- PYTHON SAMPLES                                            -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="cat-header lang-python" style="border-bottom-color:rgba(74,143,255,.2);">
+    <div class="cat-title">Python Samples</div>
+    <div class="cat-count">good for technique comparison</div>
+  </div>
+  <div class="sample-grid lang-python">
+
+    <div class="sample-card">
+      <div class="sc-top">
+        <div class="sc-tags"><span class="tag tag-python">Python</span><span class="tag">RAT</span><span class="tag">Multi-platform</span></div>
+        <span class="tag tag-ref">Reference</span>
+      </div>
+      <div class="sc-name">pupy — Cross-Platform RAT</div>
+      <div class="sc-desc">Python RAT with a rich feature set — memory-only execution, in-memory module loading, multiple transports. The Python equivalent of what this project builds in Go. Useful for comparing how the same concepts (persistence, exfil, C2) are implemented in a higher-level language.</div>
+      <div class="sc-footer">
+        <span class="sc-mitre">T1059.006 · T1041 · T1547</span>
+        <a href="https://github.com/n1nj4sec/pupy" target="_blank" class="ext-btn">GitHub ↗</a>
+      </div>
+    </div>
+
+    <div class="sample-card">
+      <div class="sc-top">
+        <div class="sc-tags"><span class="tag tag-python">Python</span><span class="tag">Keylogger</span><span class="tag">Minimal</span></div>
+        <span class="tag">Study</span>
+      </div>
+      <div class="sc-name">Simple Python Keylogger</div>
+      <div class="sc-desc">Minimal keylogger using the pynput library — demonstrates credential harvesting (T1056) in under 30 lines. Useful as a contrast to the reconnaissance approach: passive collection vs active command execution. Compare detection signatures.</div>
+      <div class="sc-footer">
+        <span class="sc-mitre">T1056.001</span>
+        <a href="https://github.com/GiacomoLaw/Keylogger" target="_blank" class="ext-btn">GitHub ↗</a>
+      </div>
+    </div>
+
+    <div class="sample-card">
+      <div class="sc-top">
+        <div class="sc-tags"><span class="tag tag-python">Python</span><span class="tag">Post-Exploit</span><span class="tag">PowerShell</span></div>
+        <span class="tag tag-ref">Reference</span>
+      </div>
+      <div class="sc-name">Empire — Post-Exploitation Framework</div>
+      <div class="sc-desc">PowerShell/Python post-exploitation framework. Heavily documented, built with detection evasion in mind from the start. Good for understanding how obfuscation, encrypted C2, and OPSEC are handled at scale — everything this project is building toward.</div>
+      <div class="sc-footer">
+        <span class="sc-mitre">T1059.001 · T1071 · T1027</span>
+        <a href="https://github.com/EmpireProject/Empire" target="_blank" class="ext-btn">GitHub ↗</a>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- C/C++ SAMPLES                                             -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="cat-header lang-c" style="border-bottom-color:rgba(240,160,48,.2);">
+    <div class="cat-title">C / C++ Samples</div>
+    <div class="cat-count">lower level — shows what Go abstracts away</div>
+  </div>
+  <div class="sample-grid lang-c">
+
+    <div class="sample-card">
+      <div class="sc-top">
+        <div class="sc-tags"><span class="tag tag-c">C</span><span class="tag">Botnet</span><span class="tag">IoT</span></div>
+        <span class="tag tag-harm">⚠ Historical</span>
+      </div>
+      <div class="sc-name">Mirai — IoT Botnet Source</div>
+      <div class="sc-desc">Source code of the 2016 Mirai botnet, leaked and widely studied. Written in C. Demonstrates credential scanning, DDoS modules, and C2 architecture at industrial scale. Study the structure — persistence, scanning, C2 protocol — and compare to the Go approach.</div>
+      <div class="sc-footer">
+        <span class="sc-mitre">T1110 · T1498 · T1041</span>
+        <a href="https://github.com/jgamblin/Mirai-Source-Code" target="_blank" class="ext-btn">GitHub ↗</a>
+      </div>
+    </div>
+
+    <div class="sample-card">
+      <div class="sc-top">
+        <div class="sc-tags"><span class="tag tag-c">C</span><span class="tag">Reverse Shell</span><span class="tag">Minimal</span></div>
+        <span class="tag">Study</span>
+      </div>
+      <div class="sc-name">Tiny C Reverse Shell</div>
+      <div class="sc-desc">A bare-minimum reverse shell in C — socket connection, fork, exec. Under 50 lines. Good for understanding what's happening at the syscall level when Go's net/http makes a connection. The Go version abstracts all of this; C shows the seams.</div>
+      <div class="sc-footer">
+        <span class="sc-mitre">T1059 · T1071</span>
+        <a href="https://github.com/0x00-0x00/ShellPop" target="_blank" class="ext-btn">GitHub ↗</a>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ANALYSIS TOOLS                                            -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="cat-header" style="border-bottom-color:rgba(139,92,246,.2);">
+    <div class="cat-title" style="color:var(--purple);">Analysis Tools</div>
+    <div class="cat-count">for examining the samples</div>
+  </div>
+  <div class="sample-grid">
+
+    <div class="sample-card" style="--accent:var(--purple);">
+      <div class="sc-top">
+        <div class="sc-tags"><span class="tag">Java</span><span class="tag">Reverse Eng.</span><span class="tag">Free</span></div>
+        <span class="tag tag-ref">Tool</span>
+      </div>
+      <div class="sc-name">Ghidra — NSA Reverse Engineering Suite</div>
+      <div class="sc-desc">Free, open-source reverse engineering framework from the NSA. Load any of the compiled .exe binaries from this project and explore what the binary looks like before and after stripping. The obfuscation lesson specifically uses Ghidra for before/after comparison.</div>
+      <div class="sc-footer">
+        <span class="sc-mitre">—</span>
+        <a href="https://ghidra-sre.org" target="_blank" class="ext-btn">ghidra-sre.org ↗</a>
+      </div>
+    </div>
+
+    <div class="sample-card">
+      <div class="sc-top">
+        <div class="sc-tags"><span class="tag">Windows</span><span class="tag">Forensics</span><span class="tag">Free</span></div>
+        <span class="tag tag-ref">Tool</span>
+      </div>
+      <div class="sc-name">Sysinternals Suite — Process Monitor, Autoruns, strings.exe</div>
+      <div class="sc-desc">The Windows forensics toolkit. Autoruns catches the registry persistence from v3, strings.exe reveals hardcoded strings in the binary (showing why obfuscation matters), and Process Monitor traces every file, registry, and network event. All exercises in the lessons reference these.</div>
+      <div class="sc-footer">
+        <span class="sc-mitre">—</span>
+        <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite" target="_blank" class="ext-btn">Microsoft ↗</a>
+      </div>
+    </div>
+
+    <div class="sample-card">
+      <div class="sc-top">
+        <div class="sc-tags"><span class="tag">Windows</span><span class="tag">Logging</span><span class="tag">Free</span></div>
+        <span class="tag tag-ref">Tool</span>
+      </div>
+      <div class="sc-name">Sysmon — System Monitor</div>
+      <div class="sc-desc">Microsoft's process, network, and file logging driver. Every detection table in this project references Sysmon event IDs. Install it on your lab Windows VM with a sensible config (SwiftOnSecurity's config is a good starting point) and watch your own payload get logged.</div>
+      <div class="sc-footer">
+        <span class="sc-mitre">—</span>
+        <a href="https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon" target="_blank" class="ext-btn">Microsoft ↗</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="rec-note">
+    <strong>How to use these:</strong> Don't just run the samples and look at the output. Read the source code alongside your own v3 payload and compare how the same problems are solved differently. Mirai's C2 protocol is more complex than ours but solves the same problem — how does it identify beacons? How does it handle multiple targets? How does Empire's PowerShell obfuscation differ from XOR encoding? The interesting questions are comparative, not just "what does this do."
+  </div>
+
+</main>
+
+<footer>Final Year Cybersecurity Project &nbsp;·&nbsp; Educational use only &nbsp;·&nbsp; Lab environment</footer>
+
+</body>
+</html>
