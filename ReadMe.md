@@ -1,8 +1,5 @@
 # C2 Zoo — Documentation Website
-Author: Jake Powell Langstaff
-Module: Cyber Security level 8 honors final year 2026
-Student Id: C00287662
-Course No: CW_KCCYB
+
 
 
 C2 Zoo — Documentation Website
