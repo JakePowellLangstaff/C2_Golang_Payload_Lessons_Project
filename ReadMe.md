@@ -60,6 +60,7 @@ this is best because v4 and up are obfuscated making it a pain.
 
 Note: v1 and v2 just save files to local users temp folder c2 is only implemented in v3 upward.
 
+# Contains MITRE ATT&CK mapping for each tactic used
 location in code: 
 -----------------------------------------------------------------------------------------
 8. Project Structure
